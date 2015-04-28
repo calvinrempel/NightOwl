@@ -1,0 +1,13 @@
+{
+	"restrictions" : [
+		"boolean",
+		"member_list",
+		"memberID",
+		"percent"
+	],
+
+	"tree" : {
+		"dashboard":["core"],
+		"service":["social-communication"]
+	}
+}
