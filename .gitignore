@@ -18,6 +18,7 @@ temp/
 # Legacy ZF1
 demos/
 extras/documentation
+/nbproject/private/
 
 # Cause macs are weird
 .DS_STORE
