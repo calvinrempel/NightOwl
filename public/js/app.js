@@ -10,7 +10,7 @@
 	});
 
 	app.controller('LoginController', function($scope, $http) {
-		$scope.msg = "SHOW LOGIN";
+		//ADD LOGIN FUNCTIONALITY HERE
 	});
 
 	app.controller('ListController', function($scope, $http) {

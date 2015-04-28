@@ -37,3 +37,4 @@ div.container a.brand {
 }
 
 td{ padding:5px;}
+td:not(:first-child) { text-align: center; }
