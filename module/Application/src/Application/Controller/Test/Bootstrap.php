@@ -1,5 +1,5 @@
 <?php
-namespace ApplicationTest;//Change this namespace for your test
+namespace NightOwl;//Change this namespace for your test
 
 use Zend\Loader\AutoloaderFactory;
 use Zend\Mvc\Service\ServiceManagerConfig;
@@ -101,7 +101,8 @@ class Bootstrap
         $previousDir = '.';
         while (!is_dir($dir . '/' . $path)) {
             $dir = dirname($dir);
-            if ($previousDir === $dir) return false;
+            if ($previousDir === $dir) 
+                return false;
             $previousDir = $dir;
         }
         return $dir . '/' . $path;
