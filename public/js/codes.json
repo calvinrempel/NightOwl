@@ -5,7 +5,8 @@
 			"value":true,
 			"restriction":"boolean",
 			"isAvailableToJs":1,
-			"createdDate":"2013-05-16 12:06:32", 
+			"createdDate":"2013-05-16 12:06:32",
+			"description":"Toggles the currency symbol for the account", 
 			"active":0
 		},
 		{
@@ -14,6 +15,7 @@
 			"restriction":"member_list",
 			"value":"1,2,3,4,5",
 			"createdDate":"2015-03-25 22:58:09",
+			"description":"Increases platform security integration platform framework", 
 			"active":1
 		}
 	],
@@ -24,6 +26,7 @@
 			"value":false,
 			"restriction":"boolean",
 			"createdDate":"2014-03-23 10:02:36",
+			"description":"Test code for debugging purposes", 
 			"active":0
 		}
 	]

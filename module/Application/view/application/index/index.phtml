@@ -45,11 +45,16 @@
 				</div>
 				<br/>
 				<br/>
-				<form>
-					<input type="text" name="search">
+				<form id="filter">
+					<div id="tree">
+						darklaunch / 
+						<select ng-model="root" ng-options="key for (key, value) in config.tree"></select>
+						<select ng-model="branch1" ng-options="key for (key, value) in root"></select>
+					</div>
+					<input style="clear:both" type="text" name="search">
 					<input type="submit" value="Search">
 				</form>
-				<div ng-repeat="(tree, codes) in trees">
+				<div ng-repeat="(tree, codes) in launchCodes">
 				<table>
 					<thead>
 						<h3>{{tree}}</h3>
@@ -59,6 +64,7 @@
 							<td>Value</td>
 							<td>Available to JS</td>
 							<td>Date Created</td>
+							<td>Description</td>
 							<td>Active</td>
 						</tr>
 					</thead>
@@ -68,6 +74,7 @@
 						<td><input type="text" ng-model="code.value"></td>
 						<td><input type="checkbox" ng-model="code.isAvailableToJs" ng-checked="code.isAvailableToJs"></td>
 						<td>{{ code.createdDate }}</td>
+						<td><textarea ng-model="code.description"></textarea></td>
 						<td><input type="checkbox" ng-model="code.active" ng-checked="code.active"></td>
 					</tr>
 				</table>

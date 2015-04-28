@@ -5,24 +5,23 @@
 
 		$scope.selected = 'login';
 		$.getJSON('js/config.json', function(json, textStatus) {
-				$scope.config = json;
+			$scope.config = json;
+			console.log($scope.config.trees);
 		});
 	});
 
-	app.controller('LoginController', function($scope, $http) {
+	app.controller('LoginController', function($scope, $http, $compile) {
 		//ADD LOGIN FUNCTIONALITY HERE
 	});
 
 	app.controller('ListController', function($scope, $http) {
-		$scope.region = "west";
+		$scope.depth = 0;
 		$.getJSON('js/codes.json', function(json, textStatus) {
-			$scope.trees = json;
+			$scope.launchCodes = json;
 		});
 
-		$scope.echo = function(){
-			console.log("HELLO");
-			console.log($scope.trees);
-		};
+		$scope.region = "west";
+
 	});
 
 	app.controller('AuditController', function($scope, $http) {
