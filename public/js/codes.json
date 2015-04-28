@@ -1,0 +1,30 @@
+{
+	"darklaunch/dashboard/core":[
+		{
+			"key": "ACCOUNT_CURRENCY_TOGGLE", 
+			"value":true,
+			"restriction":"boolean",
+			"isAvailableToJs":1,
+			"createdDate":"2013-05-16 12:06:32", 
+			"active":0
+		},
+		{
+			"key":"PLAT_CRYPTO_SERVICE_SN_INTEGRATION",
+			"isAvailableToJs":0,
+			"restriction":"member_list",
+			"value":"1,2,3,4,5",
+			"createdDate":"2015-03-25 22:58:09",
+			"active":1
+		}
+	],
+	
+	"darklaunch/service/social-communication":[
+		{
+			"key":"TEST_CODE",
+			"value":false,
+			"restriction":"boolean",
+			"createdDate":"2014-03-23 10:02:36",
+			"active":0
+		}
+	]
+}

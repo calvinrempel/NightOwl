@@ -1,0 +1,8 @@
+{
+	"restrictions" : [
+		"boolean",
+		"member_list",
+		"memberID",
+		"percent"
+	]
+}
