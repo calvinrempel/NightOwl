@@ -27,4 +27,9 @@ class AuthRestController implements Zend\Mvc\Controller\AbstractRestfulControlle
     {
         
     }
+    
+    public function index()
+    {
+        echo 'pineapple';
+    }
 }

@@ -18,7 +18,7 @@ return array(
                         'controller' => 'Application\Controller\Index',
                         'action'     => 'index',
                     ),
-                ),
+                )
             ),
             // The following is a route to simplify getting started creating
             // new controllers and actions without needing to create a new
@@ -73,7 +73,8 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'Application\Controller\Index' => 'Application\Controller\IndexController'
+            'Application\Controller\Index' => 'Application\Controller\IndexController',
+            'Application\Controller\Test'  => 'Application\Controller\AuthRestContoller'
         ),
     ),
     'view_manager' => array(
