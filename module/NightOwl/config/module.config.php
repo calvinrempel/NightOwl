@@ -27,7 +27,7 @@ return array(
             'application' => array(
                 'type'    => 'Literal',
                 'options' => array(
-                    'route'    => '/application',
+                    'route'    => '/nightowl',
                     'defaults' => array(
                         '__NAMESPACE__' => 'NightOwl\Controller',
                         'controller'    => 'Index',
@@ -72,9 +72,14 @@ return array(
         ),
     ),
     'controllers' => array(
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //
+        // THIS IS WHERE YOU PUT CONTROLLERS
+        //
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         'invokables' => array(
-            'Application\Controller\Index' => 'NightOwl\Controller\IndexController',
-            'Application\Controller\Test'  => 'NightOwl\Controller\AuthRestContoller'
+            'NightOwl\Controller\Index' => 'NightOwl\Controller\IndexController',
+            'NightOwl\Controller\Test'  => 'NightOwl\Controller\AuthRestContoller'
         ),
     ),
     'view_manager' => array(
@@ -84,10 +89,15 @@ return array(
         'not_found_template'       => 'error/404',
         'exception_template'       => 'error/index',
         'template_map' => array(
-            'layout/layout'           => __DIR__ . '/../view/layout/layout.phtml',
-            'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
-            'error/404'               => __DIR__ . '/../view/error/404.phtml',
-            'error/index'             => __DIR__ . '/../view/error/index.phtml',
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            // 
+            // THIS IS WHERE VIEWS GO, IF YOU MAKE A VIEW PUT IT HERE. THE STRUCTURE IS LIKE THE STRUCTURE IN APPLICATION
+            // 
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            //'layout/layout'           => __DIR__ . '/../view/layout/layout.phtml',
+            //'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
+            //'error/404'               => __DIR__ . '/../view/error/404.phtml',
+            //'error/index'             => __DIR__ . '/../view/error/index.phtml',
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
