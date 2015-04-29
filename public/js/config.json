@@ -9,5 +9,11 @@
 	"tree" : {
 		"dashboard":["core"],
 		"service":["social-communication"]
-	}
+	},
+	
+	"filters":[
+		"key",
+		"value",
+		"date"
+	]
 }
