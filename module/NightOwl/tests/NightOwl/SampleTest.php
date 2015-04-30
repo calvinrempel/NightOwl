@@ -16,4 +16,5 @@ class SampleTest extends Framework\TestCase
     {
         $this->assertInstanceOf('Zend\Di\LocatorInterface', $this->getLocator());
     }
+    
 }
