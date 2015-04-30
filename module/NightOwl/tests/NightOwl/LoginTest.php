@@ -22,8 +22,8 @@ class LoginTest extends AbstractHttpControllerTestCase
     
     function testLogin()
     {
-        $this->getRequest()->setMethod('POST');
-        $this->dispatch('/Login/');
+        $this->getRequest()->setMethod('GET');
+        $this->dispatch('/login/id/pw');
         $this->assertResponseStatusCode(200);
     }
 }
