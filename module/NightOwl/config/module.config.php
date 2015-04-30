@@ -27,7 +27,7 @@ return array(
             'application' => array(
                 'type'    => 'Literal',
                 'options' => array(
-                    'route'    => '/nightowl',
+                    'route'    => '/',
                     'defaults' => array(
                         '__NAMESPACE__' => 'NightOwl\Controller',
                         'controller'    => 'Index',

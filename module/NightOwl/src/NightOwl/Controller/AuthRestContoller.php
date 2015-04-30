@@ -6,7 +6,9 @@
 
 namespace NightOwl;
 
-class AuthRestController implements Zend\Mvc\Controller\AbstractRestfulController
+use Zend\Mvc\Controller\AbstractRestfulController;
+
+class AuthRestController implements AbstractRestfulController
 {
     public function get()
     {
