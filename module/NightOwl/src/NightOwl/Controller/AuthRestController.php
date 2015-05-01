@@ -7,12 +7,36 @@
 namespace NightOwl\Controller;
 
 use Zend\Mvc\Controller\AbstractRestfulController;
+use NightOwl\Model\Auth;
 
 class AuthRestController extends AbstractRestfulController
 {
+    protected $auth;
+    
+    public function __construct()
+    {
+        //parent::__construct();
+        $this->auth = new Auth();
+    }
+    
     public function get($id)
     {
-        return new \Zend\View\Model\JsonModel(array('status'=>'success'));
+        $user = $id;
+        $pass = $this->params('pw');
+        
+        if($key = $this->auth->validate($user, $pass))
+        {
+            return new \Zend\View\Model\JsonModel(array('status' => true, 'key'=> $key));
+        }
+        else 
+        {
+            return new \Zend\View\Model\JsonModel(array('status' => false));
+        }
+    }
+    
+    public function getList()
+    {
+        return new \Zend\View\Model\JsonModel(array('status' => false));
     }
     
     public function create($data)

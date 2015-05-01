@@ -12,4 +12,5 @@
  */
 
 return array(
+    'dbaccess' => ''
 );
