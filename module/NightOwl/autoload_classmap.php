@@ -6,4 +6,5 @@ return array(
     'NightOwl\Model\Auth'                    => __DIR__ . '/src/NightOwl/Model/Auth.php',
     'NightOwlTest\Framework\TestCase'        => __DIR__ . '/tests/NightOwl/Framework/TestCase.php',
     'NightOwlTest\SampleTest'                => __DIR__ . '/tests/NightOwl/SampleTest.php',
+    'NightOwl\Model\LaunchCodesModel'        => __DIR__ . '/src/NightOwl/Model/LaunchCodesModel.php'
 );
