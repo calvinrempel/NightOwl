@@ -22,6 +22,11 @@ class AuthRestController extends AbstractRestfulController
         }
     }
     
+    public function getList()
+    {
+        return new \Zend\View\Model\JsonModel(array('status' => false));
+    }
+    
     public function create($data)
     {
         
