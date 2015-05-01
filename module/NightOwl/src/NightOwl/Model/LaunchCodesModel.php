@@ -76,18 +76,66 @@ class LaunchCodesModel
     }
 	
 	/**
-	 * Create a Launch Code
+	 * Create a new launch code in both Consul and the MongoDB.
+	 *
+	 * TODO: Create in MongoDB
+	 *
+	 * Params:
+	 *		$key           : the Launch Code Key
+	 *		$restriction   : the restriction type (eg "boolean")
+	 *		$value 		   : the value associated with the restriction (eg "true")
+	 *		$description   : a description of the Launch Code
+	 *		$availableToJS : true or false - whether the code is available in JavaScript.
+	 *
+	 * Returns: True on success, False on failure
+	 *
+	 * Author: Calvin Rempel
+	 * Date: May 1, 2015
 	 */
-	public function createLaunchCode($key, $restriction, $value, $owner, $description, $availableToJS)
+	public function createOrEditLaunchCode($key, $restriction, $value, $owner, $description, $availableToJS)
 	{
-		return $this->createInConsul($key, $restriction, $value);
+		/*
+			IF LAUNCH CODE ALREADY EXISTS
+				EDIT LAUNCH CODE
+			ELSE
+				CREATE LAUNCH CODE
+		 */
+		return $this->setInConsul($key, $restriction, $value);
 	}
-
+	
+	/**
+	 * Delete a Launch Code from Consul (and eventually MongoDB).
+	 *
+	 * TODO: DELETE from MongoDB
+	 *
+	 * Params:
+	 *		$key : the key of the launch code to delete.
+	 *
+	 * Returns: True on success, False on failure.
+	 *
+	 * Author: Calvin Rempel
+	 * Date: May 1, 2015
+	 */
+	public function deleteLaunchCode($key)
+	{
+		$url = $this->getConsulKVUrl() . $key;
+		$status = 0;
+		
+		// Attempt to Delete from Consul
+		$this->doCurlRequest($url, $status, 'DELETE');
+		
+		// Return true on success / false on failure
+		if ($status == self::CONSUL_SUCCESS_CODE)
+			return true;
+		
+		return false;
+	}
+	
     /**
      * Gets the metadata associated with each code in the list and adds it to
      * the code in the array.
-     *
-     *      !!!   --- CURRENTLY USES DUMMY DATA ---   !!! 
+	 *
+	 * 
      *
      * Params:
      *      $codes : the array of codes (which contains at least the key "Key").
@@ -160,9 +208,42 @@ class LaunchCodesModel
     }
 	
 	/**
-	 * 
+	 * Edit an existing launch code in both Consul and the MongoDB.
+	 *
+	 * TODO: Edit in MongoDB
+	 *
+	 * Params:
+	 *		$key           : the Launch Code Key
+	 *		$restriction   : the restriction type (eg "boolean")
+	 *		$value 		   : the value associated with the restriction (eg "true")
+	 *		$description   : a description of the Launch Code
+	 *		$availableToJS : true or false - whether the code is available in JavaScript.
+	 *
+	 * Returns: True on success, False on failure
+	 *
+	 * Author: Calvin Rempel
+	 * Date: May 1, 2015
 	 */
-	private function createInConsul($key, $restriction, $value)
+	private function editLaunchCode($key, $restriction, $value, $description, $avilableToJS)
+	{
+			return $this->setInConsul($key, $restriction, $value);
+	}
+	
+	/**
+	 * Set the value of the key in the Consul data store. If the key does not
+	 * currently exist, it will be created.
+	 *
+	 * Params:
+	 *		$key 		 : the Launch Code key
+	 *		$restriction : the restriction type of the code (eg "boolean")
+	 *		$value		 : the value associated with the restriction (eg "true")
+	 *
+	 * Returns: True if successfully set, False on failure.
+	 *
+	 * Author: Calvin Rempel
+	 * Date: April 1, 2015
+	 */
+	private function setInConsul($key, $restriction, $value)
 	{
 		// Create the value to store in Consul
 		$consulData = '{
