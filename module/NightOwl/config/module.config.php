@@ -2,11 +2,11 @@
 
 namespace NightOwl;
 
-
 return array(
      'controllers' => array(
          'invokables' => array(
              'NightOwl\Controller\AuthRest' => 'NightOwl\Controller\AuthRestController',
+             'NightOwl\Controller\LaunchCodes' => 'NightOwl\Controller\LaunchCodesController',
          ),
      ),
      'router' => array(
@@ -24,6 +24,15 @@ return array(
                      ),
                  ),
              ),
+             'codes' => array(
+                 'type'    => 'segment',
+                 'options' => array(
+                     'route' =>  '/codes[/:dc][/:prefix][/:token][/:filterBy][/:filter]',
+                     'defaults' => array(
+                         'controller' => 'NightOwl\Controller\LaunchCodes',
+                     ),
+                 ),
+            ),
          ),
      ),
      'view_manager' => array(
