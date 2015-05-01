@@ -20,7 +20,7 @@ class LaunchCodesController extends AbstractRestfulController
 {
     /* Constants that define the available filter types. */
     const FILTER_BY_KEY = 'Key';
-    const FILTER_BY_VALUE = 'VALUE';
+    const FILTER_BY_VALUE = 'Value';
 
     /**
      * Retrieve the list of all Launch Codes with their data that matches the
