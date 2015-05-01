@@ -33,6 +33,15 @@ return array(
                      ),
                  ),
             ),
+			'createTemp' => array(
+                 'type'    => 'segment',
+                 'options' => array(
+                     'route' =>  '/createTemp[/:key]',
+                     'defaults' => array(
+                         'controller' => 'NightOwl\Controller\LaunchCodes',
+                     ),
+                 ),
+            ),
          ),
      ),
      'view_manager' => array(
