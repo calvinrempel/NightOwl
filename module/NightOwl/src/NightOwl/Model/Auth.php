@@ -21,10 +21,9 @@ class Auth {
     
     public function __construct()
     {
+        $config = $this->getConfig();
         $dbn = 'nightowl';
-        include('config/autoload/local.php.dist');
-        $m = new MongoClient($dbname);
-        //var_dump( $m->getHosts() );
+        $m = new MongoClient($config['dbaccess']);
         $this->db = $m->$dbn;
         $this->db->Auth;
         
@@ -52,6 +51,6 @@ class Auth {
      */
     private function getConfig()
     {
-        include('config/autoload/local.php.dist');
+        return include 'config/autoload/local.php';
     }
 }
