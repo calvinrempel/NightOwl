@@ -14,14 +14,16 @@ Required Software
 Configuration
 -------------
 **config/autoload/local.php**
-```return array(
+```PHP
+return array(
     'dbaccess' => 'mongodb://{user}:{pass}@{host}:{port}/{collection}'
-);```
+);
+```
 
 **User Format (in mongo *Auth* collection)**
 
 Users are located in the Auth collection using this format:
-```
+```JSON
 {
     "user": "{username}",
     "pass": "{plain_text_pass}",
