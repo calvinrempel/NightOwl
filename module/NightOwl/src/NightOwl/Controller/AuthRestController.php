@@ -12,7 +12,19 @@ class AuthRestController extends AbstractRestfulController
 {
     public function get($id)
     {
-        return new \Zend\View\Model\JsonModel(array('status'=> $id, 'pw' => $this->params('pw')));
+        $user = $id;
+        $pass = $this->params('pw');
+        
+        if(strlen($pass) > 3 )
+            return new \Zend\View\Model\JsonModel(array('status' => true, 'key'=> '123fakekey'));
+        else {
+            return new \Zend\View\Model\JsonModel(array('status' => false));
+        }
+    }
+    
+    public function getList()
+    {
+        return new \Zend\View\Model\JsonModel(array('status' => false));
     }
     
     public function create($data)
