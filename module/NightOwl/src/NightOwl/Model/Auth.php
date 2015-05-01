@@ -8,7 +8,7 @@
 
 namespace NightOwl\Model;
 
-use Mongo;
+use MongoClient;
 use Zend\Cache\Storage\Adapter\MongoDB;
 
 /**
@@ -17,20 +17,41 @@ use Zend\Cache\Storage\Adapter\MongoDB;
  * @author Marc
  */
 class Auth {
-    protected $mongo;
-    protected $options;
-    protected $saveHandler;
-    protected $manager;
+    protected $db;
     
     public function __construct()
     {
-        $mongo = new Mongo;
-        $options = new MongoDBOptions(array(
-           'database'   => 'nightowl',
-           'collection' => 'nightowl'
-        ));
+        $dbn = 'nightowl';
+        include('config/autoload/local.php.dist');
+        $m = new MongoClient($dbname);
+        //var_dump( $m->getHosts() );
+        $this->db = $m->$dbn;
+        $this->db->Auth;
         
-        $saveHandler = new MongoDB($mongo, $options);
-        $manager     = new SessionManager();
+        
+    }
+    
+    public function validate($user, $pass)
+    {
+        $user = array('user' => $user);
+        
+        $user2 = $this->db->Auth->findOne($user);
+        
+        if($user2['pass'] === $pass)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    /**
+     * I don't understand how I'm supposed to get this any other way.
+     */
+    private function getConfig()
+    {
+        include('config/autoload/local.php.dist');
     }
 }
