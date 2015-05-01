@@ -5,6 +5,30 @@ Introduction
 ------------
 An administration panel for Hootsuite's Dark Launch Codes.
 
+Required Software
+-----------------
+- PHP
+- MongoDB
+- MongoDB PHP Driver
+
+Configuration
+-------------
+**config/autoload/local.php**
+return array(
+    'dbaccess' => 'mongodb://<user>:<pass>@<host>:<port>/<collection>'
+);
+
+**User Format**
+Users are located in the auth collection using this format:
+{
+    "user": "{username}",
+    "pass": "{plain_text_pass}",
+    "key": "",
+    "keyTTL": ""
+}
+
+* This format is temporary it is assumed that it will be changed at a later date to something more secure.
+
 Web Server Setup
 ----------------
 
