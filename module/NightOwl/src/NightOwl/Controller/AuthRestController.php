@@ -24,12 +24,13 @@ class AuthRestController extends AbstractRestfulController
         $user = $id;
         $pass = $this->params('pw');
         
-        if($key = $this->auth->validate($user, $pass))
+        if($key = $this->auth->login($user, $pass))
         {
             return new \Zend\View\Model\JsonModel(array('status' => true, 'key'=> $key));
         }
         else 
         {
+            $this->response->setStatusCode(401);
             return new \Zend\View\Model\JsonModel(array('status' => false));
         }
     }

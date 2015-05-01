@@ -9,7 +9,7 @@
 namespace NightOwl\Model;
 
 use MongoClient;
-use Zend\Cache\Storage\Adapter\MongoDB;
+
 
 /**
  * Auth abstracts OAuth to interface with MongoDB
@@ -25,12 +25,10 @@ class Auth {
         $dbn = 'nightowl';
         $m = new MongoClient($config['dbaccess']);
         $this->db = $m->$dbn;
-        $this->db->Auth;
-        
-        
+        $this->db->Auth;  
     }
     
-    public function validate($user, $pass)
+    public function login($user, $pass)
     {
         $user = array('user' => $user);
         
@@ -53,8 +51,28 @@ class Auth {
         }
         else
         {
+            
             return false;
         }
+    }
+    
+    public function auth($key)
+    {
+        $token = array('key' => $key);
+        if(($user = $this->db->Auth->findOne($token)) === NULL )
+        {
+            return false;
+        }
+        if( $user['keyTTL'] < time(0) )
+        {
+            $user['key'] = '';
+            $this->db->Auth->update($key, $user);
+            
+            return false;
+        }
+        
+        return true;
+        
     }
     
     /**
@@ -62,6 +80,6 @@ class Auth {
      */
     private function getConfig()
     {
-        return include 'config/autoload/local.php';
+        return include __DIR__ . '../../../../../../config/autoload/local.php';
     }
 }
