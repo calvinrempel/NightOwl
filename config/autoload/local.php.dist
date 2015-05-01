@@ -11,4 +11,6 @@
  * credentials from accidentally being committed into version control.
  */
 
-$dbname = 'mongodb://nightowl:N0L4mm45!@ds031792.mongolab.com:31792/nightowl';
+return array(
+    'dbaccess' => ''
+);
