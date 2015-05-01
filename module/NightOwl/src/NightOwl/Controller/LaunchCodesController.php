@@ -11,7 +11,10 @@ use NightOwl\Model\LaunchCodesModel;
  *
  * Specifically, it provides the following endpoints:
  *    GET:
- *          /nightowl/codes/{token}/{datacentre}/{prefix}[/{filterBy}/{filter}]
+ *          /codes/{token}/{datacentre}/{prefix}[/{filterBy}/{filter}]
+ *
+ *	  POST:
+ *			/createTemp/{key}		body contains { "restriction" : "__", "value" : "__"}
  *
  * Author: Calvin Rempel
  * Date: April 29, 2015
@@ -21,7 +24,8 @@ class LaunchCodesController extends AbstractRestfulController
     /* Constants that define the available filter types. */
     const FILTER_BY_KEY = 'Key';
     const FILTER_BY_VALUE = 'Value';
-
+	const HARD_OUTPUT_LIMIT = 100;
+	
     /**
      * Retrieve the list of all Launch Codes with their data that matches the
      * constraints provided through the query string parameters.
@@ -76,6 +80,19 @@ class LaunchCodesController extends AbstractRestfulController
      */
     public function create($data)
     {
+		// Retrieve Code parameters
+		$key         = $this->params('key');
+        $restriction = $data['restriction'];
+        $value       = $data['value'];
+
+		// Request Code Creation on Server
+		$codeProvider = new LaunchCodesModel();
+		if ( $codeProvider->createLaunchCode($key, $restriction, $value, '', '' , '') )
+		{
+			return new \Zend\View\Model\JsonModel(array('status' => true));
+		}
+		
+		return new \Zend\View\Model\JsonModel(array('status' => false));
     }
 
     /**

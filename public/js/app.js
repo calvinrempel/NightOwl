@@ -28,5 +28,9 @@
 		$scope.msg = "LIST THE AUDITS";
 	});
 
+    app.controller('BackgroundContoller', function() {
+
+    });
+
 })();
 
