@@ -12,5 +12,5 @@
  */
 
 return array(
-    'dbaccess' => 'mongodb://nightowl:N0L4mm45!@ds031792.mongolab.com:31792/nightowl'
+    'dbaccess' => ''
 );
