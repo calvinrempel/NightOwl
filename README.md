@@ -14,9 +14,9 @@ Required Software
 Configuration
 -------------
 **config/autoload/local.php**
-return array(
+```return array(
     'dbaccess' => 'mongodb://{user}:{pass}@{host}:{port}/{collection}'
-);
+);```
 
 **User Format (in mongo *Auth* collection)**
 
