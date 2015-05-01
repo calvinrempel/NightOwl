@@ -1,4 +1,6 @@
 {
+	"API_URL":"http://localhost/Nightowl/public",
+
 	"restrictions" : [
 		"boolean",
 		"member_list",

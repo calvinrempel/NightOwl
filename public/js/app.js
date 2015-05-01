@@ -8,6 +8,9 @@
 		// Load configuration data
 		loadConfig(function(data){
 			$scope.config = data;
+			loadCodes(function(data){
+				$scope.launchCodes = data;
+			}, $scope.config.API_URL, null);
 		});
 
 	});
@@ -19,11 +22,6 @@
 	app.controller('ListController', function($scope, $http) {
 		// Default region is west
 		$scope.region = "west";
-
-		// Load the launch codes
-		loadCodes(function(data){
-			$scope.launchCodes = data;
-		});
 
 		$scope.filterResults = function(){
 			loadCodes(function(data){
@@ -40,10 +38,18 @@
 					}
 				}
 
-			});
-
-
+			}, $scope.config.API_URL, $scope.getFilters());
 		};
+
+		$scope.getFilters = function(){
+			var filters = {
+				dc : $scope.dataCenter,
+				prefix : $scope.prefix,
+				filterBy : $scope.filterBy,
+				filter : $scope.filter,
+			}
+			return filters;
+		}
 
 	});
 
@@ -54,20 +60,34 @@
 })();
 
 function loadConfig(_callback){
-	var url = makeURL("config");
-	$.getJSON(url, function(json, textStatus) {
+	$.getJSON("js/config.json", function(json, textStatus) {
+		console.log(json)
 		_callback(json);
 	});
 }
 
-function loadCodes(_callback){
-	var url = makeURL("codes");
+function loadCodes(_callback, baseURL, filters){
+	if( !filters ){
+		filters = { dc : "DC1" };
+	}
+	var url = makeURL(baseURL, filters);
 	$.getJSON(url, function(json, textStatus) {
+		console.log(json);
 		_callback(json);
 	});
 }
 
-function makeURL(string){
-	return "js/" + string + ".json";
+function makeURL(baseURL, filters){
+	var url = baseURL + "/codes/" + getToken() + "/" + filters.dc;
+	if( filters.prefix ){
+		url = url + "/" + filters.prefix;
+	}
+	if( filters.filterBy ){
+		url = url + "/" + filters.filterBy + "/" + filters.filter;
+	}
+	return url;
 }
 
+function getToken(){
+	return "boobs";
+}
