@@ -16,6 +16,7 @@ class LaunchCodesModel
     /* Configuration settings for Consul (May be moved to config file) */
     const CONSUL_HOST = 'localhost';
     const CONSUL_PORT = 8500;
+	const CONSUL_APP_KEY = 'MRYSf5vXdSiHJZ35FDOIaQ==';
 
     /* HTTP Statuses that indicate Consul response types. */
     const CONSUL_SUCCESS_CODE = 200;
@@ -73,6 +74,14 @@ class LaunchCodesModel
         if (!$result)
             return FALSE;
     }
+	
+	/**
+	 * Create a Launch Code
+	 */
+	public function createLaunchCode($key, $restriction, $value, $owner, $description, $availableToJS)
+	{
+		return $this->createInConsul($key, $restriction, $value);
+	}
 
     /**
      * Gets the metadata associated with each code in the list and adds it to
@@ -135,6 +144,8 @@ class LaunchCodesModel
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $verb);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/text','Content-Length: ' . strlen($body)));
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
         curl_setopt($ch, CURLOPT_HEADER, FALSE);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 
@@ -147,4 +158,31 @@ class LaunchCodesModel
 
         return $result;
     }
+	
+	/**
+	 * 
+	 */
+	private function createInConsul($key, $restriction, $value)
+	{
+		// Create the value to store in Consul
+		$consulData = '{
+			"restriction" : "' . $restriction . '",
+			"value" : "' . $value . '"
+		}';
+		
+		// Create the URL to PUT to.
+		$url = $this->getConsulKVUrl() . $key;
+		$status;
+		
+		// Make creation request to Consul
+		$result = $this->doCurlRequest($url, $status, 'PUT', $consulData);
+		
+		// Return TRUE on success, FALSE on failure.
+		if ($status == self::CONSUL_SUCCESS_CODE && $result == 'true')
+		{
+			return true;
+		}
+		
+		return false;
+	}
 }
