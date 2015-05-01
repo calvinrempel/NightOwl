@@ -48,8 +48,12 @@
 				<form id="filter">
 					<div id="tree">
 						darklaunch / 
-						<select ng-model="root" ng-options="key for (key, value) in config.tree"></select>
-						<select ng-model="branch1" ng-options="key for (key, value) in root"></select>
+						<select ng-model="tree" ng-options="tree.name for tree in config.trees" ng-change="filterResults()">
+							<option value="">All Trees</option>
+						</select>
+						<span ng-show="tree.subtrees">/ <select ng-init="subtree = tree.subtree[0]" ng-model="subtree" ng-options="subtree for subtree in tree.subtrees" ng-change="filterResults()">
+							<option value="">All Subtrees</option>
+						</select></span>
 					</div>
 					<input style="clear:both" type="text" name="search">
 					<input type="submit" value="Search">
