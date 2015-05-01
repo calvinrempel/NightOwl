@@ -14,9 +14,10 @@ return array(
              'login' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/login[/:id]',
+                     'route'    => '/login[/:id][/:pw]',
                      'constraints' => array(
                          'id' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                         'pw' => '[a-zA-Z][a-zA-Z0-9_-]*',
                      ),
                      'defaults' => array(
                          'controller' => 'NightOwl\Controller\AuthRest',
@@ -26,8 +27,8 @@ return array(
          ),
      ),
      'view_manager' => array(
-         'template_path_stack' => array(
-             'login' => __DIR__ . '/../view',
-         ),
-    )
+         'strategies' => array(
+           'ViewJsonStrategy',
+        ),
+    ),
 );

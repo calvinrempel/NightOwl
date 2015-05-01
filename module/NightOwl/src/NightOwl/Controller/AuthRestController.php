@@ -12,7 +12,7 @@ class AuthRestController extends AbstractRestfulController
 {
     public function get($id)
     {
-        echo 'dave';
+        return new \Zend\View\Model\JsonModel(array('status'=> $id, 'pw' => $this->params('pw')));
     }
     
     public function create($data)
@@ -28,10 +28,5 @@ class AuthRestController extends AbstractRestfulController
     public function delete($id)
     {
         
-    }
-    
-    public function index()
-    {
-        echo 'pineapple';
     }
 }

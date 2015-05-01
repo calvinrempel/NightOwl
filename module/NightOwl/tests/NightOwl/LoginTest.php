@@ -6,14 +6,14 @@
 
 namespace NightOwlTest;
 
-use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
+use Zend\Test\PHPUnit\Controller\AbstractControllerTestCase;
 
 /**
  * Description of LoginTest
  *
  * @author Marc
  */
-class LoginTest extends AbstractHttpControllerTestCase
+class LoginTest extends AbstractControllerTestCase
 {
     public function setUp()
     {
@@ -22,8 +22,8 @@ class LoginTest extends AbstractHttpControllerTestCase
     
     function testLogin()
     {
-        $this->getRequest()->setMethod('GET');
-        $this->dispatch('/login/id/pw');
+        //$this->getRequest()->setMethod('GET');
+        $this->dispatch('/login/id');
         $this->assertResponseStatusCode(200);
     }
 }
