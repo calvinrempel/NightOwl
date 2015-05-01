@@ -1,31 +1,34 @@
 <?php
+
+namespace NightOwl;
+
+
 return array(
-	'controllers' => array(
-		'invokables' => array(
-		'NightOwl\Controller\NightOwl' => 'NightOwl\Controller\Codes',
-		),
-	),
-	'router' => array(
+     'controllers' => array(
+         'invokables' => array(
+             'NightOwl\Controller\AuthRest' => 'NightOwl\Controller\AuthRestController',
+         ),
+     ),
+     'router' => array(
          'routes' => array(
-             'nightowl' => array(
+             'login' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/nightowl[/:action][/:id]',
+                     'route'    => '/login[/:id][/:pw]',
                      'constraints' => array(
-                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                         'id'     => '[0-9]+',
+                         'id' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                         'pw' => '[a-zA-Z][a-zA-Z0-9_-]*',
                      ),
                      'defaults' => array(
-                         'controller' => 'Codes',
-						 '__NAMESPACE__' => 'NightOwl',
+                         'controller' => 'NightOwl\Controller\AuthRest',
                      ),
                  ),
              ),
          ),
      ),
-	'view_manager' => array(
-		'template_path_stack' => array(
-		'album' => __DIR__ . '/../view',
-		),
-	),
+     'view_manager' => array(
+         'strategies' => array(
+           'ViewJsonStrategy',
+        ),
+    ),
 );

@@ -6,14 +6,9 @@
 		"percent"
 	],
 
-	"tree" : {
-		"dashboard":["core"],
-		"service":["social-communication"]
-	},
-	
-	"filters":[
-		"key",
-		"value",
-		"date"
+	"trees" : [
+		{"name":"dashboard", "subtrees":["core"]},
+		{"name":"service", "subtrees":["social-communication"]},
+		{"name":"test"}
 	]
 }
