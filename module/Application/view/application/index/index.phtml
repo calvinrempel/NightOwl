@@ -1,4 +1,5 @@
-<div ng-controller="MainController" >
+
+<div ng-controller="MainController" ng-class="{ loginPanel:selected ==='login', listPanel:selected === 'list' || 'audit'}">
 	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="container">
 			<div class="navbar-header">
@@ -17,6 +18,7 @@
 			</div><!--/.nav-collapse -->
 		</div>
 	</nav>
+    <div>
 	<div class="container">
 
 		<div class="container">
@@ -32,7 +34,7 @@
 						<td>Password:</td> 
 						<td><input type="password" name="password"></td>
 					</tr>
-					<tr><td><input type="submit" value="Login"></td></tr>
+					<tr><td></td><td><input type="submit" value="Login" class="btnSubmit"></td></tr>
 				</form>
 				</table>
 			</div>
@@ -92,4 +94,5 @@
 			</div>
 		</div>
 	</div>
+    </div>
 </div>
