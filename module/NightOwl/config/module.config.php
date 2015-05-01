@@ -27,7 +27,7 @@ return array(
              'codes' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route' =>  '/codes[/:dc][/:prefix][/:token][/:filterBy][/:filter]',
+                     'route' =>  '/codes[/:token][/:dc][/:prefix][/:filterBy][/:filter]',
                      'defaults' => array(
                          'controller' => 'NightOwl\Controller\LaunchCodes',
                      ),
