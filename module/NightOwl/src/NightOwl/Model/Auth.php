@@ -34,11 +34,22 @@ class Auth {
     {
         $user = array('user' => $user);
         
-        $user2 = $this->db->Auth->findOne($user);
+        $userfound = $this->db->Auth->findOne($user);
         
-        if($user2['pass'] === $pass)
+        if($userfound == NULL)
         {
-            return true;
+            return false;
+        }
+        
+        if($userfound['keyTTL'] < time(0))
+            $userfound['key'] = substr(sha1(time(0) . rand()), 20);
+        $userfound['keyTTL'] = time(0) + 60 * 60;   // One hour
+        
+        $this->db->Auth->update($user, $userfound);
+        
+        if($userfound['pass'] === $pass)
+        {
+            return $userfound['key'];
         }
         else
         {
