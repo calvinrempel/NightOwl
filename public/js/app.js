@@ -57,6 +57,10 @@
 		$scope.msg = "LIST THE AUDITS";
 	});
 
+    app.controller('BackgroundContoller', function() {
+
+    });
+
 })();
 
 function loadConfig(_callback){
