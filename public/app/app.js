@@ -23,6 +23,7 @@
 		// Default region is west
 		$scope.region = "west";
 
+		// Should filter the code results based on the selected prefix
 		$scope.filterResults = function(){
 			loadCodes(function(data){
 				$scope.launchCodes = data;
@@ -41,6 +42,7 @@
 			}, $scope.config.API_URL, $scope.getFilters());
 		};
 
+		// Gets the data center, prefix and filter type + expression
 		$scope.getFilters = function(){
 			var filters = {
 				dc : $scope.dataCenter,
@@ -51,6 +53,38 @@
 			return filters;
 		}
 
+		// Switches inputs between enabled and disabled
+		$scope.switchMode = function(parent, child){
+			var inputs = $scope.getInputs(parent, child);
+			inputs.prop('disabled', !inputs.prop('disabled'));
+		}
+
+		// Returns true if the current row is editable
+		$scope.inEditMode = function(parent, child){
+			var input = $scope.getInputs(parent, child).first()
+			return !input.prop('disabled');
+		}
+
+		// Gets the inputs, select box, and textarea associated with the code
+		$scope.getInputs = function(parent, child){
+			var selector = "tr#code-" + parent + "-" + child;
+			return $(selector).find("td input, td select, td textarea");
+		}
+
+		// TODO: Save the code using the API		
+		$scope.saveCode = function(code){
+			console.log("SAVE THE CODE")
+		}
+
+		// TODO: Delete the code using the API (MAKE SURE TO CONFIRM FIRST)
+		$scope.deleteCode = function(code){
+			console.log("DELETE THE CODE")
+		}
+
+		// TODO: Discard the changes made to the code
+		$scope.discardChanges = function(code){
+			console.log("DISCARD THE CHANGES")
+		}
 	});
 
 	app.controller('AuditController', function($scope, $http) {
@@ -63,24 +97,28 @@
 
 })();
 
+// Load the configuration file
 function loadConfig(_callback){
-	$.getJSON("js/config.json", function(json, textStatus) {
-		console.log(json)
+	$.getJSON("js/app/config.json", function(json, textStatus) {
 		_callback(json);
 	});
 }
 
+// Load the launch codes
 function loadCodes(_callback, baseURL, filters){
 	if( !filters ){
 		filters = { dc : "DC1" };
 	}
-	var url = makeURL(baseURL, filters);
+
+	//var url = makeURL(baseURL, filters);
+	var url = "js/app/codes.json";
+
 	$.getJSON(url, function(json, textStatus) {
-		console.log(json);
 		_callback(json);
 	});
 }
 
+// Make the API URL
 function makeURL(baseURL, filters){
 	var url = baseURL + "/codes/" + getToken() + "/" + filters.dc;
 	if( filters.prefix ){
@@ -92,6 +130,7 @@ function makeURL(baseURL, filters){
 	return url;
 }
 
+// TODO: get security token
 function getToken(){
 	return "boobs";
 }
