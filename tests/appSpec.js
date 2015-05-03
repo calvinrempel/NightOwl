@@ -1,27 +1,35 @@
 // Tests here
 
-describe('List Controller', function() {
-  beforeEach(module('NightOwl'));
+describe('Night Owl', function() {
 
+  // Angular Controller service needed to instantiate a controller
   var $controller;
+
+  // Load the module
+  beforeEach(module('NightOwl'));
 
   beforeEach(inject(function(_$controller_){
     // The injector unwraps the underscores (_) from around the parameter names when matching
     $controller = _$controller_;
   }));
 
-  describe('$scope.region', function() {
-    var $scope, controller;
 
-    beforeEach(function() {
-      $scope = {};
-      controller = $controller('ListController', { $scope: $scope });
-    });
 
-    it('should be west', function() {
-      expect($scope.region).toEqual('west');
+  describe('Launch code list controller', function() {
+
+    describe('Data center', function() {
+      var $scope, controller;
+
+      beforeEach(function() {
+        $scope = {};
+        controller = $controller('ListController', { $scope: $scope });
+      });
+
+      it('should default to west', function() {
+        expect($scope.region).toEqual('west');
+      });
+
     });
 
   });
-
 });

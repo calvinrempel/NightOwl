@@ -5,13 +5,15 @@
 		// Start on the login page
 		$scope.selected = 'login';
 
+		$scope.initialize = function(configData){
+			$scope.config = configData;
+			loadCodes(
+				function(data){$scope.launchCodes = data;} 
+				, null);
+		};
+
 		// Load configuration data
-		loadConfig(function(data){
-			$scope.config = data;
-			loadCodes(function(data){
-				$scope.launchCodes = data;
-			}, $scope.config.API_URL, null);
-		});
+		loadConfig( $scope.initialize );
 
 	});
 
@@ -22,6 +24,9 @@
 	app.controller('ListController', function($scope, $http) {
 		// Default region is west
 		$scope.region = "west";
+
+		// Create mode is off
+		$scope.createMode = false;
 
 		// Should filter the code results based on the selected prefix
 		$scope.filterResults = function(){
@@ -53,13 +58,13 @@
 			return filters;
 		}
 
-		// Switches inputs between enabled and disabled
-		$scope.switchMode = function(parent, child){
+		// Toggles inputs for given code between enabled and disabled
+		$scope.toggleEditMode = function(parent, child){
 			var inputs = $scope.getInputs(parent, child);
 			inputs.prop('disabled', !inputs.prop('disabled'));
 		}
 
-		// Returns true if the current row is editable
+		// Returns true if the current code is editable
 		$scope.inEditMode = function(parent, child){
 			var input = $scope.getInputs(parent, child).first()
 			return !input.prop('disabled');
@@ -85,6 +90,33 @@
 		$scope.discardChanges = function(code){
 			console.log("DISCARD THE CHANGES")
 		}
+
+		$scope.createCode = function(code){
+			var url = $scope.config.API_URL + "/codes/" + getToken() + "/" + code.key
+
+			var restriction, value, description, availableToJS;
+
+			restriction = code.restriction || 'boolean';
+			value = (code.value === "true");
+			description = code.description;
+			if(code.availableToJS){
+				availableToJS = 1;
+			}else{
+				availableToJS = 0;
+			}
+
+			var newCode = {
+				restriction : restriction,
+				value : value,
+				description : description,
+				availableToJS : availableToJS
+			};
+
+			$http.post(url, newCode).
+			  success(function(data, status, headers, config) {
+			    console.log(newCode)
+			  });
+		}
 	});
 
 	app.controller('AuditController', function($scope, $http) {
@@ -97,12 +129,12 @@
 
 })();
 
-// Load the configuration file
+		// Load the configuration file
 function loadConfig(_callback){
-	$.getJSON("js/app/config.json", function(json, textStatus) {
+	$.getJSON("app/config.json", function(json, textStatus) {
 		_callback(json);
 	});
-}
+};
 
 // Load the launch codes
 function loadCodes(_callback, baseURL, filters){
@@ -111,7 +143,7 @@ function loadCodes(_callback, baseURL, filters){
 	}
 
 	//var url = makeURL(baseURL, filters);
-	var url = "js/app/codes.json";
+	var url = "app/codes.json";
 
 	$.getJSON(url, function(json, textStatus) {
 		_callback(json);
@@ -119,8 +151,8 @@ function loadCodes(_callback, baseURL, filters){
 }
 
 // Make the API URL
-function makeURL(baseURL, filters){
-	var url = baseURL + "/codes/" + getToken() + "/" + filters.dc;
+function makeURL(filters){
+	var url = $scope.config.API_URL + "/codes/" + getToken() + "/" + filters.dc;
 	if( filters.prefix ){
 		url = url + "/" + filters.prefix;
 	}
@@ -132,5 +164,5 @@ function makeURL(baseURL, filters){
 
 // TODO: get security token
 function getToken(){
-	return "boobs";
+	return "token";
 }
