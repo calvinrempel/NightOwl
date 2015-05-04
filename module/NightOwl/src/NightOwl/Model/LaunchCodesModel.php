@@ -76,7 +76,9 @@ class LaunchCodesModel
 
         // Successfully retrieved data from Consul
         if ($httpCode == self::CONSUL_SUCCESS_CODE)
-            return $result;
+        {
+            return json_decode(($result), true);
+        }
 
         // An error occurred or the set is empty
         if (!$result)
@@ -85,8 +87,6 @@ class LaunchCodesModel
 
 	/**
 	 * Create a new launch code in both Consul and the MongoDB.
-	 *
-	 * TODO: Get Username of Current User and fillin "Owner"
 	 *
 	 * Params:
 	 *		$key           : the Launch Code Key
@@ -160,10 +160,10 @@ class LaunchCodesModel
 
 		// Return true on success / false on failure
 		if ($status == self::CONSUL_SUCCESS_CODE)
-        {
-            $this->db->LaunchCodes->remove(array('key' => $key));
-			return true;
-        }
+    {
+        $this->db->LaunchCodes->remove(array('key' => $key));
+        return true;
+    }
 
 		return false;
 	}
@@ -251,8 +251,8 @@ class LaunchCodesModel
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $verb);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/text','Content-Length: ' . strlen($body)));
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+	      curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/text','Content-Length: ' . strlen($body)));
+	      curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
         curl_setopt($ch, CURLOPT_HEADER, FALSE);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 
@@ -287,7 +287,7 @@ class LaunchCodesModel
         $consulData = new \stdClass();
         $consulData->restriction  = $restriction;
         $consulData->value        = $value;
-        $consulData->availbleToJS = $availableToJS;
+        $consulData->availableToJS = $availableToJS;
 
 		// Create the URL to PUT to.
 		$url = $this->getConsulKVUrl() . $key;
