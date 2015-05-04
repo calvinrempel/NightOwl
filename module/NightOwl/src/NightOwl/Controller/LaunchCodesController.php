@@ -15,7 +15,7 @@ use NightOwl\Model\Auth;
  *          /codes/{token}/{datacentre}/{prefix}[/{filterBy}/{filter}]
  *
  *	  POST:
- *			/codes/{token}/{key}		body contains { "restriction" : "__", "value" : "__"}
+ *			/codes/{token}/{key}
  *				BODY:
  *					{
  *						"restriction"   : "___",
@@ -87,7 +87,9 @@ class LaunchCodesController extends AbstractRestfulController
 
         // Retrieve the applicable codes from the model.
         $codeProvider = new LaunchCodesModel();
-        $codes = json_decode($codeProvider->getLaunchCodes($dc, $prefix, true));
+        $codes = $codeProvider->getLaunchCodes($dc, $prefix, true);
+
+        print_r($codes);
 
         // If the user has asked to filter by a valid parameter, filter the results.
         if ($this->isValidFilter($filterBy) && $filter)
@@ -332,8 +334,6 @@ class LaunchCodesController extends AbstractRestfulController
      * Returns: The array of codes in the format:
      *              [{key, restriction, value, (metadata to come!)}...]
      *
-     * TODO: Get restriction and value from Value stored in Consul.
-     *
      * Author: Calvin Rempel
      * Date: April 29, 2015
      */
@@ -341,15 +341,22 @@ class LaunchCodesController extends AbstractRestfulController
     {
         $output = array();
 
+        // If there are no codes, return an empty array.
+        if (!is_array($codes) || count($codes) == 0)
+        {
+            return $output;
+        }
+
         // Convert each code into an associative array with nice names and only
         // relevant data.
         foreach ($codes as $code)
         {
+            $value = json_decode(base64_decode($code['Value']), true);
             $temp = array(
-                'key'           => $code->Key,
-                'restriction'   => 'boolean',             // Must be retrieved from value JSON
-                'value'         => 'true',                // Must be retrieved from value JSON
-                'availableToJS' => 'false'                // Must be retrieved from value JSON
+                'key'           => $code['Key'],
+                'restriction'   => $value['restriction'],
+                'value'         => $value['value'],
+                'availableToJS' => $value['availableToJS']
             );
 
             $output[] = $temp;
