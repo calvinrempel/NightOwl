@@ -123,36 +123,11 @@
 		$scope.msg = "LIST THE AUDITS";
 	});
 
-    app.controller('BackgroundController', function() {
-
-    });
-
-    //LoginModal functions
-    app.run(function ($rootScope) {
-
-        $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
-            var requireLogin = toState.data.requireLogin;
-
-            if (requireLogin && typeof $rootScope.currentUser === 'undefined') {
-                event.preventDefault();
-
-                loginModal()
-                    .then(function () {
-                        return $state.go(toState.name. toParams);
-                    })
-                    .catch(function () {
-                        return $state.go('/');
-                    });
-            }
-        });
-    });
-
-
 })();
 
 		// Load the configuration file
 function loadConfig(_callback){
-	$.getJSON("app/config.json", function(json, textStatus) {
+	$.getJSON("app/json/config.json", function(json, textStatus) {
 		_callback(json);
 	});
 };
@@ -164,7 +139,7 @@ function loadCodes(_callback, baseURL, filters){
 	}
 
 	//var url = makeURL(baseURL, filters);
-	var url = "app/codes.json";
+	var url = "app/json/codes.json";
 
 	$.getJSON(url, function(json, textStatus) {
 		_callback(json);
