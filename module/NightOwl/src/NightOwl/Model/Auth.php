@@ -25,7 +25,6 @@ class Auth {
         $dbn = $config['mongo']['name'];
         $m = new MongoClient($config['mongo']['url']);
         $this->db = $m->$dbn;
-        //$this->db->Auth;
     }
 
     public function login($user, $pass)
