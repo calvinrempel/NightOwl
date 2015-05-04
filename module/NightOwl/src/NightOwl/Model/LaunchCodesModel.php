@@ -115,7 +115,7 @@ class LaunchCodesModel
                 'key'         => $key,
                 'description' => $description,
                 'createdDate' => date('Y-m-d H:i:s'),
-                'owner'       => 'DummyOwner',
+                'owner'       => $owner,
             );
             $options = array('upsert' => true);
 
@@ -210,6 +210,7 @@ class LaunchCodesModel
         {
             $codeMap[$codeData['key']]['description'] = $codeData["description"];
             $codeMap[$codeData['key']]['dateCreated'] = $codeData["createdDate"];
+            $codeMap[$codeData['key']]['owner'] = $codeData["owner"];
         }
     }
 

@@ -22,6 +22,7 @@ use NightOwl\Model\Auth;
  *						"value"		    : "___",
  *						"description"   : "___",
  *						"availableToJS" : "true/false",
+ *                      "owner"         : "___",             {if not set, current user is used}
  *					}
  *
  *	  DELETE:
@@ -57,6 +58,10 @@ class LaunchCodesController extends AbstractRestfulController
      *
      * Author: Calvin Rempel
      * Date: April 30, 2015
+     *
+     * REVISIONS:
+     *      Calvin Rempel - May 3, 2015
+     *          - Added fixed output limit on result set.
      */
     public function getList()
     {
@@ -94,7 +99,7 @@ class LaunchCodesController extends AbstractRestfulController
         if (count($codes) > 0)
         {
             // Alter the structure of the codes for applicability on the client
-            $codes = $this->formatCodeOutput($codes);
+            $codes = array_slice($this->formatCodeOutput($codes), 0, self::HARD_OUTPUT_LIMIT);
 
             // Get the MetaData from the Database and add it to the output
             $codeProvider->injectMetadata($codes);
@@ -150,10 +155,16 @@ class LaunchCodesController extends AbstractRestfulController
         $value       = $data['value'];
 		$description = $data['description'];
 		$js 		 = $data['availableToJS'];
+        $owner       = '';
+
+        if (isset($data['owner']))
+            $owner = $data['owner'];
+        else
+            $owner = (new Auth())->getCurrentUser($this->params('token'));
 
 		// Request Code Modification on Server
 		$codeProvider = new LaunchCodesModel();
-		if ( $codeProvider->createorEditLaunchCode($key, $restriction, $value, '', $description, $js) )
+		if ( $codeProvider->createorEditLaunchCode($key, $restriction, $value, $owner, $description, $js) )
 		{
 			return new \Zend\View\Model\JsonModel(array('status' => true));
 		}
