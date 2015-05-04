@@ -12,5 +12,12 @@
  */
 
 return array(
-    'dbaccess' => ''
+    'mongo'       => array(
+        'url'   => 'mongodb://<name>:<pass>@<host>:<port>/nightowl',
+        'name'  => 'nightowl',
+    ),
+    'consul'   => array(
+        'host'    => 'localhost',
+        'port'    => '8500'
+    ),
 );

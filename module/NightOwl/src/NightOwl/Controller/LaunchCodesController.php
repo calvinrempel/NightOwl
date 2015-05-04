@@ -3,6 +3,7 @@ namespace NightOwl\Controller;
 
 use Zend\Mvc\Controller\AbstractRestfulController;
 use NightOwl\Model\LaunchCodesModel;
+use NightOwl\Model\Auth;
 
 /**
  * LaunchCodesController provides a RESTful API for retrieving, updating, and
@@ -14,7 +15,18 @@ use NightOwl\Model\LaunchCodesModel;
  *          /codes/{token}/{datacentre}/{prefix}[/{filterBy}/{filter}]
  *
  *	  POST:
- *			/createTemp/{key}		body contains { "restriction" : "__", "value" : "__"}
+ *			/codes/{token}/{key}		body contains { "restriction" : "__", "value" : "__"}
+ *				BODY:
+ *					{
+ *						"restriction"   : "___",
+ *						"value"		    : "___",
+ *						"description"   : "___",
+ *						"availableToJS" : "true/false",
+ *                      "owner"         : "___",             {if not set, current user is used}
+ *					}
+ *
+ *	  DELETE:
+ *			/codes/{token}/{key}
  *
  * Author: Calvin Rempel
  * Date: April 29, 2015
@@ -25,7 +37,12 @@ class LaunchCodesController extends AbstractRestfulController
     const FILTER_BY_KEY = 'Key';
     const FILTER_BY_VALUE = 'Value';
 	const HARD_OUTPUT_LIMIT = 100;
-	
+
+	/* Return HTTP status codes */
+	const RETURN_STATUS_SUCCESS = 200;
+	const RETURN_STATUS_INVALID_ARGUMENTS = 400;
+	const RETURN_STATUS_AUTH_INVALID = 401;
+
     /**
      * Retrieve the list of all Launch Codes with their data that matches the
      * constraints provided through the query string parameters.
@@ -41,15 +58,32 @@ class LaunchCodesController extends AbstractRestfulController
      *
      * Author: Calvin Rempel
      * Date: April 30, 2015
+     *
+     * REVISIONS:
+     *      Calvin Rempel - May 3, 2015
+     *          - Added fixed output limit on result set.
      */
     public function getList()
     {
+		// Verify that the user is authorized
+		$authResult = $this->verifyAuthToken();
+		if ($authResult !== true)
+		{
+			return $authResult;
+		}
+
         // Get all necessary data from the HTTP request.
-        $dc       = $this->params('dc');
-        $prefix   = $this->params('prefix');
         $token    = $this->params('token');
-        $filterBy = $this->params('filterBy');
-        $filter   = $this->params('filter');
+        $dc       = $this->params('seg1');
+        $prefix   = $this->params('seg2');
+        $filterBy = $this->params('seg3');
+        $filter   = $this->params('seg4');
+
+		// Verify the presence of the required arguments
+		if (is_null($dc))
+		{
+			return $this->prepareInvalidArgumentResponse();
+		}
 
         // Retrieve the applicable codes from the model.
         $codeProvider = new LaunchCodesModel();
@@ -65,7 +99,7 @@ class LaunchCodesController extends AbstractRestfulController
         if (count($codes) > 0)
         {
             // Alter the structure of the codes for applicability on the client
-            $codes = $this->formatCodeOutput($codes);
+            $codes = array_slice($this->formatCodeOutput($codes), 0, self::HARD_OUTPUT_LIMIT);
 
             // Get the MetaData from the Database and add it to the output
             $codeProvider->injectMetadata($codes);
@@ -76,38 +110,153 @@ class LaunchCodesController extends AbstractRestfulController
     }
 
     /**
-     * Will Be Used to Create a new Launch Code Programmatically
+     * This function creates OR updates a Launch Code.
+	 * This function is called in response to a POST request.
+	 *
+	 * Params:
+	 *		$data : the data posted to the server; must contains:
+	 *				{
+	 *					'restriction' : '__',
+	 *					'value' : '__',
+	 *					'description' : '__',
+	 *					'availableToJS' : 'true|false',
+	 *				}
+	 *
+	 * Returns: a status code in JSON if the request is OK (either true or false).
+	 *			Will return empty JSON is request is not authorized or missing parameter.
+	 *
+	 * Author: Calvin Rempel
+	 * Date: May 1, 2015
      */
     public function create($data)
     {
+		// Verify that the user is authorized
+		$authResult = $this->verifyAuthToken();
+		if ($authResult !== true)
+		{
+			return $authResult;
+		}
+
 		// Retrieve Code parameters
-		$key         = $this->params('key');
+		$key = $this->params('seg1');
+
+		// Verify the presence of the arguments
+		if (is_null($key) ||
+				!isset($data['restriction']) ||
+				!isset($data['value']) ||
+				!isset($data['description']) ||
+				!isset($data['availableToJS']))
+		{
+			return $this->prepareInvalidArgumentResponse();
+		}
+
+		// Get the parameters
         $restriction = $data['restriction'];
         $value       = $data['value'];
+		$description = $data['description'];
+		$js 		 = $data['availableToJS'];
+        $owner       = '';
 
-		// Request Code Creation on Server
+        if (isset($data['owner']))
+            $owner = $data['owner'];
+        else
+            $owner = (new Auth())->getCurrentUser($this->params('token'));
+
+		// Request Code Modification on Server
 		$codeProvider = new LaunchCodesModel();
-		if ( $codeProvider->createLaunchCode($key, $restriction, $value, '', '' , '') )
+		if ( $codeProvider->createorEditLaunchCode($key, $restriction, $value, $owner, $description, $js) )
 		{
 			return new \Zend\View\Model\JsonModel(array('status' => true));
 		}
-		
+
 		return new \Zend\View\Model\JsonModel(array('status' => false));
     }
 
-    /**
-     * Will be Used to Edit a Launch Code Programmatically.
-     */
-    public function update($id, $data)
+	/*
+     * This function Deletes a Launch Code (deleteList is used as opposed to delete to
+	 * circumvent Zend's requirement to have an ID parameter in the delete route).
+	 * This function is called in response to a Delete request.
+	 *
+	 * Returns: a status code in JSON if the request is OK (either true or false).
+	 *			Will return empty JSON is request is not authorized or missing parameter.
+	 *
+	 * Author: Calvin Rempel
+	 * Date: May 1, 2015
+	 */
+    public function deleteList()
     {
+		// Verify that the user is authorized
+		$authResult = $this->verifyAuthToken();
+		if ($authResult !== true)
+		{
+			return $authResult;
+		}
+
+		// Retrieve Code parameters
+		$key = $this->params('seg1');
+
+		// Verify presence of required parameters
+		if (is_null($key))
+		{
+			return $this->prepareInvalidArgumentResponse();
+		}
+
+		// Request Code Creation on Server
+		$codeProvider = new LaunchCodesModel();
+		if ( $codeProvider->deleteLaunchCode($key) )
+		{
+			return new \Zend\View\Model\JsonModel(array('status' => true));
+		}
+
+		return new \Zend\View\Model\JsonModel(array('status' => false));
     }
 
-    /**
-     * May(?) be used to Delete a Launch Code Programmatically.
-     */
-    public function delete($id)
-    {
-    }
+	/**
+	 * Check whether the user is authorized to perform the action.
+	 *
+	 * Returns: true if user is authorized, or an empty JSON model otherwise.
+	 *
+	 * Author: Calvin Rempel
+	 * Date: May 1, 2015
+     *
+     * REVISIONS:
+     *      Calvin Rempel - May 3, 2015
+     *          - Added auth token validity check.
+	 */
+	private function verifyAuthToken()
+	{
+		// Verify presence and validity of Auth Token
+		if (!is_null($this->params('token')))
+		{
+            $auth = new Auth();
+            $valid = $auth->auth($this->params('token'));
+
+            if ($valid)
+            {
+                return true;
+            }
+        }
+
+        // If invalid (or missing) Auth Token, return error.
+		$this->response->setStatusCode(self::RETURN_STATUS_AUTH_INVALID);
+		$this->response->setReasonPhrase('Auth Token is Required.');
+		return new \Zend\View\Model\JsonModel();
+	}
+
+	/**
+	 * Prepare the response header to indicate missing parameters.
+	 *
+	 * Returns: an empty JSON model for output.
+	 *
+	 * Author: Calvin Rempel
+	 * Date: May 1, 2015
+	 */
+	private function prepareInvalidArgumentResponse()
+	{
+		$this->response->setStatusCode(self::RETURN_STATUS_INVALID_ARGUMENTS);
+		$this->response->setReasonPhrase("Missing Required Parameters.");
+		return new \Zend\View\Model\JsonModel();
+	}
 
     /**
      * Check if a filterBy string is a valid key to filter results by.
@@ -197,9 +346,10 @@ class LaunchCodesController extends AbstractRestfulController
         foreach ($codes as $code)
         {
             $temp = array(
-                'key'         => $code->Key,
-                'restriction' => 'boolean',             // Must be retrieved from value JSON
-                'value'       => 'true',                // Must be retrieved from value JSON
+                'key'           => $code->Key,
+                'restriction'   => 'boolean',             // Must be retrieved from value JSON
+                'value'         => 'true',                // Must be retrieved from value JSON
+                'availableToJS' => 'false'                // Must be retrieved from value JSON
             );
 
             $output[] = $temp;
