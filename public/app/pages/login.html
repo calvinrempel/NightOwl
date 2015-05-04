@@ -1,15 +1,15 @@
-			<div class="row" ng-controller="LoginController">
-				<table>
-				<form>
-					<tr>
-						<td>Username:</td> 
-						<td><input type="text" name="user"></td>
-					</tr>
-					<tr>
-						<td>Password:</td> 
-						<td><input type="password" name="password"></td>
-					</tr>
-					<tr><td></td><td><input type="submit" value="Login" class="btnSubmit"></td></tr>
-				</form>
-				</table>
-			</div>
+<div class="row" ng-controller="LoginController">
+    <table>
+    <form>
+        <tr>
+            <td>Username:</td>
+            <td><input type="text" name="user" ng-model="name"></td>
+        </tr>
+        <tr>
+            <td>Password:</td>
+            <td><input type="password" name="password" ng-model="pw"></td>
+        </tr>
+        <tr><td></td><td><input type="submit" value="Login" class="btnSubmit" ng-click="login(name, pw)"></td></tr>
+    </form>
+    </table>
+</div>
