@@ -8,19 +8,19 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="<?php echo $this->url('home') ?>">Night Owl</a>
+				<a class="navbar-brand" href="/" ng-click="selected = 'login'">Night Owl</a>
 			</div>
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
-					<li><a href="#" ng-click="selected = 'list'">Dark Launch Codes</a></li>
-					<li><a href="#" ng-click="selected = 'audit'">Audits</a></li>
+					<li><a href="#/list" ng-click="selected = 'list'">Dark Launch Codes</a></li>
+					<li><a href="#/audit" ng-click="selected = 'audit'">Audits</a></li>
 				</ul>
 			</div><!--/.nav-collapse -->
 		</div>
 	</nav>
     <div class="containter">
-    	<div class="container" ng-include="'../module/Application/view/application/index/login.html'" ng-show="selected == 'login'"></div>
-    	<div class="container" ng-include="'../module/Application/view/application/index/list.html'" ng-show="selected == 'list'"></div>
-    	<div class="container" ng-include="'../module/Application/view/application/index/audit.html'" ng-show="selected == 'audit'"></div>
+    	<div class="container" ng-include="'app/pages/login.html'" ng-show="selected == 'login'"></div>
+    	<div class="container" ng-include="'app/pages/list.html'" ng-show="selected == 'list'"></div>
+    	<div class="container" ng-include="'app/pages/audit.html'" ng-show="selected == 'audit'"></div>
 	</div>
 </div>
