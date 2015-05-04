@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -14,17 +14,17 @@ use DateTime;
 class Audit
 {
     protected $db;
-    
+
     public function __construct()
     {
         $config = $this->getConfig();
-        $dbn = 'nightowl';
-        $m = new MongoClient($config['dbaccess']);
+        $dbn = $config['mongo']['name'];
+        $m = new MongoClient($config['mongo']['url']);
         $this->db = $m->$dbn;
-        $this->db->Auth;  
+        $this->db->Auth;
     }
-    
-    
+
+
     // Owner
     // Launch Code
     // Date / Time
@@ -38,8 +38,8 @@ class Audit
 
         return $this->db->ConsulAudit->insert($data)["ok"];
     }
-    
-        
+
+
     /**
      * I don't understand how I'm supposed to get this any other way.
      */
