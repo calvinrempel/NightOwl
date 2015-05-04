@@ -2,6 +2,8 @@
 
 namespace NightOwl\Model;
 
+use MongoClient;
+
 /**
  * LaunchCodesModel provides a concrete mechanism for retrieving and persisting
  * Launch Codes. It connects to a Consul Key/Value store to persist the basic
@@ -13,13 +15,19 @@ namespace NightOwl\Model;
  */
 class LaunchCodesModel
 {
-    /* Configuration settings for Consul (May be moved to config file) */
-    const CONSUL_HOST = 'localhost';
-    const CONSUL_PORT = 8500;
-	const CONSUL_APP_KEY = 'MRYSf5vXdSiHJZ35FDOIaQ==';
-
     /* HTTP Statuses that indicate Consul response types. */
     const CONSUL_SUCCESS_CODE = 200;
+
+    /**
+     * Create a new instance of LaunchCodesModel and connect to the MongoDB.
+     */
+    public function __construct()
+    {
+        $this->config = $this->getConfig();
+        $dbn = $this->config['mongo']['name'];
+        $m = new MongoClient($this->config['mongo']['url']);
+        $this->db = $m->$dbn;
+    }
 
     /**
      * Get the list of Launch Codes.
@@ -74,11 +82,11 @@ class LaunchCodesModel
         if (!$result)
             return FALSE;
     }
-	
+
 	/**
 	 * Create a new launch code in both Consul and the MongoDB.
 	 *
-	 * TODO: Create in MongoDB
+	 * TODO: Get Username of Current User and fillin "Owner"
 	 *
 	 * Params:
 	 *		$key           : the Launch Code Key
@@ -91,22 +99,44 @@ class LaunchCodesModel
 	 *
 	 * Author: Calvin Rempel
 	 * Date: May 1, 2015
+     *
+     * REVISIONS:
+     *      Calvin Rempel - May 3, 2015
+     *          - Added Mongo insertion/updating.
 	 */
 	public function createOrEditLaunchCode($key, $restriction, $value, $owner, $description, $availableToJS)
 	{
-		/*
-			IF LAUNCH CODE ALREADY EXISTS
-				EDIT LAUNCH CODE
-			ELSE
-				CREATE LAUNCH CODE
-		 */
-		return $this->setInConsul($key, $restriction, $value);
+        // Try to set the code in Consul. If that works, add to Mongo.
+		if ($this->setInConsul($key, $restriction, $value, $availableToJS))
+        {
+            // Setup update/creation constraints
+            $where = array('key' => $key);
+            $obj = array(
+                'key'         => $key,
+                'description' => $description,
+                'createdDate' => date('Y-m-d H:i:s'),
+                'owner'       => 'DummyOwner',
+            );
+            $options = array('upsert' => true);
+
+            // If the code doesn't already exist, set the creation date.
+            $code = array('key' => $key);
+            if(($code = $this->db->LaunchCodes->findOne($code)) !== NULL )
+            {
+                $obj['createdDate'] = $code['createdDate'];
+            }
+
+            // Create/Edit the LaunchCode in Mongo
+            $this->db->LaunchCodes->update($where, $obj, $options);
+
+            return true;
+        }
+
+        return false;
 	}
-	
+
 	/**
 	 * Delete a Launch Code from Consul (and eventually MongoDB).
-	 *
-	 * TODO: DELETE from MongoDB
 	 *
 	 * Params:
 	 *		$key : the key of the launch code to delete.
@@ -115,45 +145,71 @@ class LaunchCodesModel
 	 *
 	 * Author: Calvin Rempel
 	 * Date: May 1, 2015
+     *
+     * REVISIONS:
+     *      Calvin Rempel - May 3, 2015
+     *          - Added Mongo entry deletion.
 	 */
 	public function deleteLaunchCode($key)
 	{
 		$url = $this->getConsulKVUrl() . $key;
 		$status = 0;
-		
+
 		// Attempt to Delete from Consul
 		$this->doCurlRequest($url, $status, 'DELETE');
-		
+
 		// Return true on success / false on failure
 		if ($status == self::CONSUL_SUCCESS_CODE)
+        {
+            $this->db->LaunchCodes->remove(array('key' => $key));
 			return true;
-		
+        }
+
 		return false;
 	}
-	
+
     /**
      * Gets the metadata associated with each code in the list and adds it to
      * the code in the array.
 	 *
-	 * 
-     *
      * Params:
-     *      $codes : the array of codes (which contains at least the key "Key").
+     *      $codes : the array of codes (which contains at least the key "key").
      *               When the function completes, each code in the array will
      *               have it's available metadata added to it.
      *
      * Author: Calvin Rempel
-     * Date:
+     * Date: May 3, 2015
+     *
+     * REVISIONS:
+     *      Calvin Rempel - May 3, 2015
+     *          - Added MetaData retrieval from MongoDB
      */
-    public function injectMetadata(& $codes)
+    public function injectMetadata(&$codes)
     {
+        $keys = array();
         $count = count($codes);
 
+        // Build the query parameters for Mongo lookup.
         for ($i = 0; $i < $count; $i++)
         {
-            $codes[$i]['isAvailableToJS'] = true;
-            $codes[$i]['description'] = 'Sample description until DB is up!';
-            $codes[$i]['dateCreated'] = 'Always Yesterday';
+            $keys[] = $codes[$i]['key'];
+        }
+
+        // Create an associative array where code key maps to a reference of the code.
+        $codeMap = array();
+        foreach ($codes as &$code)
+        {
+            $codeMap[$code['key']] = &$code;
+        }
+
+        // Get the MetaData from Mongo
+        $metadata = $this->db->LaunchCodes->find(array('key' => array('$in' => $keys)));
+
+        // Inject MetaData into the codes
+        foreach ($metadata as $codeData)
+        {
+            $codeMap[$codeData['key']]['description'] = $codeData["description"];
+            $codeMap[$codeData['key']]['dateCreated'] = $codeData["createdDate"];
         }
     }
 
@@ -167,7 +223,9 @@ class LaunchCodesModel
      */
     private function getConsulKVUrl()
     {
-        return self::CONSUL_HOST . ':' . self::CONSUL_PORT . '/v1/kv/';
+        $consul = $this->config['consul'];
+
+        return $consul['host'] . ':' . $consul['port'] . '/v1/kv/';
     }
 
     /**
@@ -206,64 +264,61 @@ class LaunchCodesModel
 
         return $result;
     }
-	
-	/**
-	 * Edit an existing launch code in both Consul and the MongoDB.
-	 *
-	 * TODO: Edit in MongoDB
-	 *
-	 * Params:
-	 *		$key           : the Launch Code Key
-	 *		$restriction   : the restriction type (eg "boolean")
-	 *		$value 		   : the value associated with the restriction (eg "true")
-	 *		$description   : a description of the Launch Code
-	 *		$availableToJS : true or false - whether the code is available in JavaScript.
-	 *
-	 * Returns: True on success, False on failure
-	 *
-	 * Author: Calvin Rempel
-	 * Date: May 1, 2015
-	 */
-	private function editLaunchCode($key, $restriction, $value, $description, $avilableToJS)
-	{
-			return $this->setInConsul($key, $restriction, $value);
-	}
-	
+
 	/**
 	 * Set the value of the key in the Consul data store. If the key does not
 	 * currently exist, it will be created.
 	 *
 	 * Params:
-	 *		$key 		 : the Launch Code key
-	 *		$restriction : the restriction type of the code (eg "boolean")
-	 *		$value		 : the value associated with the restriction (eg "true")
+	 *		$key 		   : the Launch Code key
+	 *		$restriction   : the restriction type of the code (eg "boolean")
+	 *		$value		   : the value associated with the restriction (eg "true")
+     *      $availableToJS : true or false - whether the code is available in JavaScript.
 	 *
 	 * Returns: True if successfully set, False on failure.
 	 *
 	 * Author: Calvin Rempel
 	 * Date: April 1, 2015
 	 */
-	private function setInConsul($key, $restriction, $value)
+	private function setInConsul($key, $restriction, $value, $availableToJS)
 	{
 		// Create the value to store in Consul
-		$consulData = '{
-			"restriction" : "' . $restriction . '",
-			"value" : "' . $value . '"
-		}';
-		
+        $consulData = new \stdClass();
+        $consulData->restriction  = $restriction;
+        $consulData->value        = $value;
+        $consulData->availbleToJS = $availableToJS;
+
 		// Create the URL to PUT to.
 		$url = $this->getConsulKVUrl() . $key;
 		$status;
-		
+
 		// Make creation request to Consul
-		$result = $this->doCurlRequest($url, $status, 'PUT', $consulData);
-		
+		$result = $this->doCurlRequest($url, $status, 'PUT', json_encode($consulData));
+
 		// Return TRUE on success, FALSE on failure.
 		if ($status == self::CONSUL_SUCCESS_CODE && $result == 'true')
 		{
 			return true;
 		}
-		
+
 		return false;
 	}
+
+    /**
+     * I don't understand how I'm supposed to get this any other way.
+     */
+    private function getConfig()
+    {
+        return include __DIR__ . '../../../../../../config/autoload/local.php';
+    }
+
+    /**
+     * A reference to the MonogDB database that holds LaunchCode metadata.
+     */
+    private $db;
+
+    /**
+     * Configuration data found in NightOwl/config/autoload/local.php
+     */
+    private $config;
 }
