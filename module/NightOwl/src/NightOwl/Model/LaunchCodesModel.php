@@ -287,7 +287,7 @@ class LaunchCodesModel
         $consulData = new \stdClass();
         $consulData->restriction  = $restriction;
         $consulData->value        = $value;
-        $consulData->availbleToJS = $availableToJS;
+        $consulData->availableToJS = $availableToJS;
 
 		// Create the URL to PUT to.
 		$url = $this->getConsulKVUrl() . $key;

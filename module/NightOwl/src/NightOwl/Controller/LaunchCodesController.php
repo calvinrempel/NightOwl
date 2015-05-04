@@ -36,7 +36,7 @@ class LaunchCodesController extends AbstractRestfulController
     /* Constants that define the available filter types. */
     const FILTER_BY_KEY = 'Key';
     const FILTER_BY_VALUE = 'Value';
-	const HARD_OUTPUT_LIMIT = 100;
+	  const HARD_OUTPUT_LIMIT = 100;
 
 	/* Return HTTP status codes */
 	const RETURN_STATUS_SUCCESS = 200;
@@ -88,8 +88,6 @@ class LaunchCodesController extends AbstractRestfulController
         // Retrieve the applicable codes from the model.
         $codeProvider = new LaunchCodesModel();
         $codes = $codeProvider->getLaunchCodes($dc, $prefix, true);
-
-        print_r($codes);
 
         // If the user has asked to filter by a valid parameter, filter the results.
         if ($this->isValidFilter($filterBy) && $filter)
