@@ -18,7 +18,16 @@
 	});
 
 	app.controller('LoginController', function($scope, $http) {
-		//ADD LOGIN FUNCTIONALITY HERE
+        $scope.login = function(user, pw) {
+            $http.get('/login/' + user + '/' + pw).
+                success(function(data) {
+                    console.log('login success');
+                    $location.path('/app/pages/list');
+                }).
+                error(function (data, status, headers, config) {
+                    console.log('login error');
+            });
+        }
 	});
 
 	app.controller('ListController', function($scope, $http) {
