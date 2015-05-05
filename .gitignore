@@ -22,3 +22,6 @@ extras/documentation
 
 # Cause macs are weird
 .DS_STORE
+
+# Client-side config
+config.json
