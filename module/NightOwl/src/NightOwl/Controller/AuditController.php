@@ -9,13 +9,50 @@
 namespace NightOwl\Controller;
 
 use Zend\Mvc\Controller\AbstractRestfulController;
+use NightOwl\Model\Audit;
 use NightOwl\Model\Auth;
 
-class AuthRestController extends AbstractRestfulController
+
+class AuditController extends AbstractRestfulController
 {
+    protected $audit;
+    protected $auth;
+    const DEFAULT_RESULTS_PER_PAGE = 100;
+    
+    public function __construct()
+    {
+        //parent::__construct();
+        $this->audit = new Audit();
+        $this->auth = new Auth();
+    }
+    
+    
     public function get($id)
     {
         
+    }
+    
+    public function getList()
+    {
+        $query = $this->params('query');
+        if ($this->auth->auth($this->params('token')))
+        {
+            $query = json_decode(urldecode($query), true);
+            if(is_array($query))
+                return new \Zend\View\Model\JsonModel($this->audit->getLog($query));
+            else {
+                $this->response->setStatusCode(400);
+                
+                return new \Zend\View\Model\JsonModel(null);
+            }
+            
+        }
+        else
+        {
+            $this->response->setStatusCode(401);
+            
+            return new \Zend\View\Model\JsonModel(null);
+        }
     }
     
     public function update($id, $data)

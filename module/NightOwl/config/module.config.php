@@ -7,6 +7,7 @@ return array(
          'invokables' => array(
              'NightOwl\Controller\AuthRest' => 'NightOwl\Controller\AuthRestController',
              'NightOwl\Controller\LaunchCodes' => 'NightOwl\Controller\LaunchCodesController',
+             'NightOwl\Controller\Audit' => 'NightOwl\Controller\AuditController'
          ),
      ),
      'router' => array(
@@ -15,10 +16,6 @@ return array(
                  'type'    => 'segment',
                  'options' => array(
                      'route'    => '/login[/:id][/:pw]',
-                     'constraints' => array(
-                         'id' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                         'pw' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                     ),
                      'defaults' => array(
                          'controller' => 'NightOwl\Controller\AuthRest',
                      ),
@@ -32,6 +29,15 @@ return array(
                          'controller' => 'NightOwl\Controller\LaunchCodes',
                      ),
                  ),
+            ),
+            'audit' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/audit[/:token][/:query]',
+                    'defaults' => array(
+                        'controller' => 'NightOwl\Controller\Audit',
+                    )
+                ),
             ),
          ),
      ),
