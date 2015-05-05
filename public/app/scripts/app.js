@@ -32,10 +32,7 @@
             $http.get('/login/' + user + '/' + pw).
                 success(function(data) {
                     console.log('login success');
-                    $scope.$apply(function() {
-                        $scope.selected = 'list';
-                    });
-                    //$scope.selected = 'list';
+                    $scope.selected = 'list';
                     console.log($scope.selected);
                     $.getJSON('/login/' + user + '/' + pw, function(result) {
                         localStorage.setItem("key", result.key);
