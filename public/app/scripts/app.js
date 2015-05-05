@@ -5,13 +5,10 @@
 		// Start on the login page
 		$scope.selected = 'login';
 
-        $scope.initialize = function(configData){
-            $scope.config = configData;
-            loadCodes(
-                function(data){$scope.launchCodes = data;},
-                $scope.config.API_URL,
-                null);
-        };
+        API_HELPER.loadCodes(function(data){
+			$scope.launchCodes = data;
+			}, null);
+		};
 
         $scope.isSelected = function(val) {
             return $scope.selected === val;
@@ -20,9 +17,6 @@
         $scope.selectTab = function(val) {
             $scope.selected = val;
         }
-
-		// Load configuration data
-		loadConfig( $scope.initialize );
 
 	});
 
@@ -54,21 +48,7 @@
 
 		// Should filter the code results based on the selected prefix
 		$scope.filterResults = function(){
-			loadCodes(function(data){
-				$scope.launchCodes = data;
-				
-				var filter = 	
-					( $scope.tree ? $scope.tree.name : "" ) + "/" +
-					( $scope.subtree ? $scope.subtree : "" );
 
-				for( tree in $scope.launchCodes ){
-					if(tree.indexOf(filter) == -1){
-						delete $scope.launchCodes[tree];
-						console.log($scope.launchCodes);
-					}
-				}
-
-			}, $scope.config.API_URL, $scope.getFilters());
 		};
 
 		// Gets the data center, prefix and filter type + expression
@@ -100,15 +80,12 @@
 			return $(selector).find("td input, td select, td textarea");
 		}
 
-		// TODO: Save the code using the API		
-		$scope.saveCode = function(code){
-			console.log("SAVE THE CODE")
-		}
 
+		// TODO: Save the code using the API		
+		$scope.saveCode = function(code){ API_HELPER.saveCode( code ); }
+			
 		// TODO: Delete the code using the API (MAKE SURE TO CONFIRM FIRST)
-		$scope.deleteCode = function(code){
-			console.log("DELETE THE CODE")
-		}
+		$scope.deleteCode = function(code){ API_HELPER.deleteCode( code ); }
 
 		// TODO: Discard the changes made to the code
 		$scope.discardChanges = function(code){
@@ -116,17 +93,18 @@
 		}
 
 		$scope.createCode = function(code){
-			var url = $scope.config.API_URL + "/codes/" + getToken() + "/" + code.key
-
 			var restriction, value, description, availableToJS;
 
 			restriction = code.restriction || 'boolean';
-			value = (code.value === "true");
+			
+			value = code.value || "false";
+			
 			description = code.description;
+			
 			if(code.availableToJS){
-				availableToJS = 1;
+				availableToJS = 'true';
 			}else{
-				availableToJS = 0;
+				availableToJS = 'false';
 			}
 
 			var newCode = {
@@ -136,10 +114,7 @@
 				availableToJS : availableToJS
 			};
 
-			$http.post(url, newCode).
-			  success(function(data, status, headers, config) {
-			    console.log(newCode)
-			  });
+			API_HELPER.saveCode( newCode );
 		}
 	});
 
@@ -149,41 +124,3 @@
 
 })();
 
-		// Load the configuration file
-function loadConfig(_callback){
-	$.getJSON("app/json/config.json", function(json, textStatus) {
-		_callback(json);
-	});
-};
-
-// Load the launch codes
-function loadCodes(_callback, baseURL, filters){
-	if( !filters ){
-		filters = { dc : "dc1" };
-	}
-
-	var url = makeURL(baseURL, filters);
-	//var url = "app/json/codes.json";
-
-	$.getJSON(url, function(json, textStatus) {
-		_callback(json);
-	});
-}
-
-// Make the API URL
-function makeURL(baseUrl, filters){
-    var url = baseUrl + "/codes/" + getToken() + "/" + filters.dc;
-    if( filters.prefix ){
-        url = url + "/" + filters.prefix;
-    }
-    if( filters.filterBy ){
-        url = url + "/" + filters.filterBy + "/" + filters.filter;
-    }
-    return url;
-}
-
-// TODO: get security token
-function getToken(){
-    //console.log(localStorage.getItem("key"));
-    return localStorage.getItem("key");
-}
