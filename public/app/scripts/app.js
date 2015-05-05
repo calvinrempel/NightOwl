@@ -29,8 +29,7 @@
                     $scope.selected = 'list';
                     console.log($scope.selected);
                     $.getJSON('/login/' + user + '/' + pw, function(result) {
-                        localStorage.setItem("key", result.key);
-                        console.log(result.key);
+                        API_HELPER.saveToken(result);
                     })
                 }).
                 error(function (data, status, headers, config) {
