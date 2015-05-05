@@ -1,7 +1,7 @@
 var API_HELPER = {
 
 	getToken : function(){
-		return "token";
+		return localStorage.getItem("key");
 	},
 
 	saveCode : function( code ){
@@ -49,7 +49,9 @@ var API_HELPER = {
 	},
 
 	// Save Token
-	saveToken : function(token){
+	saveToken : function(result){
+        localStorage.setItem("key", result.key);
+        console.log(result.key);
 
 	}
 
