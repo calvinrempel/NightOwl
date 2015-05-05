@@ -8,8 +8,9 @@
 		$scope.initialize = function(configData){
 			$scope.config = configData;
 			loadCodes(
-				function(data){$scope.launchCodes = data;} 
-				, null);
+				function(data){$scope.launchCodes = data;},
+				$scope.config.API_URL,
+				null);
 		};
 
 		// Load configuration data
@@ -19,7 +20,7 @@
 
 	app.controller('LoginController', function($scope, $http) {
         $scope.login = function(user, pw) {
-            $http.get('/login/' + user + '/' + pw).
+            $http.get('http://localhost/nightowl/nightowl/public/login/' + user + '/' + pw).
                 success(function(data) {
                     console.log('login success');
                     $location.path('/app/pages/list');
@@ -41,8 +42,8 @@
 		$scope.filterResults = function(){
 			loadCodes(function(data){
 				$scope.launchCodes = data;
-				
-				var filter = 	
+
+				var filter =
 					( $scope.tree ? $scope.tree.name : "" ) + "/" +
 					( $scope.subtree ? $scope.subtree : "" );
 
@@ -85,7 +86,7 @@
 			return $(selector).find("td input, td select, td textarea");
 		}
 
-		// TODO: Save the code using the API		
+		// TODO: Save the code using the API
 		$scope.saveCode = function(code){
 			console.log("SAVE THE CODE")
 		}
@@ -144,11 +145,11 @@ function loadConfig(_callback){
 // Load the launch codes
 function loadCodes(_callback, baseURL, filters){
 	if( !filters ){
-		filters = { dc : "DC1" };
+		filters = { dc : "dc1" };
 	}
 
-	//var url = makeURL(baseURL, filters);
-	var url = "app/json/codes.json";
+	var url = makeURL(baseURL, filters);
+	//var url = "app/json/codes.json";
 
 	$.getJSON(url, function(json, textStatus) {
 		_callback(json);
@@ -156,8 +157,8 @@ function loadCodes(_callback, baseURL, filters){
 }
 
 // Make the API URL
-function makeURL(filters){
-	var url = $scope.config.API_URL + "/codes/" + getToken() + "/" + filters.dc;
+function makeURL(baseUrl, filters){
+	var url = baseUrl + "/codes/" + getToken() + "/" + filters.dc;
 	if( filters.prefix ){
 		url = url + "/" + filters.prefix;
 	}
@@ -169,5 +170,5 @@ function makeURL(filters){
 
 // TODO: get security token
 function getToken(){
-	return "token";
+	return "9e76e81f669a5d9e72a1";
 }
