@@ -12,17 +12,27 @@
 				, null);
 		};
 
+        $scope.isSelected = function(string) {
+            return $scope.selected === string;
+        }
+
 		// Load configuration data
 		loadConfig( $scope.initialize );
 
 	});
 
-	app.controller('LoginController', function($scope, $http) {
+	app.controller('LoginController', function($scope, $http, $location) {
+        console.log($scope.selected);
         $scope.login = function(user, pw) {
             $http.get('/login/' + user + '/' + pw).
                 success(function(data) {
                     console.log('login success');
-                    $location.path('/app/pages/list');
+                    $scope.selected = 'list';
+                    console.log($scope.selected);
+                    $.getJSON('/login/' + user + '/' + pw, function(result) {
+                        localStorage.setItem("key", result.key);
+                        console.log(result.key);
+                    })
                 }).
                 error(function (data, status, headers, config) {
                     console.log('login error');
@@ -169,5 +179,6 @@ function makeURL(filters){
 
 // TODO: get security token
 function getToken(){
-	return "token";
+    console.log(localStorage.getItem("key"));
+    return localStorage.getItem("key");
 }
