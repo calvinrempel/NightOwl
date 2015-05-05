@@ -1,5 +1,5 @@
 {
-	"API_URL":"http://Nightowl.local",
+	"API_URL":"http://localhost:8080",
 
 	"restrictions" : [
 		"boolean",

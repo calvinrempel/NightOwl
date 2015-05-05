@@ -1,5 +1,5 @@
 
-<div ng-controller="MainController" ng-class="{ loginPanel:selected ==='login', listPanel:selected === 'list' || 'audit'}">
+<div ng-controller="MainController" ng-view ng-class="{ loginPanel:selected ==='login', listPanel:selected === 'list' || 'audit'}">
 	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="container">
 			<div class="navbar-header">
@@ -8,19 +8,19 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="/" ng-click="selected = 'login'">Night Owl</a>
+				<a class="navbar-brand" href="" ng-click="selected = 'login'">Night Owl</a>
 			</div>
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
-					<li><a href="#/list" ng-click="selected = 'list'">Dark Launch Codes</a></li>
-					<li><a href="#/audit" ng-click="selected = 'audit'">Audits</a></li>
+					<li><a href="#" ng-click="selectTab('list')">Dark Launch Codes</a></li>
+					<li><a href="#" ng-click="selectTab('audit')">Audits</a></li>
 				</ul>
 			</div><!--/.nav-collapse -->
 		</div>
 	</nav>
     <div class="containter">
-    	<div class="container" ng-include="'app/pages/login.html'" ng-show="selected == 'login'"></div>
-    	<div class="container" ng-include="'app/pages/list.html'" ng-show="selected == 'list'"></div>
-    	<div class="container" ng-include="'app/pages/audit.html'" ng-show="selected == 'audit'"></div>
+    	<div class="container" ng-include="'app/pages/login.html'" ng-show="isSelected('login')"></div>
+    	<div class="container" ng-include="'app/pages/list.html'" ng-show="isSelected('list')"></div>
+    	<div class="container" ng-include="'app/pages/audit.html'" ng-show="isSelected('audit')"></div>
 	</div>
 </div>
