@@ -7,8 +7,8 @@
 
         API_HELPER.loadCodes(function(data){
 			$scope.launchCodes = data;
-			}, null);
-		};
+		}, null);
+	
 
         $scope.isSelected = function(val) {
             return $scope.selected === val;
