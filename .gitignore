@@ -25,3 +25,4 @@ extras/documentation
 
 # Client-side config
 config.json
+config.js
