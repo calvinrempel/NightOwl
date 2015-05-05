@@ -21,7 +21,25 @@ class Audit
         $dbn = $config['mongo']['name'];
         $m = new MongoClient($config['mongo']['url']);
         $this->db = $m->$dbn;
-        $this->db->Auth;
+    }
+    
+    public function getLog(array $query)
+    {
+        $cursor = $this->db->ConsulAudit->find($query);
+        
+        if($cursor)
+        {
+            foreach ($cursor as $doc) {
+                 $retval[] = $doc;
+            }
+            
+            return $retval;
+        }
+        else
+        {
+            
+            return null;
+        }
     }
 
 

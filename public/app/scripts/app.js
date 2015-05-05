@@ -5,15 +5,20 @@
 		// Start on the login page
 		$scope.selected = 'login';
 
-		$scope.initialize = function(configData){
-			$scope.config = configData;
-			loadCodes(
-				function(data){$scope.launchCodes = data;} 
-				, null);
-		};
+        $scope.initialize = function(configData){
+            $scope.config = configData;
+            loadCodes(
+                function(data){$scope.launchCodes = data;},
+                $scope.config.API_URL,
+                null);
+        };
 
-        $scope.isSelected = function(string) {
-            return $scope.selected === string;
+        $scope.isSelected = function(val) {
+            return $scope.selected === val;
+        }
+
+        $scope.selectTab = function(val) {
+            $scope.selected = val;
         }
 
 		// Load configuration data
@@ -27,7 +32,10 @@
             $http.get('/login/' + user + '/' + pw).
                 success(function(data) {
                     console.log('login success');
-                    $scope.selected = 'list';
+                    $scope.$apply(function() {
+                        $scope.selected = 'list';
+                    });
+                    //$scope.selected = 'list';
                     console.log($scope.selected);
                     $.getJSON('/login/' + user + '/' + pw, function(result) {
                         localStorage.setItem("key", result.key);
@@ -72,7 +80,7 @@
 				dc : $scope.dataCenter,
 				prefix : $scope.prefix,
 				filterBy : $scope.filterBy,
-				filter : $scope.filter,
+				filter : $scope.filter
 			}
 			return filters;
 		}
@@ -154,11 +162,11 @@ function loadConfig(_callback){
 // Load the launch codes
 function loadCodes(_callback, baseURL, filters){
 	if( !filters ){
-		filters = { dc : "DC1" };
+		filters = { dc : "dc1" };
 	}
 
-	//var url = makeURL(baseURL, filters);
-	var url = "app/json/codes.json";
+	var url = makeURL(baseURL, filters);
+	//var url = "app/json/codes.json";
 
 	$.getJSON(url, function(json, textStatus) {
 		_callback(json);
@@ -166,19 +174,19 @@ function loadCodes(_callback, baseURL, filters){
 }
 
 // Make the API URL
-function makeURL(filters){
-	var url = $scope.config.API_URL + "/codes/" + getToken() + "/" + filters.dc;
-	if( filters.prefix ){
-		url = url + "/" + filters.prefix;
-	}
-	if( filters.filterBy ){
-		url = url + "/" + filters.filterBy + "/" + filters.filter;
-	}
-	return url;
+function makeURL(baseUrl, filters){
+    var url = baseUrl + "/codes/" + getToken() + "/" + filters.dc;
+    if( filters.prefix ){
+        url = url + "/" + filters.prefix;
+    }
+    if( filters.filterBy ){
+        url = url + "/" + filters.filterBy + "/" + filters.filter;
+    }
+    return url;
 }
 
 // TODO: get security token
 function getToken(){
-    console.log(localStorage.getItem("key"));
+    //console.log(localStorage.getItem("key"));
     return localStorage.getItem("key");
 }
