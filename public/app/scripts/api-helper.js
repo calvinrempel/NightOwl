@@ -31,7 +31,7 @@ var API_HELPER = {
 
 	loadCodes : function( _callback, filters ){
 		if( !filters ){
-			filters = { dc : "DC1" };
+			filters = { dc : "dc1" };
 		}
 
 		var url = this.makeGetURL(filters);

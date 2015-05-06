@@ -4,11 +4,12 @@
 	app.controller('MainController', function($scope, $http) {
 		// Start on the login page
 		$scope.selected = 'login';
+		$scope.config = config;
 
         API_HELPER.loadCodes(function(data){
 			$scope.launchCodes = data;
 		}, null);
-	
+
 
         $scope.isSelected = function(val) {
             return $scope.selected === val;
@@ -80,9 +81,9 @@
 		}
 
 
-		// TODO: Save the code using the API		
+		// TODO: Save the code using the API
 		$scope.saveCode = function(code){ API_HELPER.saveCode( code ); }
-			
+
 		// TODO: Delete the code using the API (MAKE SURE TO CONFIRM FIRST)
 		$scope.deleteCode = function(code){ API_HELPER.deleteCode( code ); }
 
@@ -95,11 +96,11 @@
 			var restriction, value, description, availableToJS;
 
 			restriction = code.restriction || 'boolean';
-			
+
 			value = code.value || "false";
-			
+
 			description = code.description;
-			
+
 			if(code.availableToJS){
 				availableToJS = 'true';
 			}else{
@@ -122,4 +123,3 @@
 	});
 
 })();
-
