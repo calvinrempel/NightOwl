@@ -6,10 +6,13 @@
 		$scope.selected = 'login';
 		$scope.config = config;
 
-        API_HELPER.loadCodes(function(data){
-			$scope.launchCodes = data;
-		}, null);
-
+        
+		$scope.populateCodes = function( codes ){
+        	$scope.launchCodes = codes
+        	$scope.$apply();
+        }
+        
+        API_HELPER.loadCodes($scope.populateCodes, null);
 
         $scope.isSelected = function(val) {
             return $scope.selected === val;
@@ -41,6 +44,9 @@
 		// Default region is west
 		$scope.region = "west";
 
+		// Default datacenter
+		$scope.dataCenter = "dc1",
+		
 		// Create mode is off
 		$scope.createMode = false;
 
@@ -61,29 +67,33 @@
 		}
 
 		// Toggles inputs for given code between enabled and disabled
-		$scope.toggleEditMode = function(parent, child){
-			var inputs = $scope.getInputs(parent, child);
+		$scope.toggleEditMode = function(index){
+			var inputs = $scope.getInputs(index);
 			inputs.prop('disabled', !inputs.prop('disabled'));
 		}
 
 		// Returns true if the current code is editable
-		$scope.inEditMode = function(parent, child){
-			var input = $scope.getInputs(parent, child).first()
+		$scope.inEditMode = function(index){
+			var input = $scope.getInputs(index).first()
 			return !input.prop('disabled');
 		}
 
 		// Gets the inputs, select box, and textarea associated with the code
-		$scope.getInputs = function(parent, child){
-			var selector = "tr#code-" + parent + "-" + child;
+		$scope.getInputs = function(index){
+			var selector = "tr#code-" + index;
 			return $(selector).find("td input, td select, td textarea");
 		}
 
 
 		// TODO: Save the code using the API
-		$scope.saveCode = function(code){ API_HELPER.saveCode( code ); }
+		$scope.saveCode = function(code){ 
+			API_HELPER.saveCode( code, $scope.populateCodes, $scope.getFilters() );
+		}
 
 		// TODO: Delete the code using the API (MAKE SURE TO CONFIRM FIRST)
-		$scope.deleteCode = function(code){ API_HELPER.deleteCode( code ); }
+		$scope.deleteCode = function(code){ 
+			API_HELPER.deleteCode( code, $scope.populateCodes, $scope.getFilters() ); 
+		}
 
 		// TODO: Discard the changes made to the code
 		$scope.discardChanges = function(code){
@@ -106,13 +116,15 @@
 			}
 
 			var newCode = {
+				key : code.key,
 				restriction : restriction,
 				value : value,
 				description : description,
 				availableToJS : availableToJS
 			};
 
-			API_HELPER.saveCode( newCode );
+			console.log(code.key);
+			API_HELPER.saveCode( newCode, $scope.populateCodes, $scope.getFilters() );
 		}
 	});
 
