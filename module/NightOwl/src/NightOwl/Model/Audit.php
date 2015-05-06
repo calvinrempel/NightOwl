@@ -8,6 +8,7 @@
 
 namespace NightOwl\Model;
 
+use NightOwl\Model\Auth;
 use MongoClient;
 use DateTime;
 
@@ -22,22 +23,22 @@ class Audit
         $m = new MongoClient($config['mongo']['url']);
         $this->db = $m->$dbn;
     }
-    
+
     public function getLog(array $query)
     {
         $cursor = $this->db->ConsulAudit->find($query);
-        
+
         if($cursor)
         {
             foreach ($cursor as $doc) {
                  $retval[] = $doc;
             }
-            
+
             return $retval;
         }
         else
         {
-            
+
             return null;
         }
     }
@@ -49,7 +50,8 @@ class Audit
     // Message
     public function LogEdit($key, $message, $code )
     {
-        $data = array('owner'   => $this->db->Auth->findOne(array('key' => $key))['user'],
+        $auth = new Auth();
+        $data = array('owner'   => $auth->getCurrentUser($key),
                       'code'    => $code,
                       'time'    => date('Y-m-d H:i:s'),
                       'message' => $message);
