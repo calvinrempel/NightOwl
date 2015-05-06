@@ -4,18 +4,24 @@ var API_HELPER = {
 		return localStorage.getItem("key");
 	},
 
-	saveCode : function( code ){
+	saveCode : function( code, _callback, filters ){
 		var url = this.makeURL(code);
-		$http.post(url, code).success(function(data, status, headers, config) {
-			console.log("Code saved!")
+		$.post(url, code).success(function(data, status, headers, config) {
+			console.log("saved!");
+			API_HELPER.loadCodes( _callback, filters );
 		});
 	},
 
-	deleteCode : function( code ){
-		var url = this.makeURL(code);
-		$http.delete(url).success(function(data, status, headers, config) {
-			console.log("Code deleted!")
-		});
+	deleteCode : function( code, _callback, filters ){
+	
+		$.ajax({
+    url: this.makeURL(code),
+    type: 'DELETE',
+    success: function(result) {
+       console.log("deleted!");
+       API_HELPER.loadCodes( _callback, filters );
+    }
+});
 	},
 
 	makeGetURL : function( filters ){
@@ -30,6 +36,7 @@ var API_HELPER = {
 	},
 
 	loadCodes : function( _callback, filters ){
+		
 		if( !filters ){
 			filters = { dc : "dc1" };
 		}
@@ -38,8 +45,7 @@ var API_HELPER = {
 		//var url = "app/codes.json";
 
 		$.getJSON(url, function(json, textStatus) {
-			console.log(json);
-			_callback(json);
+			_callback(json.codes);
 		});
 	},
 
@@ -50,9 +56,7 @@ var API_HELPER = {
 
 	// Save Token
 	saveToken : function(result){
-        localStorage.setItem("key", result.key);
-        console.log(result.key);
-
+      localStorage.setItem("key", result.key);
 	}
 
 };
