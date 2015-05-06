@@ -1,62 +1,76 @@
-var API_HELPER = {
+var API_HELPER = (function () {
+	var instance;
 
-	getToken : function(){
-		return localStorage.getItem("key");
-	},
+	function createInstance() {
+		var helper = {
 
-	saveCode : function( code, _callback, filters ){
-		var url = this.makeURL(code);
-		$.post(url, code).success(function(data, status, headers, config) {
-			console.log("saved!");
-			API_HELPER.loadCodes( _callback, filters );
-		});
-	},
+			getToken : function(){
+				return localStorage.getItem("key");
+			},
 
-	deleteCode : function( code, _callback, filters ){
-	
-		$.ajax({
-    url: this.makeURL(code),
-    type: 'DELETE',
-    success: function(result) {
-       console.log("deleted!");
-       API_HELPER.loadCodes( _callback, filters );
-    }
-});
-	},
+			saveCode : function( code, _callback, filters ){
+				var url = this.makePostURL(code);
+				$.post(url, code).success(function(data, status, headers, config) {
+					console.log("saved!");
+					API_HELPER.loadCodes( _callback, filters );
+				});
+			},
 
-	makeGetURL : function( filters ){
-		var url = config.API_URL + "/codes/" + this.getToken() + "/" + filters.dc;
-		if( filters.prefix ){
-			url = url + "/" + filters.prefix;
-		}
-		if( filters.filterBy ){
-			url = url + "/" + filters.filterBy + "/" + filters.filter;
-		}
-		return url;
-	},
+			deleteCode : function( code, _callback, filters ){
 
-	loadCodes : function( _callback, filters ){
-		
-		if( !filters ){
-			filters = { dc : "dc1" };
-		}
+				$.ajax({
+					url: this.makePostURL(code),
+					type: 'DELETE',
+					success: function(result) {
+						console.log("deleted!");
+						API_HELPER.loadCodes( _callback, filters );
+					}
+				});
+			},
 
-		var url = this.makeGetURL(filters);
-		//var url = "app/codes.json";
+			makeGetURL : function( filters ){
+				var url = config.API_URL + "/codes/" + this.getToken() + "/" + filters.dc;
+				if( filters.prefix ){
+					url = url + "/" + filters.prefix;
+				}
+				if( filters.filterBy ){
+					url = url + "/" + filters.filterBy + "/" + filters.filter;
+				}
+				return url;
+			},
 
-		$.getJSON(url, function(json, textStatus) {
-			_callback(json.codes);
-		});
-	},
+			loadCodes : function( _callback, filters ){
+
+				if( !filters ){
+					filters = { dc : "dc1" };
+				}
+
+				var url = this.makeGetURL(filters);
+				//var url = "app/codes.json";
+
+				$.getJSON(url, function(json, textStatus) {
+					_callback(json.codes);
+				});
+			},
 
 
-	makeURL : function( code ){
-		return config.API_URL + "/codes/" + this.getToken() + "/" + code.key;
-	},
+			makePostURL : function( code ){
+				return config.API_URL + "/codes/" + this.getToken() + "/" + code.key;
+			},
 
-	// Save Token
-	saveToken : function(result){
-      localStorage.setItem("key", result.key);
+			// Save Token
+			saveToken : function(result){
+				localStorage.setItem("key", result.key);
+			}
+		};
+
+		return helper;
 	}
 
-};
+	if( !instance )
+		instance = createInstance();
+
+	return instance;
+})();
+
+

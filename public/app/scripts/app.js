@@ -123,7 +123,6 @@
 				availableToJS : availableToJS
 			};
 
-			console.log(code.key);
 			API_HELPER.saveCode( newCode, $scope.populateCodes, $scope.getFilters() );
 		}
 	});
