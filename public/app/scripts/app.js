@@ -26,9 +26,7 @@
         $scope.login = function(user, pw) {
             $http.get('/login/' + user + '/' + pw).
                 success(function(data) {
-                    console.log('login success');
-                    $scope.selected = 'list';
-                    console.log($scope.selected);
+					$scope.selectTab("list");
                     $.getJSON('/login/' + user + '/' + pw, function(result) {
                         API_HELPER.saveToken(result);
                     })
