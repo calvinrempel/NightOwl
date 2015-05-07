@@ -4,8 +4,11 @@
 		$scope.selected = 'login';
 		$scope.config = NIGHTOWL_CONFIG;
 
+        $scope.dataCenter = $scope.config.dataCenters[0];
+        $scope.prefix = $scope.config.prefixes[0];
         
 		$scope.populateCodes = function( codes ){
+            console.log(codes);
         	$scope.launchCodes = codes
         	$scope.$apply();
         }
@@ -16,6 +19,16 @@
 
         $scope.selectTab = function(val) {
             $scope.selected = val;
+        }
+
+        $scope.getFilters = function(){
+            var filters = {
+                dc : $scope.dataCenter,
+                prefix : $scope.prefix,
+                filterBy : $scope.filterBy,
+                filter : $scope.filter
+            }
+            return filters;
         }
 
 	});

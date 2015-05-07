@@ -13,5 +13,13 @@ var NIGHTOWL_CONFIG = {
 	filters : [
 		"Key",
 		"Value"
+	],
+
+	prefixes: [
+		"darklaunch"
+	],
+
+	dataCenters: [
+		"dc1"
 	]
 };

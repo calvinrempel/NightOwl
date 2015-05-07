@@ -7,7 +7,7 @@ app.controller('LoginController', function($scope, $http, $location) {
            $scope.selectTab("list");
            $.getJSON( url, function(result) {
             API_HELPER.saveToken(result);
-            API_HELPER.loadCodes($scope.populateCodes, null);
+            API_HELPER.loadCodes($scope.populateCodes, $scope.getFilters());
         })
        }).
         error(function (data, status, headers, config) {

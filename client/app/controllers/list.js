@@ -1,23 +1,10 @@
 app.controller('ListController', function($scope, $http) {
-		// Default region is west
-		$scope.region = "west";
-
-		// Default datacenter
-		$scope.dataCenter = "dc1",
 		
 		// Create mode is off
 		$scope.createMode = false;
 
 		// Gets the data center, prefix and filter type + expression
-		$scope.getFilters = function(){
-			var filters = {
-				dc : $scope.dataCenter,
-				prefix : $scope.prefix,
-				filterBy : $scope.filterBy,
-				filter : $scope.filter
-			}
-			return filters;
-		}
+		
 
 		// Should filter the code results based on the selected prefix
 		$scope.reloadCodes = function(){
@@ -74,13 +61,13 @@ app.controller('ListController', function($scope, $http) {
 			}
 
 			var newCode = {
-				key : code.key,
+				key :  encodeURIComponent($scope.prefix + "/" + code.key),
 				restriction : restriction,
 				value : value,
 				description : description,
 				availableToJS : availableToJS
 			};
-
+			console.log(newCode);
 			API_HELPER.saveCode( newCode, $scope.populateCodes, $scope.getFilters() );
 		}
 
