@@ -51,8 +51,9 @@ var API_HELPER = (function () {
 				var url = this.makeGetURL(filters);
 				//var url = "app/codes.json";
 
+				console.log(url);
+
 				$.getJSON(url, function(json, textStatus) {
-					console.log(json);
 					_callback(json.codes);
 				});
 			},
