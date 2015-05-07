@@ -8,10 +8,21 @@ app.controller('ListController', function($scope, $http) {
 		// Create mode is off
 		$scope.createMode = false;
 
-		// Should filter the code results based on the selected prefix
-		$scope.filterResults = function(){
+		$scope.populateCodes = function( codes ){
+        	$scope.launchCodes = codes
+        	$scope.$apply();
+        }
 
+        API_HELPER.loadCodes($scope.populateCodes, null);
+
+        // Should filter the code results based on the selected prefix
+		$scope.reloadCodes = function(){
+			API_HELPER.loadCodes($scope.populateCodes, $scope.getFilters());
 		};
+        
+        
+
+		
 
 		// Gets the data center, prefix and filter type + expression
 		$scope.getFilters = function(){

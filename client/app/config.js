@@ -1,3 +1,5 @@
+var  app = angular.module('NightOwl', []);
+
 var NIGHTOWL_CONFIG = {
 	API_URL:"http://nightowlAPI.local",
 
@@ -8,9 +10,8 @@ var NIGHTOWL_CONFIG = {
 		"percent"
 	],
 
-	trees : [
-		{"name":"dashboard", "subtrees":["core"]},
-		{"name":"service", "subtrees":["social-communication"]},
-		{"name":"test"}
+	filters : [
+		"Key",
+		"Value"
 	]
 };
