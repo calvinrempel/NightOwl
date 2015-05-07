@@ -9,8 +9,6 @@
         	$scope.launchCodes = codes
         	$scope.$apply();
         }
-        
-        API_HELPER.loadCodes($scope.populateCodes, null);
 
         $scope.isSelected = function(val) {
             return $scope.selected === val;
