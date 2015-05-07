@@ -4,6 +4,8 @@ var API_HELPER = (function () {
 	function createInstance() {
 		var helper = {
 
+			API_URL : NIGHTOWL_CONFIG.API_URL,
+
 			getToken : function(){
 				return localStorage.getItem("key");
 			},
@@ -12,6 +14,7 @@ var API_HELPER = (function () {
 				var url = this.makePostURL(code);
 				$.post(url, code).success(function(data, status, headers, config) {
 					console.log("saved!");
+					console.log(url);
 					API_HELPER.loadCodes( _callback, filters );
 				});
 			},
@@ -29,7 +32,7 @@ var API_HELPER = (function () {
 			},
 
 			makeGetURL : function( filters ){
-				var url = config.API_URL + "/codes/" + this.getToken() + "/" + filters.dc;
+				var url = this.API_URL + "/codes/" + this.getToken() + "/" + filters.dc;
 				if( filters.prefix ){
 					url = url + "/" + filters.prefix;
 				}
@@ -49,13 +52,14 @@ var API_HELPER = (function () {
 				//var url = "app/codes.json";
 
 				$.getJSON(url, function(json, textStatus) {
+					console.log(json);
 					_callback(json.codes);
 				});
 			},
 
 
 			makePostURL : function( code ){
-				return config.API_URL + "/codes/" + this.getToken() + "/" + code.key;
+				return this.API_URL + "/codes/" + this.getToken() + "/" + code.key;
 			},
 
 			// Save Token

@@ -1,46 +1,4 @@
-(function(){
-	var  app = angular.module('NightOwl', []);
-
-	app.controller('MainController', function($scope, $http) {
-		// Start on the login page
-		$scope.selected = 'login';
-		$scope.config = config;
-
-        
-		$scope.populateCodes = function( codes ){
-        	$scope.launchCodes = codes
-        	$scope.$apply();
-        }
-        
-        API_HELPER.loadCodes($scope.populateCodes, null);
-
-        $scope.isSelected = function(val) {
-            return $scope.selected === val;
-        }
-
-        $scope.selectTab = function(val) {
-            $scope.selected = val;
-        }
-
-	});
-
-	app.controller('LoginController', function($scope, $http, $location) {
-        console.log($scope.selected);
-        $scope.login = function(user, pw) {
-            $http.get('/login/' + user + '/' + pw).
-                success(function(data) {
-					$scope.selectTab("list");
-                    $.getJSON('/login/' + user + '/' + pw, function(result) {
-                        API_HELPER.saveToken(result);
-                    })
-                }).
-                error(function (data, status, headers, config) {
-                    console.log('login error');
-            });
-        }
-	});
-
-	app.controller('ListController', function($scope, $http) {
+app.controller('ListController', function($scope, $http) {
 		// Default region is west
 		$scope.region = "west";
 
@@ -126,9 +84,3 @@
 			API_HELPER.saveCode( newCode, $scope.populateCodes, $scope.getFilters() );
 		}
 	});
-
-	app.controller('AuditController', function($scope, $http) {
-		$scope.msg = "LIST THE AUDITS";
-	});
-
-})();

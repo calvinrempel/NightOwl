@@ -1,5 +1,5 @@
-var config = {
-	API_URL:"http://nightowl.local",
+var NIGHTOWL_CONFIG = {
+	API_URL:"http://nightowlAPI.local",
 
 	restrictions : [
 		"boolean",
