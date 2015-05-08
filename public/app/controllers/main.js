@@ -6,9 +6,10 @@
 
         $scope.dataCenter = $scope.config.dataCenters[0];
         $scope.prefix = $scope.config.prefixes[0];
+        $scope.filterBy = $scope.config.filters[0];
+        $scope.filter = 'hello';
         
 		$scope.populateCodes = function( codes ){
-            console.log(codes);
         	$scope.launchCodes = codes
             $scope.selectTab('list');
             $("ul.sidebar").slideDown(400);
