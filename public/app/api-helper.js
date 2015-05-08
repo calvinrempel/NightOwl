@@ -74,7 +74,7 @@ var API_HELPER = (function () {
 			},
 
             loadAudits : function( _callback, filters ){
-        		var url = $scope.config.API_URL + '/audit/' + API_HELPER.getToken() + '/';
+        		var url = this.API_URL + '/audit/' + API_HELPER.getToken() + '/';
 		        if(filters.filterBy == 'Owner') {
 		            url = url + '{"owner":{"$regex":"' + filters.filter + '"}}';
 		        }
