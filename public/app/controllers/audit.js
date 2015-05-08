@@ -15,7 +15,7 @@ app.controller('AuditController', function($scope, $http) {
     };
 
     $scope.filterAudits = function(){
-        API_HELPER.getAudits($scope.populateAudits, $scope.auditFilters);
+        API_HELPER.loadAudits($scope.populateAudits, $scope.auditFilters);
     };
 
 

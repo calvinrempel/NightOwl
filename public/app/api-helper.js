@@ -88,22 +88,11 @@ var API_HELPER = (function () {
 		            url = url + '{}';
 		        }
 
+		        this.startLoading(null);
 		        $.getJSON(url, function(result){
 		        	_callback(result);
-		        });
-    		},
-
-                console.log(url);
-
-                this.startLoading(null);
-                $.getJSON(url, function(json, textStatus) {
-                    console.log("HELLO");
-                    _callback(json.audits);
-                })
-                    .fail(function(){
-                        console.log("FAILURE");
-                    })
-                    .always(function() {
+		        })
+		        .always(function() {
                         API_HELPER.stopLoading(null);
                     });
             },
