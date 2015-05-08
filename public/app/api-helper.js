@@ -58,11 +58,15 @@ var API_HELPER = (function () {
 				var url = this.makeGetURL(filters);
 				//var url = "app/codes.json";
 
+				console.log(url);
+
 				this.startLoading(null);
 				$.getJSON(url, function(json, textStatus) {
-					console.log(url);
-					console.log(json);
+					console.log("HELLO");
 					_callback(json.codes);
+				})
+				.fail(function(){
+					console.log("FAILURE");
 				})
 			  .always(function() {
 			    API_HELPER.stopLoading(null);
