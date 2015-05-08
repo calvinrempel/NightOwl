@@ -90,7 +90,7 @@ class LaunchCodesController extends AbstractRestfulController
         $codes = $codeProvider->getLaunchCodes($dc, $prefix, true);
 
         // If the user has asked to filter by a valid parameter, filter the results.
-        if ($this->isValidFilter($filterBy) && $filter)
+        if ($this->isValidFilter($filterBy) && !is_null($filter))
         {
             $codes = $this->filterResults($filterBy, $filter, $codes);
         }
@@ -297,12 +297,23 @@ class LaunchCodesController extends AbstractRestfulController
     *
     * Author: Calvin Rempel
     * Date: April 29, 2015
+	*
+	* REVISIONS:
+	*		Calvin Rempel - May 8, 2015
+	*			- Added check to ensure codes exist before filtering them.
     */
     private function filterResults($filterBy, $filter, $codes)
     {
         $retval = array();
         $matchVal;
 
+		// If there are no codes, return an empty array.
+        if (!is_array($codes) || count($codes) == 0)
+        {
+            return $retval;
+        }
+
+		
         // Check each code in the list to see if it matches the filter parameters
         // and if it does, add it to the output list.
         foreach ($codes as $code)
