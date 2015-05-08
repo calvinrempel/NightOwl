@@ -1,10 +1,8 @@
 <div ng-controller="ListController">
 	<div class="row" ng-controller="ListController">
 		<div class="col-lg-12">
-			<div class="btn-group">
-				<button class="btn" ng-class="{active: region == 'west'}" ng-click="region = 'west'">West</button>
-				<button class="btn" ng-class="{active: region == 'central'}" ng-click="region = 'central'">Central</button>
-				<button class="btn" ng-class="{active: region == 'east'}" ng-click="region = 'east'">East</button>
+			<div ng-repeat="dc in config.dataCenters" class="btn-group">
+				<button class="btn" ng-class="{active: filters.dataCenter == dc.value}" ng-click="filters.dataCenter = dc.value">{{dc.name}}</button>
 			</div>
 			<br/>
 			<br/>
@@ -71,7 +69,7 @@
 			<td class="listTable"><select class="form-control" ng-model="code.restriction" ng-options="restriction for restriction in config.restrictions" disabled></select></td>
 			<td class="listTable"><input class="form-control" type="text" ng-model="code.value" disabled></td>
 			<td class="listTable"><textarea class="form-control" ng-model="code.description" cols=50 disabled></textarea></td>
-			<td class="listTable"><input class="form-control" type="checkbox" ng-model="code.availableToJS" ng-checked="code.availableToJS == 'true'" disabled></td>
+			<td class="listTable"><input class="form-control" type="checkbox" ng-checked="code.availableToJS == 'true'" ng-click="toggleJS(code)" disabled></td>
 			<td ng-hide="inEditMode($index)">
 				<button class="btn" ng-click="toggleEditMode($index)">Edit</button>
 			</td>

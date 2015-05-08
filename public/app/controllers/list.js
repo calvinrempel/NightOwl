@@ -9,6 +9,7 @@ app.controller('ListController', function($scope, $http) {
 
 		// Should filter the code results based on the selected prefix
 		$scope.reloadCodes = function(){
+			console.log($scope.filters);
 			API_HELPER.loadCodes($scope.populateCodes, $scope.getFilters());
 		};
 
@@ -33,6 +34,7 @@ app.controller('ListController', function($scope, $http) {
 
 		// TODO: Save the code using the API
 		$scope.saveCode = function(code){ 
+			console.log(code);
 			API_HELPER.saveCode( code, $scope.populateCodes, $scope.getFilters() );
 		}
 
@@ -72,6 +74,15 @@ app.controller('ListController', function($scope, $http) {
 			};
 			console.log(newCode);
 			API_HELPER.saveCode( newCode, $scope.populateCodes, $scope.getFilters() );
+		}
+
+		$scope.toggleJS = function(code){
+			console.log(code);
+			if(code.availableToJS == "false"){
+				code.availableToJS = "true";
+			}else{
+				code.availableToJS = "false";
+			}
 		}
 
 

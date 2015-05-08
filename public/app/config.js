@@ -20,7 +20,10 @@ var NIGHTOWL_CONFIG = {
 	],
 
 	dataCenters: [
-		"dc1"
+		{"name": "Data Center 1", "value" : "dc1"},
+		{"name": "Data Center 2", "value" : "dc2"},
+		{"name": "Data Center 3", "value" : "dc3"},
+		{"name": "All", "value" : "all"}
 	],
 
 	tokenName: "NightOwlAuth",
