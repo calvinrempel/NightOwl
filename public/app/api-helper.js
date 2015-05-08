@@ -73,7 +73,25 @@ var API_HELPER = (function () {
 			  });
 			},
 
-            loadAudits : function( _callback, url ){
+            loadAudits : function( _callback, filters ){
+        		var url = $scope.config.API_URL + '/audit/' + API_HELPER.getToken() + '/';
+		        if(filters.filterBy == 'Owner') {
+		            url = url + '{"owner":{"$regex":"' + filters.filter + '"}}';
+		        }
+		        else if(filters.filterBy == 'Code') {
+		            url = url + '{"code":{"$regex":"' + str + '"}}';
+		        }
+		        else if(filters.filterBy == 'Message') {
+		            url = url + '{"message":{"$regex":"' + str + '"}}';
+		        }
+		        else {
+		            url = url + '{}';
+		        }
+
+		        $.getJSON(url, function(result){
+		        	_callback(result);
+		        });
+    		},
 
                 console.log(url);
 

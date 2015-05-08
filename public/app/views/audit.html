@@ -1,10 +1,10 @@
 <div class="row" ng-controller="AuditController">
     <form id="audit" style="clear:both">
-        <select id="searchOption" ng-model="filterBy" ng-init="config.searches[0]" ng-options="search for search in config.searches">
+        <select id="searchOption" ng-model="auditFilters.filterBy" ng-init="config.searches[0]" ng-options="auditFilter for auditFilter in config.auditFilters">
             <option value="">Filter By</option>
         </select>
-        <input type="text" ng-model="filter" id="searchText">
-        <input type="submit" value="filter" ng-click="doSearch()">
+        <input type="text" ng-model="auditFilters.filter" id="searchText">
+        <input type="submit" value="filter" ng-click="filterAudits()">
     </form>
     <br/>
 </div>
