@@ -6,8 +6,6 @@ app.controller('AuditController', function($scope, $http) {
         filter : ''
     };
 
-    
-
     // Should filter the code results based on the selected prefix
     $scope.populateAudits = function( audits ){
         $scope.auditList = audits;
