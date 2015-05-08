@@ -10,8 +10,10 @@
         $scope.filter = 'hello';
         
 		$scope.populateCodes = function( codes ){
+            console.log(codes);
         	$scope.launchCodes = codes
-            $scope.selectTab('list');
+            if( !$scope.isSelected('list') )
+                $scope.selectTab('list');
             $("ul.sidebar").slideDown(400);
         	$scope.$apply();
         }
