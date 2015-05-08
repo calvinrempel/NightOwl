@@ -109,10 +109,13 @@ class LaunchCodesModel
     * REVISIONS:
     *      Calvin Rempel - May 3, 2015
     *          - Added Mongo insertion/updating.
+	*
+	*	   Calvin Rempel - May 8, 2015
+	*		   - Fix: Creation date set on creation, not altered on edit.
     */
     public function createOrEditLaunchCode($token, $key, $restriction, $value, $owner, $description, $availableToJS)
     {
-        $logMessage = ' - EDIT - ';
+        $logMessage = ' - CREATE - ';
 
         // Try to set the code in Consul. If that works, add to Mongo.
         if ($this->setInConsul($key, $restriction, $value, $availableToJS))
@@ -129,18 +132,17 @@ class LaunchCodesModel
 
             // If the code doesn't already exist, set the creation date.
             $code = array('key' => $key);
-            if(is_null(($code = $this->db->LaunchCodes->findOne($code))))
+            if(!is_null(($code = $this->db->LaunchCodes->findOne($code))))
             {
                 $obj['createdDate'] = $code['createdDate'];
-                $logMessage = ' - CREATE - ';
+                $logMessage = ' - EDIT - ';
             }
 
             // Create/Edit the LaunchCode in Mongo
             $this->db->LaunchCodes->update($where, $obj, $options);
 
             // Log the edit
-            $logMessage .= $restriction . ' - ' . $value . ' JS(';
-            $logMessage .= ($availableToJS ? 'True' : 'False') . ')';
+            $logMessage .= $restriction . ' - ' . $value . ' JS(' . $availableToJS . ')';
 
             $this->audit->LogEdit($token, $logMessage, $key);
 
