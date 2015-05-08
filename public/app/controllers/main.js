@@ -5,7 +5,7 @@
 		$scope.config = NIGHTOWL_CONFIG;
 
         $scope.filters = {
-            dataCenter : $scope.config.dataCenters[0],
+            dataCenter : $scope.config.dataCenters[0].value,
             prefix : $scope.config.prefixes[0],
             filterBy : $scope.config.filters[0],
             filter : ''
