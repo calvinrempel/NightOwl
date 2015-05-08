@@ -47,7 +47,9 @@ app.controller('ListController', function($scope, $http) {
 		}
 
 		$scope.createCode = function(code){
-			var restriction, value, description, availableToJS;
+			var key, restriction, value, description, availableToJS;
+
+			key = $scope.prefix + "/" + code.key,
 
 			restriction = code.restriction || 'boolean';
 
@@ -62,7 +64,7 @@ app.controller('ListController', function($scope, $http) {
 			}
 
 			var newCode = {
-				key :  $scope.prefix + "/" + code.key,
+				key :  key,
 				restriction : restriction,
 				value : value,
 				description : description,

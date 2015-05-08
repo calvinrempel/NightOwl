@@ -1,54 +1,60 @@
-<div class="row" ng-controller="ListController">
-	<div class="col-lg-6 col-lg-offset-3">
-	<div class="btn-group">
-		<button class="btn" ng-class="{active: region == 'west'}" ng-click="region = 'west'">West</button>
-		<button class="btn" ng-class="{active: region == 'central'}" ng-click="region = 'central'">Central</button>
-		<button class="btn" ng-class="{active: region == 'east'}" ng-click="region = 'east'">East</button>
+<div ng-controller="ListController">
+	<div class="row" ng-controller="ListController">
+		<div class="col-lg-12">
+			<div class="btn-group">
+				<button class="btn" ng-class="{active: region == 'west'}" ng-click="region = 'west'">West</button>
+				<button class="btn" ng-class="{active: region == 'central'}" ng-click="region = 'central'">Central</button>
+				<button class="btn" ng-class="{active: region == 'east'}" ng-click="region = 'east'">East</button>
+			</div>
+			<br/>
+			<br/>
+		</div>
 	</div>
-	<br/>
-	<br/>
-</div></div>
 
-<div class="row">
-	<div class="col-lg-6 col-lg-offset-3">
-	<form id="filter">
-		<div class="form-inline">
-		<select class="form-control" ng-model="filterBy" ng-init="config.filters[0]" ng-options="filter for filter in config.filters">
-			<option value="">Filter Type</option>
-		</select>
-		<input class="form-control" type="text" ng-model="filter">
+	<div class="row">
+		<div class="col-lg-12">
+			<form id="filter">
+				<div class="form-inline">
+					<div class="form-group">
+						<select class="form-control" ng-model="filterBy" ng-init="config.filters[0]" ng-options="filter for filter in config.filters">
+							<option value="">Filter Type</option>
+						</select>
+						<input class="form-control" type="text" ng-model="filter">
+					</div>
+				</div>
+				<input class="btn" type="submit" value="filter" ng-click="reloadCodes()">
+			</form>
+		</div>
 	</div>
-		<input class="btn" type="submit" value="filter" ng-click="reloadCodes()">
-	</form>
-</div></div>
 
-<div class="row">
-	<div class="col-lg-6 col-lg-offset-3">
-	<form id="create">
-		<button class="btn" ng-hide="createMode" ng-click="createMode = true">Create New</button>
-		<table ng-show="createMode" mg-model="newCode">
-			<tr>
-				<td class="listTable">Key</td>
-				<td class="listTable">Restriction</td>
-				<td class="listTable">Value</td>
-				<td class="listTable">Description</td>
-				<td class="listTable">Available to JS?</td>
-			</tr>
-			<tr>
-				<td><input class="form-control" type="text" ng-model="newCode.key" /></td>
-				<td>
-					<select ng-model="newCode.restriction" ng-init="newCode.restriction = config.restrictions[0]"
-					ng-options="restriction for restriction in config.restrictions">
-					</select>
-				</td>
-				<td><input class="form-control" type="text" ng-model="newCode.value" ng-init="newCode.value = 0" /></td>
-				<td><textarea class="form-control" ng-model="newCode.description"></textarea></td>
-				<td><input class="form-control" type="checkbox" ng-model="newCode.availableToJS" ng-init="newCode.availableToJS = 0" /></td>
-				<td><button type="btn" ng-click="createCode(newCode); createMode = false">Create</button></td>
-			</tr>
-		</table>
-	</form>
-</div></div>
+	<div class="row">
+		<div class="col-lg-12">
+			<form id="create">
+				<button class="btn" ng-hide="createMode" ng-click="createMode = true">Create New</button>
+				<table ng-show="createMode" mg-model="newCode">
+					<tr>
+						<td class="listTable">Key</td>
+						<td class="listTable">Restriction</td>
+						<td class="listTable">Value</td>
+						<td class="listTable">Description</td>
+						<td class="listTable">Available to JS?</td>
+					</tr>
+					<tr>
+						<td><input class="form-control" type="text" ng-model="newCode.key" /></td>
+						<td>
+							<select ng-model="newCode.restriction" ng-init="newCode.restriction = config.restrictions[0]"
+							ng-options="restriction for restriction in config.restrictions">
+						</select>
+					</td>
+					<td><input class="form-control" type="text" ng-model="newCode.value" ng-init="newCode.value = 0" /></td>
+					<td><textarea class="form-control" ng-model="newCode.description"></textarea></td>
+					<td><input class="form-control" type="checkbox" ng-model="newCode.availableToJS" ng-init="newCode.availableToJS = 0" /></td>
+					<td><button type="btn" ng-click="createCode(newCode); createMode = false">Create</button></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</div>
 <div ng-show="launchCodes.length">
 	<table>
 		<thead>
@@ -76,4 +82,5 @@
 			<td><button class="btn" ng-click="deleteCode(code)">Delete</button></td>
 		</tr>
 	</table>
+</div>
 </div>
