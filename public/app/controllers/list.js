@@ -9,8 +9,7 @@ app.controller('ListController', function($scope, $http) {
 
 		// Should filter the code results based on the selected prefix
 		$scope.reloadCodes = function(){
-			console.log($scope.getFilters());
-			//API_HELPER.loadCodes($scope.populateCodes, $scope.getFilters());
+			API_HELPER.loadCodes($scope.populateCodes, $scope.getFilters());
 		};
 
 		// Toggles inputs for given code between enabled and disabled
