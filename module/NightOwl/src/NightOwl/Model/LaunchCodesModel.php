@@ -129,7 +129,7 @@ class LaunchCodesModel
 
             // If the code doesn't already exist, set the creation date.
             $code = array('key' => $key);
-            if(!is_null(($code = $this->db->LaunchCodes->findOne($code))))
+            if(is_null(($code = $this->db->LaunchCodes->findOne($code))))
             {
                 $obj['createdDate'] = $code['createdDate'];
                 $logMessage = ' - CREATE - ';

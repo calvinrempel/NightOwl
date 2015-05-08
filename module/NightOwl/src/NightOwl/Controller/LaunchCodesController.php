@@ -309,9 +309,9 @@ class LaunchCodesController extends AbstractRestfulController
         {
             // Determine which value is being filtered on.
             if ($filterBy == self::FILTER_BY_KEY)
-                $matchVal = $code->Key;
+                $matchVal = $code['Key'];
             if ($filterBy == self::FILTER_BY_VALUE)
-                $matchVal = $code->Value;
+                $matchVal = $code['Value'];
 
             // If the code matches the filter, add to output array.
             if (preg_match("/$filter/i", $matchVal))
