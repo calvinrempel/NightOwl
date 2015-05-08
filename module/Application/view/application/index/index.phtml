@@ -14,7 +14,6 @@
     <!--[if lt IE 9]><script type="text/javascript" src="/js/html5shiv.js"></script><![endif]-->
     <!--[if lt IE 9]><script type="text/javascript" src="/js/respond.min.js"></script><![endif]-->
     <script type="text/javascript" src="/app/lib/angular.min.js"></script>
-    <script type="text/javascript" src="/app/lib/angular-animate.min.js"></script>
     <script type="text/javascript" src="/app/lib/jquery-2.1.3.js"></script>
     <script type="text/javascript" src="/app/lib/bootstrap.min.js"></script>
 
@@ -31,7 +30,7 @@
     <script src=""></script>
 </head>
 <body>
-    <div ng-controller="MainController" ng-view ng-class="{ loginPanel:selected ==='login', listPanel:selected === 'list' || 'audit'}">
+    <div ng-controller="MainController">
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <div class="container">
                 <div class="navbar-header">
@@ -52,7 +51,7 @@
         </nav>
         <div class="containter">
             <div id="login"><div class="container" ng-include="'app/views/login.html'"></div></div>
-            <div id="list" hidden ><div class="container" ng-include="'app/views/list.html'" ></div></div>
+            <div id="list" hidden><div class="container" ng-include="'app/views/list.html'" ></div></div>
             <div id="audit" hidden><div class="container" ng-include="'app/views/audit.html'" ></div></div>
         </div>
     </div>

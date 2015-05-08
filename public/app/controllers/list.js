@@ -9,7 +9,7 @@ app.controller('ListController', function($scope, $http) {
 
 		// Should filter the code results based on the selected prefix
 		$scope.reloadCodes = function(){
-			API_HELPER.loadCodes($scope.populateCodes, $scope.getFilters());
+			API_HELPER.loadCodes($scope.populateCodes, $scope.invalidLogin, $scope.getFilters());
 		};
 
 		// Toggles inputs for given code between enabled and disabled
@@ -74,22 +74,4 @@ app.controller('ListController', function($scope, $http) {
 
 
 	});
-
-app.animation('.slide', [function() {
-  return {
-    // make note that other events (like addClass/removeClass)
-    // have different function input parameters
-    enter: function(element, doneFn) {
-      setTimeout(function() {jQuery(element).slideDown(100, doneFn);},1000);
-
-      // remember to call doneFn so that angular
-      // knows that the animation has concluded
-    },
-
-    leave: function(element, doneFn) {
-      jQuery(element).slideUp(1000, doneFn);
-    }
-  }
-}]);
-
 })();

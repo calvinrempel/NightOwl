@@ -10,6 +10,7 @@
 		$scope.populateCodes = function( codes ){
             console.log(codes);
         	$scope.launchCodes = codes
+            $scope.selectTab('list');
         	$scope.$apply();
         }
 
@@ -18,7 +19,6 @@
         }
 
         $scope.selectTab = function(val) {
-            console.log("HELLO");
             var oldElem = $("#" + $scope.selected);
             var newElem = $("#" + val);
             oldElem.slideUp(400, function(){
@@ -38,5 +38,19 @@
             return filters;
         }
 
+        $scope.invalidLogin = function(){
+            $scope.selectTab('login');
+        }
+
+        $scope.validLogin = function(result){
+            API_HELPER.saveToken(result);
+        }
+
+        $scope.login = function(user, pw) {
+            API_HELPER.loadCodes($scope.populateCodes, $scope.invalidLogin, user, pw)
+        }
+
+        API_HELPER.loadCodes($scope.populateCodes, $scope.invalidLogin, $scope.getFilters());
 	});
+
 })();
