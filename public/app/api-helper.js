@@ -88,6 +88,7 @@ var API_HELPER = (function () {
 		            url = url + '{}';
 		        }
 
+		        console.log(url);
 		        this.startLoading(null);
 		        $.getJSON(url, function(result){
 		        	_callback(result);
