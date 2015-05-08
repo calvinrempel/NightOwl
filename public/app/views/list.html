@@ -71,7 +71,7 @@
 			<td class="listTable"><select class="form-control" ng-model="code.restriction" ng-options="restriction for restriction in config.restrictions" disabled></select></td>
 			<td class="listTable"><input class="form-control" type="text" ng-model="code.value" disabled></td>
 			<td class="listTable"><textarea class="form-control" ng-model="code.description" cols=50 disabled></textarea></td>
-			<td class="listTable"><input class="form-control" type="checkbox" ng-model="code.isAvailableToJs" ng-checked="code.isAvailableToJs" disabled></td>
+			<td class="listTable"><input class="form-control" type="checkbox" ng-model="code.availableToJS" ng-checked="code.availableToJS" disabled></td>
 			<td ng-hide="inEditMode($index)">
 				<button class="btn" ng-click="toggleEditMode($index)">Edit</button>
 			</td>
