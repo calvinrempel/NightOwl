@@ -76,7 +76,7 @@ td:not(:first-child) { text-align: center; }
 }
 
 .listTable {
-    border: 2px solid;
+    border: 2px solid gray;
     background-color: rgba(0, 0, 0, 0.3);
 }
 
@@ -94,4 +94,15 @@ body{
 
 .row{
     padding-top: 60px;
+}
+
+table {
+    border-collapse: collapse;
+    border-radius: 15px;
+    border-style: hidden; /* hide standard table (collapsed) border */
+    box-shadow: 0 0 0 2px gray; /* this draws the table border  */ 
+}
+
+td {
+    border: 1px solid #ccc;
 }
