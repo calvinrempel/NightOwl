@@ -127,6 +127,11 @@ class LaunchCodesController extends AbstractRestfulController
     *
     * Author: Calvin Rempel
     * Date: May 1, 2015
+	*
+	* REVISIONS:
+	*		Calvin Rempel - May 8, 2015
+	*			 - Removed requirement to provide description with creation.
+	*			   Defaults to empty string.
     */
     public function create($data)
     {
@@ -144,7 +149,6 @@ class LaunchCodesController extends AbstractRestfulController
         if (is_null($key) ||
             !isset($data['restriction']) ||
             !isset($data['value']) ||
-            !isset($data['description']) ||
             !isset($data['availableToJS']))
         {
             return $this->prepareInvalidArgumentResponse();
@@ -153,8 +157,8 @@ class LaunchCodesController extends AbstractRestfulController
         // Get the parameters
         $restriction = $data['restriction'];
         $value       = $data['value'];
-        $description = $data['description'];
-        $js      = $data['availableToJS'];
+        $description = (isset($data['description']) ? $data['description'] : '');
+        $js          = $data['availableToJS'];
         $owner       = '';
 
         if (isset($data['owner']))
