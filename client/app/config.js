@@ -21,5 +21,11 @@ var NIGHTOWL_CONFIG = {
 
 	dataCenters: [
 		"dc1"
-	]
+	],
+
+    searches : [
+        "Owner",
+        "Code",
+        "Message"
+    ]
 };
