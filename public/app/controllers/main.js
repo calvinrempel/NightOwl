@@ -4,10 +4,12 @@
 		$scope.selected = 'login';
 		$scope.config = NIGHTOWL_CONFIG;
 
-        $scope.dataCenter = $scope.config.dataCenters[0];
-        $scope.prefix = $scope.config.prefixes[0];
-        $scope.filterBy = $scope.config.filters[0];
-        $scope.filter = 'hello';
+        $scope.filters = {
+            dataCenter : $scope.config.dataCenters[0],
+            prefix : $scope.config.prefixes[0],
+            filterBy : $scope.config.filters[0],
+            filter : ''
+        };
         
 		$scope.populateCodes = function( codes ){
             console.log(codes);
@@ -33,13 +35,7 @@
         }
 
         $scope.getFilters = function(){
-            var filters = {
-                dc : $scope.dataCenter,
-                prefix : $scope.prefix,
-                filterBy : $scope.filterBy,
-                filter : $scope.filter
-            }
-            return filters;
+            return $scope.filters;
         }
 
         $scope.login = function(user, pw) {
