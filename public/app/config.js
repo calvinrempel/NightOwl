@@ -23,5 +23,11 @@ var NIGHTOWL_CONFIG = {
 		"dc1"
 	],
 
-	tokenName: "NightOwlAuth"
+	tokenName: "NightOwlAuth",
+
+	searches : [
+        "Owner",
+        "Code",
+        "Message"
+    ]
 };

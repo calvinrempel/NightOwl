@@ -5,7 +5,7 @@
 		$scope.config = NIGHTOWL_CONFIG;
 
         $scope.dataCenter = $scope.config.dataCenters[0];
-        // $scope.prefix = $scope.config.prefixes[0];
+        $scope.prefix = $scope.config.prefixes[0];
         
 		$scope.populateCodes = function( codes ){
             console.log(codes);
