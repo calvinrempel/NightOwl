@@ -27,7 +27,7 @@ var NIGHTOWL_CONFIG = {
 
 	tokenName: "NightOwlAuth",
 
-	searches : [
+	auditFilters : [
         "All",
         "Owner",
         "Code",
