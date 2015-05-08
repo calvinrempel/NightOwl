@@ -1,15 +1,17 @@
 <div class="row" ng-controller="LoginController">
+    <div class="col-lg-6 col-lg-offset-3">
     <table>
     <form>
         <tr>
             <td>Username:</td>
-            <td><input type="text" name="user" ng-model="name"></td>
+            <td><input type="text" name="user" ng-model="name" class="form-control"></td>
         </tr>
         <tr>
             <td>Password:</td>
-            <td><input type="password" name="password" ng-model="pw"></td>
+            <td><input type="password" name="password" ng-model="pw" class="form-control"></td>
         </tr>
-        <tr><td></td><td><input type="submit" value="Login" class="btnSubmit" ng-click="login(name, pw)"></td></tr>
+        <tr><td></td><td><input type="submit" value="Login" class="btnSubmit form-control" ng-click="login(name, pw)" ></td></tr>
     </form>
     </table>
+    </div>
 </div>

@@ -61,6 +61,7 @@ td:not(:first-child) { text-align: center; }
     padding-left: 0px;
 }
 */
+
 .btnSubmit {
     display: block;
     margin-right: auto;
@@ -74,36 +75,6 @@ td:not(:first-child) { text-align: center; }
     margin-left: auto;
 }
 
-.listPanel {
-    background-image: url("../img/nightowldark.png");
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: bottom right;
-    background-color: #04090a;
-    width:100%;
-    height:100%;
-    position:absolute;
-    top:0;
-    left:0;
-    padding-top: 60px;
-
-}
-
-.loginPanel {
-    background-image: url("../img/nightowl2.png");
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: bottom right;
-    background-color: #0b1c1e;
-    width:100%;
-    height:100%;
-    position:absolute;
-    top:0;
-    left:0;
-    padding-top: 8%;
-    padding-left: 10%;
-}
-
 .listTable {
     border: 2px solid;
     background-color: rgba(0, 0, 0, 0.3);
@@ -111,5 +82,16 @@ td:not(:first-child) { text-align: center; }
 
 .listHeader {
     border: 2px solid;
+}
 
+body{
+    background-image: url("../img/nightowldark.png");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: bottom right;
+    background-color: #04090a;
+}
+
+.row{
+    padding-top: 60px;
 }

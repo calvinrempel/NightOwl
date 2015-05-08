@@ -1,3 +1,4 @@
+(function(){
 app.controller('ListController', function($scope, $http) {
 		
 		// Create mode is off
@@ -61,7 +62,7 @@ app.controller('ListController', function($scope, $http) {
 			}
 
 			var newCode = {
-				key :  encodeURIComponent($scope.prefix + "/" + code.key),
+				key :  $scope.prefix + "/" + code.key,
 				restriction : restriction,
 				value : value,
 				description : description,
@@ -73,3 +74,4 @@ app.controller('ListController', function($scope, $http) {
 
 
 	});
+})();

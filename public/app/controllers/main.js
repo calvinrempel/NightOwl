@@ -5,11 +5,13 @@
 		$scope.config = NIGHTOWL_CONFIG;
 
         $scope.dataCenter = $scope.config.dataCenters[0];
-        $scope.prefix = $scope.config.prefixes[0];
+        // $scope.prefix = $scope.config.prefixes[0];
         
 		$scope.populateCodes = function( codes ){
             console.log(codes);
         	$scope.launchCodes = codes
+            $scope.selectTab('list');
+            $("ul.sidebar").slideDown(400);
         	$scope.$apply();
         }
 
@@ -18,7 +20,13 @@
         }
 
         $scope.selectTab = function(val) {
-            $scope.selected = val;
+            var oldElem = $("#" + $scope.selected);
+            var newElem = $("#" + val);
+            oldElem.slideUp(400, function(){
+                newElem.slideDown(400, function() {
+                    $scope.selected = val;
+                });
+            });
         }
 
         $scope.getFilters = function(){
@@ -31,5 +39,18 @@
             return filters;
         }
 
+        $scope.login = function(user, pw) {
+            API_HELPER.login(user, pw, function(token){
+                API_HELPER.saveToken(token);
+                API_HELPER.loadCodes($scope.populateCodes, $scope.invalidLogin, $scope.getFilters());                
+            });
+        }
+        $scope.logout = function(){
+            API_HELPER.deleteToken();
+            location.reload(true);
+        }
+
+        API_HELPER.loadCodes($scope.populateCodes, $scope.getFilters());
 	});
+
 })();

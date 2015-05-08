@@ -1,9 +1,29 @@
-			<div class="row" ng-controller="AuditController">
-				<table>
-					<tr ng-repeat="audit in audits">
-						<td>{{ audit.key }}</td>
-						<td>{{ audit.value }}</td>
-					</tr>
-				</table>
-				{{msg}}
-			</div>
+<div class="row" ng-controller="AuditController">
+    <br/>
+    <br/>
+    <form id="audit" style="clear:both">
+        <select ng-model="filterBy" ng-init="config.searches[0]" ng-options="search for search in config.searches">
+            <option value="">All</option>
+        </select>
+        <input type="text" ng-model="filter">
+        <input type="submit" value="filter" ng-click="reloadAudits()">
+    </form>
+</div>
+<div ng-show="auditList.length">
+    <table>
+        <thead>
+        <tr>
+            <td class="listTable">Date</td>
+            <td class="listTable">Owner</td>
+            <td class="listTable">Code</td>
+            <td class="listTable">Message</td>
+        </tr>
+        </thead>
+        <tr ng-repeat="audit in auditList" id="code-{{$index}}">
+            <td class="listTable">{{ audit.createdDate }}<div style="font-size: 75%">{{ audit.createdDate }}</div></td>
+            <td class="listTable">{{ audit.owner }}</td>
+            <td class="listTable">{{ audit.code }}</td>
+            <td class="listTable">{{ audit.message }}</td>
+        </tr>
+    </table>
+</div>
