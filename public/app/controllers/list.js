@@ -1,3 +1,4 @@
+(function(){
 app.controller('ListController', function($scope, $http) {
 		
 		// Create mode is off
@@ -73,3 +74,22 @@ app.controller('ListController', function($scope, $http) {
 
 
 	});
+
+app.animation('.slide', [function() {
+  return {
+    // make note that other events (like addClass/removeClass)
+    // have different function input parameters
+    enter: function(element, doneFn) {
+      setTimeout(function() {jQuery(element).slideDown(100, doneFn);},1000);
+
+      // remember to call doneFn so that angular
+      // knows that the animation has concluded
+    },
+
+    leave: function(element, doneFn) {
+      jQuery(element).slideUp(1000, doneFn);
+    }
+  }
+}]);
+
+})();

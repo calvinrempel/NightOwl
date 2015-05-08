@@ -18,7 +18,14 @@
         }
 
         $scope.selectTab = function(val) {
-            $scope.selected = val;
+            console.log("HELLO");
+            var oldElem = $("#" + $scope.selected);
+            var newElem = $("#" + val);
+            oldElem.slideUp(400, function(){
+                newElem.slideDown(400, function() {
+                    $scope.selected = val;
+                });
+            });
         }
 
         $scope.getFilters = function(){

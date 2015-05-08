@@ -14,6 +14,7 @@
     <!--[if lt IE 9]><script type="text/javascript" src="/js/html5shiv.js"></script><![endif]-->
     <!--[if lt IE 9]><script type="text/javascript" src="/js/respond.min.js"></script><![endif]-->
     <script type="text/javascript" src="/app/lib/angular.min.js"></script>
+    <script type="text/javascript" src="/app/lib/angular-animate.min.js"></script>
     <script type="text/javascript" src="/app/lib/jquery-2.1.3.js"></script>
     <script type="text/javascript" src="/app/lib/bootstrap.min.js"></script>
 
@@ -50,9 +51,9 @@
             </div>
         </nav>
         <div class="containter">
-            <div class="container" ng-include="'app/views/login.html'" ng-show="isSelected('login')"></div>
-            <div class="container" ng-include="'app/views/list.html'" ng-show="isSelected('list')"></div>
-            <div class="container" ng-include="'app/views/audit.html'" ng-show="isSelected('audit')"></div>
+            <div id="login"><div class="container" ng-include="'app/views/login.html'"></div></div>
+            <div id="list" hidden ><div class="container" ng-include="'app/views/list.html'" ></div></div>
+            <div id="audit" hidden><div class="container" ng-include="'app/views/audit.html'" ></div></div>
         </div>
     </div>
 </body>
