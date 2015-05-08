@@ -9,7 +9,7 @@ app.controller('ListController', function($scope, $http) {
 
 		// Should filter the code results based on the selected prefix
 		$scope.reloadCodes = function(){
-			API_HELPER.loadCodes($scope.populateCodes, $scope.invalidLogin, $scope.getFilters());
+			API_HELPER.loadCodes($scope.populateCodes, $scope.getFilters());
 		};
 
 		// Toggles inputs for given code between enabled and disabled
@@ -62,7 +62,7 @@ app.controller('ListController', function($scope, $http) {
 			}
 
 			var newCode = {
-				key :  encodeURIComponent($scope.prefix + "/" + code.key),
+				key :  $scope.prefix + "/" + code.key,
 				restriction : restriction,
 				value : value,
 				description : description,

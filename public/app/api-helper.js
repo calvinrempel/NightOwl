@@ -19,7 +19,7 @@ var API_HELPER = (function () {
 					API_HELPER.loadCodes( _callback, filters );
 				})
 			  .always(function() {
-			    this.stopLoading(null);
+			    API_HELPER.stopLoading(null);
 			  });
 			},
 
@@ -49,7 +49,7 @@ var API_HELPER = (function () {
 				return url;
 			},
 
-			loadCodes : function( _success, _failure, filters ){
+			loadCodes : function( _callback, filters ){
 
 				if( !filters ){
 					filters = { dc : "dc1" };
@@ -60,24 +60,33 @@ var API_HELPER = (function () {
 
 				this.startLoading(null);
 				$.getJSON(url, function(json, textStatus) {
-					_success(json.codes);
-				})
-				.fail(function(){
-					_failure();
+					console.log(url);
+					console.log(json);
+					_callback(json.codes);
 				})
 			  .always(function() {
 			    API_HELPER.stopLoading(null);
 			  });
 			},
 
+			login : function(user, pw, _callback){
+				var url = this.API_URL + '/login/' + user + '/' + pw;
+				$.getJSON(url, function(data) {
+					_callback(data);
+				});
+			},
 
 			makePostURL : function( code ){
-				return this.API_URL + "/codes/" + this.getToken() + "/" + code.key;
+				return this.API_URL + "/codes/" + this.getToken() + "/" + encodeURIComponent(code.key);
 			},
 
 			// Save Token
 			saveToken : function(result){
 				localStorage.setItem("key", result.key);
+			},
+
+			deleteToken : function(){
+				localStorage.removeItem("key");
 			},
 
 			startLoading : function(element){
