@@ -24,15 +24,39 @@ app.controller('AuditController', function($scope, $http) {
 
     // Should filter the code results based on the selected prefix
     $scope.reloadAudits = function(){
-        API_HELPER.loadCodes($scope.populateAudits, $scope.getSearches());
+        API_HELPER.loadAudits($scope.populateCodes, $scope.getSearches());
     };
 
-    $scope.login = function(user, pw) {
+    $scope.doSearch = function(val) {
+        var opt = document.getElementById("searchOption");
+        var str = document.getElementById("searchText");
+
         var url = $scope.config.API_URL + '/audit/' + API_HELPER.getToken() + '/';
 
-        //if()
-
-
+        if(opt == 'Owner') {
+            url = url + '{"owner":{"$regex":"' + str + '"}}';
+            $.getJSON( url, function(result) {
+                API_HELPER.loadAudits($scope.populateAudits, url);
+            })
+        }
+        else if(opt == 'Code') {
+            url = url + '{"code":{"$regex":"' + str + '"}}';
+            $.getJSON( url, function(result) {
+                API_HELPER.loadAudits($scope.populateAudits, url);
+            })
+        }
+        else if(opt == 'Message') {
+            url = url + '{"message":{"$regex":"' + str + '"}}';
+            $.getJSON( url, function(result) {
+                API_HELPER.loadAudits($scope.populateAudits, url);
+            })
+        }
+        else {
+            url = url + '{}';
+            $.getJSON( url, function(result) {
+                API_HELPER.loadAudits($scope.populateAudits, url);
+            })
+        }
     };
 
 });

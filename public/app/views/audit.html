@@ -1,13 +1,12 @@
 <div class="row" ng-controller="AuditController">
-    <br/>
-    <br/>
     <form id="audit" style="clear:both">
-        <select ng-model="filterBy" ng-init="config.searches[0]" ng-options="search for search in config.searches">
-            <option value="">All</option>
+        <select id="searchOption" ng-model="filterBy" ng-init="config.searches[0]" ng-options="search for search in config.searches">
+            <option value="">Filter By</option>
         </select>
-        <input type="text" ng-model="filter">
-        <input type="submit" value="filter" ng-click="reloadAudits()">
+        <input type="text" ng-model="filter" id="searchText">
+        <input type="submit" value="filter" ng-click="doSearch()">
     </form>
+    <br/>
 </div>
 <div ng-show="auditList.length">
     <table>
@@ -20,10 +19,10 @@
         </tr>
         </thead>
         <tr ng-repeat="audit in auditList" id="code-{{$index}}">
-            <td class="listTable">{{ audit.createdDate }}<div style="font-size: 75%">{{ audit.createdDate }}</div></td>
-            <td class="listTable">{{ audit.owner }}</td>
-            <td class="listTable">{{ audit.code }}</td>
-            <td class="listTable">{{ audit.message }}</td>
+            <td class="listTable" ng-model="audit.createdDate"></td>
+            <td class="listTable" ng-model="audit.owner"></td>
+            <td class="listTable" ng-model="audit.code"></td>
+            <td class="listTable" ng-model="audit.message"></td>
         </tr>
     </table>
 </div>
