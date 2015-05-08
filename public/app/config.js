@@ -28,6 +28,7 @@ var NIGHTOWL_CONFIG = {
 	tokenName: "NightOwlAuth",
 
 	searches : [
+        "All",
         "Owner",
         "Code",
         "Message"

@@ -13,11 +13,20 @@
         
 		$scope.populateCodes = function( codes ){
             console.log(codes);
-        	$scope.launchCodes = codes
+        	$scope.launchCodes = codes;
             if( !$scope.isSelected('list') )
                 $scope.selectTab('list');
             $("ul.sidebar").slideDown(400);
         	$scope.$apply();
+        }
+
+        $scope.populateAudits = function( audits ){
+            console.log(audits);
+            $scope.auditList = audits;
+            if( !$scope.isSelected('audit') )
+                $scope.selectTab('audit');
+            $("ul.sidebar").slideDown(400);
+            $scope.$apply();
         }
 
         $scope.isSelected = function(val) {

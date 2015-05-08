@@ -73,6 +73,23 @@ var API_HELPER = (function () {
 			  });
 			},
 
+            loadAudits : function( _callback, url ){
+
+                console.log(url);
+
+                this.startLoading(null);
+                $.getJSON(url, function(json, textStatus) {
+                    console.log("HELLO");
+                    _callback(json.audits);
+                })
+                    .fail(function(){
+                        console.log("FAILURE");
+                    })
+                    .always(function() {
+                        API_HELPER.stopLoading(null);
+                    });
+            },
+
 			login : function(user, pw, _callback){
 				var url = this.API_URL + '/login/' + user + '/' + pw;
 				$.getJSON(url, function(data) {
