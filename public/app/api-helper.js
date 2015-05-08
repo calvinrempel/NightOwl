@@ -74,15 +74,15 @@ var API_HELPER = (function () {
 			},
 
             loadAudits : function( _callback, filters ){
-        		var url = this.API_URL + '/audit/' + API_HELPER.getToken() + '/';
+        		var url = this.API_URL + '/audit/' + this.getToken() + '/';
 		        if(filters.filterBy == 'Owner') {
 		            url = url + '{"owner":{"$regex":"' + filters.filter + '"}}';
 		        }
 		        else if(filters.filterBy == 'Code') {
-		            url = url + '{"code":{"$regex":"' + str + '"}}';
+		            url = url + '{"code":{"$regex":"' + filters.filter + '"}}';
 		        }
 		        else if(filters.filterBy == 'Message') {
-		            url = url + '{"message":{"$regex":"' + str + '"}}';
+		            url = url + '{"message":{"$regex":"' + filters.filter + '"}}';
 		        }
 		        else {
 		            url = url + '{}';
