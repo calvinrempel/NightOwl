@@ -88,6 +88,7 @@ class LaunchCodesController extends AbstractRestfulController
         // Retrieve the applicable codes from the model.
         $codeProvider = new LaunchCodesModel();
         $codes = $codeProvider->getLaunchCodes($dc, $prefix, true);
+		$codes = $this->formatCodeOutput($codes);
 
         // If the user has asked to filter by a valid parameter, filter the results.
         if ($this->isValidFilter($filterBy) && !is_null($filter))
@@ -99,7 +100,7 @@ class LaunchCodesController extends AbstractRestfulController
         if (count($codes) > 0)
         {
             // Alter the structure of the codes for applicability on the client
-            $codes = array_slice($this->formatCodeOutput($codes), 0, self::HARD_OUTPUT_LIMIT);
+            $codes = array_slice($codes, 0, self::HARD_OUTPUT_LIMIT);
 
             // Get the MetaData from the Database and add it to the output
             $codeProvider->injectMetadata($codes);
@@ -324,10 +325,10 @@ class LaunchCodesController extends AbstractRestfulController
         {
             // Determine which value is being filtered on.
             if ($filterBy == self::FILTER_BY_KEY)
-                $matchVal = $code['Key'];
+                $matchVal = $code['key'];
             if ($filterBy == self::FILTER_BY_VALUE)
-                $matchVal = $code['Value'];
-
+                $matchVal = $code['value'];
+			
             // If the code matches the filter, add to output array.
             if (preg_match("/$filter/i", $matchVal))
             {
