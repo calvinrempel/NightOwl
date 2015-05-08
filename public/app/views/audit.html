@@ -8,7 +8,7 @@
     </form>
     <br/>
 </div>
-<div ng-show="auditList.length">
+<div>
     <table>
         <thead>
         <tr>
@@ -18,11 +18,11 @@
             <td class="listTable">Message</td>
         </tr>
         </thead>
-        <tr ng-repeat="audit in auditList" id="code-{{$index}}">
-            <td class="listTable" ng-model="audit.createdDate"></td>
-            <td class="listTable" ng-model="audit.owner"></td>
-            <td class="listTable" ng-model="audit.code"></td>
-            <td class="listTable" ng-model="audit.message"></td>
+        <tr ng-repeat="audit in auditList">
+            <td class="listTable">{{audit.time}}</td>
+            <td class="listTable">{{audit.owner}}</td>
+            <td class="listTable">{{audit.code}}</td>
+            <td class="listTable">{{audit.message}}</td>
         </tr>
     </table>
 </div>
