@@ -23,9 +23,6 @@
         $scope.populateAudits = function( audits ){
             console.log(audits);
             $scope.auditList = audits;
-            if( !$scope.isSelected('audit') )
-                $scope.selectTab('audit');
-            $("ul.sidebar").slideDown(400);
             $scope.$apply();
         }
 
