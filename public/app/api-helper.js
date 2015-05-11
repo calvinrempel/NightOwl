@@ -76,17 +76,17 @@ var API_HELPER = (function () {
             loadAudits : function( _callback, filters ){
         		var url = this.API_URL + '/audit/' + this.getToken() + '/';
 		        if(filters.filterBy == 'Owner') {
-		            url = url + '{"owner":{"$regex":"' + filters.filter + '"}}';
+		            url = url + '{"owner":{"$regex":"' + filters.filter + '","$options":"-i"}}';
 		        }
 		        else if(filters.filterBy == 'Code') {
-		            url = url + '{"code":{"$regex":"' + filters.filter + '"}}';
+		            url = url + '{"code":{"$regex":"' + filters.filter + '","$options":"-i"}}';
 		        }
 		        else if(filters.filterBy == 'Message') {
-		            url = url + '{"message":{"$regex":"' + filters.filter + '"}}';
+		            url = url + '{"message":{"$regex":"' + filters.filter + '","$options":"-i"}}';
 		        }
-		        else {
-		            url = url + '{}';
-		        }
+		        else if(filters.filterBy == 'All') {
+                    url = url + '{"$or":[{"owner":{"$regex":"' + filters.filter + '","$options":"-i"}},{"code":{"$regex":"' + filters.filter + '","$options":"-i"}},{"message":{"$regex":"' + filters.filter + '","$options":"-i"}}]}';
+                }
 
 		        console.log(url);
 		        this.startLoading(null);
