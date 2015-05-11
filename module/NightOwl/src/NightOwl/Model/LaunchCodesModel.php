@@ -3,6 +3,7 @@
 namespace NightOwl\Model;
 
 use NightOwl\Model\Audit;
+use NightOwl\Model\RestfulConsul;
 use MongoClient;
 
 /**
@@ -16,8 +17,9 @@ use MongoClient;
 */
 class LaunchCodesModel
 {
-    /* HTTP Statuses that indicate Consul response types. */
-    const CONSUL_SUCCESS_CODE = 200;
+    const METHOD_GET = 'GET';
+    const METHOD_SET = 'SET';
+    const METHOD_DELETE = 'DELETE';
 
     /**
     * Create a new instance of LaunchCodesModel and connect to the MongoDB.
@@ -25,6 +27,17 @@ class LaunchCodesModel
     public function __construct()
     {
         $this->config = $this->getConfig();
+
+        // Setup IConsul objects to use for each request type
+        $restfulConsul= new RestfulConsul($this->config['consul']['host'],
+                                          $this->config['consul']['port']);
+
+        // Map Consul Interfaces to the appropriate request types.
+        $this->consulInterfaces = array(
+                self::METHOD_GET    => $restfulConsul,
+                self::METHOD_SET    => $restfulConsul,
+                self::METHOD_DELETE => $restfulConsul
+        );
 
         // Create DB
         $dbn = $this->config['mongo']['name'];
@@ -58,36 +71,8 @@ class LaunchCodesModel
     */
     public function getLaunchCodes($dataCentre, $prefix, $recurse)
     {
-        $httpCode = 0;
-        $result = '';
-        $url = $this->getConsulKVUrl() . $prefix;
-
-        // Build the data centre into the URL if set
-        if ($dataCentre !== '')
-        {
-            $url .= '?dc=' . $dataCentre;
-
-            // Append 'recurse' property if requested
-            if ($recurse)
-                $url .= '&recurse';
-        }
-        // Append only 'recurse' if required.
-        else if ($recurse)
-        {
-            $url .= '?recurse';
-        }
-
-        // Request data through curl
-        $result = $this->doCurlRequest($url, $httpCode, 'GET');
-
-        // Successfully retrieved data from Consul
-        if ($httpCode == self::CONSUL_SUCCESS_CODE)
-        {
-            return json_decode(($result), true);
-        }
-
-        // An error occurred or the set is empty
-        return FALSE;
+        $consul = $this->consulInterfaces[self::METHOD_GET];
+        return $consul->get($prefix, $recurse, $dataCentre);
     }
 
     /**
@@ -168,16 +153,13 @@ class LaunchCodesModel
     *      Calvin Rempel - May 3, 2015
     *          - Added Mongo entry deletion.
     */
-    public function deleteLaunchCode($token, $key)
+    public function deleteLaunchCode($key, $dataCentre='')
     {
-        $url = $this->getConsulKVUrl() . $key;
-        $status = 0;
-
-        // Attempt to Delete from Consul
-        $this->doCurlRequest($url, $status, 'DELETE');
+        $consul = $this->consulInterfaces[self::METHOD_DELETE];
+        $success = $consul->remove($key, $dataCentre);
 
         // Return true on success / false on failure
-        if ($status == self::CONSUL_SUCCESS_CODE)
+        if ($success)
         {
             $this->audit->LogEdit($token, ' - DELETE - ', $key);
             $this->db->LaunchCodes->remove(array('key' => $key));
@@ -233,57 +215,7 @@ class LaunchCodesModel
         }
     }
 
-    /**
-    * Get the URL to access the Consul RESTful API on.
-    *
-    * Returns: the Consul REST API url in the form "host:port/v1/kv"
-    *
-    * Author: Calvin Rempel
-    * Date: April 30, 2015
-    */
-    private function getConsulKVUrl()
-    {
-        $consul = $this->config['consul'];
 
-        return $consul['host'] . ':' . $consul['port'] . '/v1/kv/';
-    }
-
-    /**
-    * Perform a generic curl request to the given URL, with the given body.
-    * The result of the call is returned from the function and the HTTP status
-    * returned is supplied through the $status parameter.
-    *
-    * Params:
-    *      $url    : The url to make the request to.
-    *      $status : A reference through which the HTTP code is returned.
-    *      $verb   : the HTTP verb to use in the request (e.g. "GET").
-    *      $body   : the payload of the request (if required).
-    *
-    * Returns: the results of the curl request.
-    *
-    * Author: Calvin Rempel
-    * Date: April 30, 2015
-    */
-    private function doCurlRequest($url, &$status, $verb, $body='')
-    {
-        // Create/initialize curl handle
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $verb);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/text','Content-Length: ' . strlen($body)));
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
-        curl_setopt($ch, CURLOPT_HEADER, FALSE);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-
-        // Make curl request.
-        $result = curl_exec($ch);
-        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-        // Close curl handle
-        curl_close($ch);
-
-        return $result;
-    }
 
     /**
     * Set the value of the key in the Consul data store. If the key does not
@@ -346,4 +278,9 @@ class LaunchCodesModel
     * Configuration data found in NightOwl/config/autoload/local.php
     */
     private $config;
+
+    /**
+    * A map indicating which IConsul type to use for each method.
+    */
+    private $consulInterfaces;
 }
