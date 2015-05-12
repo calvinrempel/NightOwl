@@ -69,4 +69,7 @@ table.data .btn:hover {
   color: white !important;
   background-color: black; }
 
+/* Full width */
+.full-width{ width: 100% }
+
 /*# sourceMappingURL=style.css.map */
