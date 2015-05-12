@@ -62,7 +62,7 @@ var API_HELPER = (function () {
 
 				this.startLoading(null);
 				$.getJSON(url, function(json, textStatus) {
-					console.log("HELLO");
+					console.log(json);
 					_callback(json.codes);
 				})
 				.fail(function(){

@@ -76,7 +76,7 @@
 			</tr>
 		</thead>
 		<tr ng-repeat="code in launchCodes" id="code-{{$index}}">
-			<td class="listTable">{{ code.key }}<div style="font-size: 75%">{{ code.createdDate }}</div></td>
+			<td class="listTable">{{ code.key }}<div style="font-size: 75%">{{ code.dateCreated }}</div></td>
 			<td class="listTable"><select class="form-control" ng-model="code.restriction" ng-options="restriction for restriction in config.restrictions" disabled></select></td>
 			<td class="listTable"><input class="form-control" type="text" ng-model="code.value" disabled></td>
 			<td class="listTable"><textarea class="form-control" ng-model="code.description" cols=50 disabled></textarea></td>
