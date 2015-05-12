@@ -31,7 +31,7 @@
         }
 
         $scope.resetFilters = function(){
-            if($.isUndefined($scope.dc))
+            if($scope.dc === undefined)
                 $scope.setDataCenter( $scope.dc );
             else
                 $scope.setDataCenter( $scope.config.dataCenters[0] );
