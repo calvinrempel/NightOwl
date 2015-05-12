@@ -12,7 +12,7 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<form id="filter">
-				<table>
+				<table class="bordered">
 					<thead>
 					<tr>
 						<td>Filter Codes</td>
@@ -41,14 +41,14 @@
 		<div class="col-lg-12">
 			<form id="create">
 				<button class="btn" ng-hide="createMode" ng-click="createMode = true">Create New</button>
-				<table ng-show="createMode" mg-model="newCode">
+				<table ng-show="createMode" mg-model="newCode" class="data bordered">
 					<thead>
 					<tr>
-						<td class="listTable">Key</td>
-						<td class="listTable">Restriction</td>
-						<td class="listTable">Value</td>
-						<td class="listTable">Description</td>
-						<td class="listTable">Available to JS?</td>
+						<td>Key</td>
+						<td>Restriction</td>
+						<td>Value</td>
+						<td>Description</td>
+						<td>Available to JS?</td>
 					</tr>
 					</thead>
 					<tr>
@@ -73,19 +73,19 @@
 	<table class="data">
 		<thead>
 			<tr>
-				<td class="listTable">Key</td>
-				<td class="listTable">Restriction</td>
-				<td class="listTable">Value</td>
-				<td class="listTable">Description</td>
-				<td class="listTable">Available to JS</td>
+				<td>Key</td>
+				<td>Restriction</td>
+				<td>Value</td>
+				<td>Description</td>
+				<td>Available to JS</td>
 			</tr>
 		</thead>
 		<tr ng-repeat="code in launchCodes" id="code-{{$index}}">
-			<td class="listTable">{{ code.key }}<div style="font-size: 75%">{{ code.dateCreated }}</div></td>
-			<td class="listTable"><select class="form-control" ng-model="code.restriction" ng-options="restriction for restriction in config.restrictions" disabled></select></td>
-			<td class="listTable"><input class="form-control" type="text" ng-model="code.value" disabled></td>
-			<td class="listTable"><textarea class="form-control" ng-model="code.description" cols=50 disabled></textarea></td>
-			<td class="listTable"><input class="form-control" type="checkbox" ng-checked="code.availableToJS == 'true'" ng-click="toggleJS(code)" disabled></td>
+			<td>{{ code.key }}<div style="font-size: 75%">{{ code.dateCreated }}</div></td>
+			<td><select class="form-control" ng-model="code.restriction" ng-options="restriction for restriction in config.restrictions" disabled></select></td>
+			<td><input class="form-control" type="text" ng-model="code.value" disabled></td>
+			<td><textarea class="form-control" ng-model="code.description" cols=50 disabled></textarea></td>
+			<td><input class="form-control" type="checkbox" ng-checked="code.availableToJS == 'true'" ng-click="toggleJS(code)" disabled></td>
 			<td ng-hide="inEditMode($index)">
 				<button class="btn" ng-click="toggleEditMode($index)">Edit</button>
 			</td>
