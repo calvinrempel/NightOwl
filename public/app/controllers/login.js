@@ -1,5 +1,5 @@
 (function(){
-app.controller('LoginController', function($scope, $http, $location) {
+app.controller('LoginController', function($scope, $http) {
     $scope.login = function(user, pw) {
         var url = $scope.config.API_URL + '/login/' + user + '/' + pw;
         $http.get( url ).
