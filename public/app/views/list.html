@@ -57,7 +57,8 @@
 					<td><input class="form-control" type="text" ng-model="newCode.value" ng-init="newCode.value = 0" /></td>
 					<td><textarea class="form-control" ng-model="newCode.description"></textarea></td>
 					<td><input class="form-control" type="checkbox" ng-model="newCode.availableToJS" ng-init="newCode.availableToJS = 0" /></td>
-					<td><button type="btn" ng-click="createCode(newCode); createMode = false">Create</button></td>
+					<td><button type="btn" ng-click="createCode()">Create</button></td>
+					<td><button type="btn" ng-click="createMode = false">Cancel</button></td>
 				</tr>
 			</table>
 		</form>
