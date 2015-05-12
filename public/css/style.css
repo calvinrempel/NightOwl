@@ -72,6 +72,14 @@ table.data{ width: 100%; }
   color: white !important;
   background-color: black; }
 
+  table.bordered{
+      border: 1px solid #00aeef;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  border-radius: 4px; 
+}
+
 
 
 /*# sourceMappingURL=style.css.map */
