@@ -13,9 +13,11 @@
 		<div class="col-lg-10 col-lg-offset-1">
 			<form id="filter">
 				<table>
+					<thead>
 					<tr>
-						<td colspan=2 >Filter Codes</td>
+						<td>Filter Codes</td>
 					</tr>
+					</thead>
 					<tr>
 					<td>Prefix:</td>
 					<td><select class="form-control" ng-model="filters.prefix" ng-options="prefix for prefix in prefixes">
@@ -40,6 +42,7 @@
 			<form id="create">
 				<button class="btn" ng-hide="createMode" ng-click="createMode = true">Create New</button>
 				<table ng-show="createMode" mg-model="newCode">
+					<thead>
 					<tr>
 						<td class="listTable">Key</td>
 						<td class="listTable">Restriction</td>
@@ -47,6 +50,7 @@
 						<td class="listTable">Description</td>
 						<td class="listTable">Available to JS?</td>
 					</tr>
+					</thead>
 					<tr>
 						<td><input class="form-control" type="text" ng-model="newCode.key" /></td>
 						<td>

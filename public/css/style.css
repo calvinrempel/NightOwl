@@ -24,13 +24,32 @@
 }
 
 thead{
+    position: relative;
+    top:-5px;
     border-bottom: 1px solid #C4C4C4;
-    padding-bottom: 3px;
+    padding-bottom: 10px;
     font-style: bold;
     font-size:125%;
 }
 
 table.data tbody tr:hover{
+    background-color: #00aeef;
+    color: white;
+    border-radius: 4px;
+}
+
+table.data .btn:hover{
+    background-color: black;
+    color: white;
+    border-radius: 4px;
+}
+
+
+td{
+    padding-right: 5px;
+}
+
+.btn:hover{
     background-color: #00aeef;
     color: white;
 }
