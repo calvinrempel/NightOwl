@@ -36,6 +36,7 @@ class LaunchCodesController extends AbstractRestfulController
     /* Constants that define the available filter types. */
     const FILTER_BY_KEY = 'Key';
     const FILTER_BY_VALUE = 'Value';
+    const FILTER_BY_ALL = 'All';
     const HARD_OUTPUT_LIMIT = 100;
 
     /* Return HTTP status codes */
@@ -156,10 +157,10 @@ class LaunchCodesController extends AbstractRestfulController
         }
 
         // Get the parameters
-        $restriction = $data['restriction'];
-        $value       = $data['value'];
+        $restriction = (isset($data['restriction']) ? $data['restriction'] : '');
+        $value       = (isset($data['value']) ? $data['value'] : '');
         $description = (isset($data['description']) ? $data['description'] : '');
-        $js          = $data['availableToJS'];
+        $js          = (isset($data['availableToJS']) ? $data['availableToJS'] : 'true');
         $owner       = '';
 
         if (isset($data['owner']))
@@ -279,7 +280,9 @@ class LaunchCodesController extends AbstractRestfulController
     private function isValidFilter($filterBy)
     {
         // The available filter types.
-        $typeArray = array(self::FILTER_BY_KEY, self::FILTER_BY_VALUE);
+        $typeArray = array(self::FILTER_BY_KEY,
+                           self::FILTER_BY_VALUE,
+                           self::FILTER_BY_ALL);
 
         // If the type is acceptable, return true.
         if (in_array($filterBy, $typeArray))
@@ -318,21 +321,31 @@ class LaunchCodesController extends AbstractRestfulController
             return $retval;
         }
 
-		
+
         // Check each code in the list to see if it matches the filter parameters
         // and if it does, add it to the output list.
         foreach ($codes as $code)
         {
+            $filterVals = array();
+
             // Determine which value is being filtered on.
-            if ($filterBy == self::FILTER_BY_KEY)
-                $matchVal = $code['key'];
-            if ($filterBy == self::FILTER_BY_VALUE)
-                $matchVal = $code['value'];
-			
-            // If the code matches the filter, add to output array.
-            if (preg_match("/$filter/i", $matchVal))
+            if ($filterBy == self::FILTER_BY_ALL)
             {
-                $retval[] = $code;
+                $filterVals[] = $code['key'];
+                $filterVals[] = $code['value'];
+            }
+            else if ($filterBy == self::FILTER_BY_KEY)
+                $filterVals[] = $code['key'];
+            else if ($filterBy == self::FILTER_BY_VALUE)
+                $filterVals[] = $code['value'];
+
+            // If the code matches the filter, add to output array.
+            foreach ($filterVals as $val)
+            {
+                if (preg_match("/$filter/i", $val))
+                {
+                    $retval[] = $code;
+                }
             }
         }
 
@@ -369,9 +382,9 @@ class LaunchCodesController extends AbstractRestfulController
             $value = json_decode(base64_decode($code['Value']), true);
             $temp = array(
                 'key'           => $code['Key'],
-                'restriction'   => $value['restriction'],
-                'value'         => $value['value'],
-                'availableToJS' => $value['availableToJS']
+                'restriction'   => (isset($value['restriction']) ? $value['restriction'] : ''),
+                'value'         => (isset($value['value']) ? $value['value'] : ''),
+                'availableToJS' => (isset($value['availableToJS']) ? $value['availableToJS'] : '')
             );
 
             $output[] = $temp;
