@@ -94,7 +94,7 @@ class LaunchCodesController extends AbstractRestfulController
         // If the user has asked to filter by a valid parameter, filter the results.
         if ($this->isValidFilter($filterBy) && !is_null($filter))
         {
-            $codes = $this->filterResults($filterBy, $filter, $codes);
+            $codes = $this->filterResults($prefix, $filterBy, $filter, $codes);
         }
 
         // If there are codes to output, format and inject metadata.
@@ -297,6 +297,7 @@ class LaunchCodesController extends AbstractRestfulController
     * Filter the list by the given value on the given key.
     *
     * Params:
+    *      $prefix   : the existing prefix to ignore in the filter.
     *      $filterBy : the key to filter on (e.g. "Key", "Value")
     *      $filter   : the value of the filter to match against
     *      $codes    : the current list of codes to run the filter on
@@ -310,10 +311,11 @@ class LaunchCodesController extends AbstractRestfulController
 	*		Calvin Rempel - May 8, 2015
 	*			- Added check to ensure codes exist before filtering them.
     */
-    private function filterResults($filterBy, $filter, $codes)
+    private function filterResults($prefix, $filterBy, $filter, $codes)
     {
         $retval = array();
         $matchVal;
+        $prefixLength = strlen($prefix);
 
 		// If there are no codes, return an empty array.
         if (!is_array($codes) || count($codes) == 0)
@@ -327,15 +329,16 @@ class LaunchCodesController extends AbstractRestfulController
         foreach ($codes as $code)
         {
             $filterVals = array();
+            $key = substr($code['key'], $prefixLength);
 
             // Determine which value is being filtered on.
             if ($filterBy == self::FILTER_BY_ALL)
             {
-                $filterVals[] = $code['key'];
+                $filterVals[] = $key;
                 $filterVals[] = $code['value'];
             }
             else if ($filterBy == self::FILTER_BY_KEY)
-                $filterVals[] = $code['key'];
+                $filterVals[] = $key;
             else if ($filterBy == self::FILTER_BY_VALUE)
                 $filterVals[] = $code['value'];
 
