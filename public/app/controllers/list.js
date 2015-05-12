@@ -42,12 +42,13 @@ app.controller('ListController', function($scope, $http) {
 
 		// TODO: Delete the code using the API (MAKE SURE TO CONFIRM FIRST)
 		$scope.deleteCode = function(code){ 
-			API_HELPER.deleteCode( code, $scope.populateCodes, $scope.getFilters() ); 
+			if( window.confirm("Are you sure you wish to delete\n" + $scope.filters.prefix + "/" + code.key + "?" ) )
+				API_HELPER.deleteCode( code, $scope.populateCodes, $scope.getFilters() ); 
 		}
 
 		// TODO: Discard the changes made to the code
 		$scope.discardChanges = function(code){
-			console.log("DISCARD THE CHANGES")
+			$scope.reloadCodes();
 		}
 
 		$scope.createCode = function(code){
