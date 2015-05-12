@@ -23,6 +23,7 @@
                 $scope.setDataCenter( $scope.dc );
             else
                 $scope.setDataCenter( $scope.config.dataCenters[0] );
+            API_HELPER.loadCodes($scope.populateCodes, $scope.getFilters());
         }
 
         $scope.resetFilters();
