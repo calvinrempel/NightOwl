@@ -58,7 +58,7 @@ var  app = angular.module('NightOwl', []).constant( 'API_CONFIG',{
 
 	"auditFilters" : [
         "All",
-        "Owner",
+        "User",
         "Code",
         "Message"
     ]
