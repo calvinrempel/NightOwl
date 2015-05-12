@@ -1,36 +1,61 @@
-var  app = angular.module('NightOwl', []);
+var  app = angular.module('NightOwl', []).constant( 'API_CONFIG',{
 
-var NIGHTOWL_CONFIG = {
-	API_URL:"http://nightowlAPI.local",
+	"API_URL":"http://nightowlAPI.local",
 
-	restrictions : [
+	"restrictions" : [
 		"boolean",
 		"member_list",
 		"memberID",
 		"percent"
 	],
 
-	filters : [
+	"filters" : [
 		"Key",
 		"Value"
 	],
 
-	prefixes: [
-		"darklaunch"
-	],
+	
 
-	dataCenters: [
-		{"name": "Data Center 1", "value" : "dc1"},
+	"dataCenters": [
+		{
+			"name": "Data Center 1", 
+			"value" : "dc1",
+			"prefixes":{ 
+				"darklaunch" : {
+					"dashboard": {
+						"core" : {},
+
+						"api":{
+							"1":{
+								"ANDROID" : {},
+								"APPLE" : {}
+							},
+
+							"2":{
+								"ANDROID" : {},
+								"APPLE" : {}
+							}
+						},
+
+						"apiold":{}
+					},
+
+					"service":{
+						"social-communication" : {}
+					}
+				}
+			},
+		},
 		{"name": "Data Center 2", "value" : "dc2"},
 		{"name": "Data Center 3", "value" : "dc3"}
 	],
 
-	tokenName: "NightOwlAuth",
+	"tokenName": "NightOwlAuth",
 
-	auditFilters : [
+	"auditFilters" : [
         "All",
         "Owner",
         "Code",
         "Message"
     ]
-};
+});
