@@ -19,7 +19,7 @@
         
         
 		$scope.populateCodes = function( codes ){
-            console.log(codes);
+            trimKeys(codes);
         	$scope.launchCodes = codes;
             if( !$scope.isSelected('list') )
                 $scope.selectTab('list');
@@ -82,6 +82,13 @@
                     
             }
             return array;
+        }
+
+        function trimKeys( codes ){
+            console.log($scope.filters.prefix);
+            for (var i = 0; i < codes.length; i++) {
+                codes[i].key = codes[i].key.replace($scope.filters.prefix + "/", "");
+            };
         }
 	});
 

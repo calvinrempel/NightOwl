@@ -41,7 +41,7 @@ var API_HELPER = (function () {
 			makeGetURL : function( filters ){
 				var url = this.API_URL + "/codes/" + this.getToken() + "/" + filters.dataCenter;
 				if( filters.prefix ){
-					url = url + "/" + filters.prefix;
+					url = url + "/" + encodeURIComponent(filters.prefix);
 				}
 				if( filters.filterBy && filters.filter ){
 					url = url + "/" + filters.filterBy + "/" + filters.filter;
