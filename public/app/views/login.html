@@ -1,6 +1,13 @@
 <div class="row" ng-controller="LoginController">
+    <div class="row">
+        <div class="col-lg-6 col-lg-offset-3">
+        <h1>NightOwl</h1>
+        <h3>Dark Launch Dashboard</h3>
+    </div>
+    </div>
+    <br><br>
     <div class="col-lg-6 col-lg-offset-3">
-    <form>
+    <form id="login">
     <table>
         <tr>
             <td>Username:</td>
@@ -10,7 +17,7 @@
             <td>Password:</td>
             <td><input type="password" name="password" ng-model="pw" class="form-control"></td>
         </tr>
-        <tr><td></td><td><input type="submit" value="Login" class="btnSubmit form-control" ng-click="login(name, pw)" ></td></tr>
+        <tr><td></td><td><input type="submit" value="Login" class="btn form-control" ng-click="login(name, pw)" ></td></tr>
     </table>
     </form>
     </div>
