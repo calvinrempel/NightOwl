@@ -1,6 +1,7 @@
 h2, h3, h4 {
   color: #c4c4c4; }
 
+/* Loading indicator */
 #loading {
   position: absolute;
   margin-left: 45%;
@@ -15,24 +16,37 @@ h2, h3, h4 {
   -ms-border-radius: 4px;
   border-radius: 4px; }
 
+/* add a little wriggle room */
 .row {
   padding-top: 50px; }
-
-.active {
-  color: white !important;
-  background-color: #00aeef; }
 
 .sidebar-nav {
   padding-top: 50px; }
 
+td {
+  padding-right: 5px; }
+
+#title {
+  padding-bottom: 50px; }
+
+/* Make the active elements show of the brand colour */
+.active {
+  color: white !important;
+  background-color: #00aeef; }
+
+/* Buttons should highlight on hover */
+.btn:hover {
+  color: white !important;
+  background-color: #00aeef; }
+
+/* Table headers should have a border and be bigger */
 thead {
-  position: relative;
-  top: -5px;
   border-bottom: 1px solid #c4c4c4;
   padding-bottom: 10px;
   font-style: bold;
   font-size: 125%; }
 
+/* Highlight the rows on hover */
 table.data tbody tr:hover {
   color: white !important;
   background-color: #00aeef;
@@ -41,21 +55,12 @@ table.data tbody tr:hover {
   -ms-border-radius: 4px;
   border-radius: 4px; }
 
+/* The table buttons should highlight to a different colour */
 table.data .btn:hover {
-  background-color: black;
-  color: white;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  border-radius: 4px; }
+  color: white !important;
+  background-color: black; }
 
-td {
-  padding-right: 5px; }
-
-.btn:hover {
-  background-color: #00aeef;
-  color: white; }
-
+/* The login button should always be highlighted */
 #login .btn {
   color: white !important;
   background-color: #00aeef; }
@@ -63,8 +68,5 @@ td {
 #login .btn:hover {
   color: white !important;
   background-color: black; }
-
-#title {
-  padding-bottom: 50px; }
 
 /*# sourceMappingURL=style.css.map */

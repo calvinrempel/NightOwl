@@ -30,6 +30,7 @@ h2, h3, h4 {
     color:$grey;
 }
 
+/* Loading indicator */
 #loading{
     position: absolute;
     margin-left: 45%;
@@ -42,56 +43,54 @@ h2, h3, h4 {
     @include border-radius($borderRadius);
 }
 
+/* add a little wriggle room */
 .row{
     padding-top: $padding;
 }
+.sidebar-nav{
+    padding-top: $padding;
+}
+td{
+    padding-right: $paddingSmall;
+}
+#title{
+    padding-bottom: $padding;
+}
 
+/* Make the active elements show of the brand colour */
 .active{
     @include active();
 }
 
-.sidebar-nav{
-    padding-top: $padding;
+/* Buttons should highlight on hover */
+.btn:hover{
+   @include active();
 }
 
+/* Table headers should have a border and be bigger */
 thead{
-    position: relative;
-    top:-5px;
     border-bottom: 1px solid$grey;
     padding-bottom: 10px;
     font-style: bold;
     font-size:125%;
 }
 
+/* Highlight the rows on hover */
 table.data tbody tr:hover{
     @include active();
     @include border-radius($borderRadius);
 }
 
+/* The table buttons should highlight to a different colour */
 table.data .btn:hover{
-    background-color: $secondaryColour;
-    color: $textHighlightColour;
-    @include border-radius($borderRadius);
+    @include active-alt();
 }
 
-
-td{
-    padding-right: $paddingSmall;
-}
-
-.btn:hover{
-    background-color: $brandColour;
-    color: $textHighlightColour;
-}
-
+/* The login button should always be highlighted */
 #login .btn{
    @include active();
 }
-
 #login .btn:hover{
    @include active-alt();
 }
 
-#title{
-    padding-bottom: $padding;
-}
