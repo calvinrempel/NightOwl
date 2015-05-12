@@ -8,7 +8,7 @@
 			<td class="listTable">Available to JS</td>
 		</tr>
 	</thead>
-	<tr ng-repeat="code in array" id="code-{{$index}}">
+	<tr ng-repeat="code in data" id="code-{{$index}}">
 		<td class="listTable">{{ code.key }}<div style="font-size: 75%">{{ code.createdDate }}</div></td>
 		<td class="listTable"><select class="form-control" ng-model="code.restriction" ng-options="restriction for restriction in config.restrictions" disabled></select></td>
 		<td class="listTable"><input class="form-control" type="text" ng-model="code.value" disabled></td>

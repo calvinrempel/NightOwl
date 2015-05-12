@@ -4,19 +4,25 @@
 		$scope.selected = 'login';
 		$scope.config = API_CONFIG;
 
-        $scope.filters = {
-            dataCenter : $scope.config.dataCenters[0].value,
-            prefix : $scope.config.prefixes[0],
-            filterBy : $scope.config.filters[0],
-            filter : ''
-        };
+        $scope.setDataCenter = function(dataCenter){
+            $scope.prefixes = buildList(dataCenter.prefixes);
+
+            $scope.filters = {
+                dataCenter : dataCenter.value,
+                filterBy : $scope.config.filters[0],
+                prefix: $scope.prefixes[0],
+                filter : ''
+            };
+        }
+
+        $scope.setDataCenter( $scope.config.dataCenters[0] );
+        
         
 		$scope.populateCodes = function( codes ){
             console.log(codes);
         	$scope.launchCodes = codes;
             if( !$scope.isSelected('list') )
                 $scope.selectTab('list');
-            $("ul.sidebar").slideDown(400);
         	$scope.$apply();
         }
 
@@ -36,8 +42,12 @@
             oldElem.slideUp(400, function(){
                 newElem.slideDown(400, function() {
                     $scope.selected = val;
+                    if(val != "login"){
+                        $("#wrapper").removeClass("toggled");
+                    }
                 });
             });
+
         }
 
         $scope.getFilters = function(){
@@ -56,6 +66,23 @@
         }
 
         API_HELPER.loadCodes($scope.populateCodes, $scope.getFilters());
+
+        function buildList(object, branch){
+            var array = [];
+            for(key in object){
+                if(!branch){
+                    array.push(key)
+                    if(!$.isEmptyObject(object[key]))
+                        array = array.concat(buildList(object[key], key));
+                }else{
+                    array.push(branch + "/" + key);
+                    if(!$.isEmptyObject(object[key]))
+                        array = array.concat(buildList(object[key], branch + "/" + key));
+                }
+                    
+            }
+            return array;
+        }
 	});
 
 })();

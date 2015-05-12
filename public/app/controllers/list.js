@@ -9,10 +9,6 @@ app.controller('ListController', function($scope, $http) {
 			column : 'key'
 		};
 		
-		$scope.test = function(code){
-			alert($scope.sort.column);
-		}
-
 		// Should filter the code results based on the selected prefix
 		$scope.reloadCodes = function(){
 			console.log($scope.filters);
@@ -91,6 +87,7 @@ app.controller('ListController', function($scope, $http) {
 			}
 		}
 
+		
 
 	});
 })();

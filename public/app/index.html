@@ -8,6 +8,7 @@
     <!-- Le styles -->
     <link href="/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">
     <link href="/css/bootstrap-theme.min.css" media="screen" rel="stylesheet" type="text/css">
+    <link href="/css/sidebar.css" media="screen" rel="stylesheet" type="text/css">
     <link href="/css/style.css" media="screen" rel="stylesheet" type="text/css">
     <link href="/img/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon">
     <!-- Scripts -->
@@ -31,17 +32,24 @@
     <script src=""></script>
 </head>
 <body>
-    <div ng-controller="MainController">
-        <ul class="sidebar" hidden style="list-style-type:none">
-            <li><a href="#" ng-click="selectTab('list')">Launch Codes</a></li>
-            <li><a href="#" ng-click="selectTab('audit')">Audits</a></li>
-            <li><a href="#" ng-click="logout()">Logout</a></li>
-        </ul>
-                        
-        <div class="containter">
-            <div id="login"><div class="container" ng-include="'app/views/login.html'"></div></div>
-            <div id="list" hidden><div class="container" ng-include="'app/views/list.html'" ></div></div>
-            <div id="audit" hidden><div class="container" ng-include="'app/views/audit.html'" ></div></div>
+    <div id="wrapper" class="toggled">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav" style="list-style-type:none">
+                <li><a href="#" ng-click="selectTab('list')">Codes</a></li>
+                <li><a href="#" ng-click="selectTab('audit')">Audits</a></li>
+                <li><a href="#" ng-click="logout()">Logout</a></li>
+            </ul>
+        </div>
+
+
+        <div class="container-fluid" ng-controller="MainController" id="page-content-wrapper">
+            <div class="row">
+                <div class="col-lg-12" id="login"><div ng-include="'app/views/login.html'"></div></div>
+                <div class="col-lg-12" id="list" hidden><div ng-include="'app/views/list.html'" ></div></div>
+                <div class="col-lg-12" id="audit" hidden><div ng-include="'app/views/audit.html'" ></div></div>
+            </div>
         </div>
     </div>
 </body>

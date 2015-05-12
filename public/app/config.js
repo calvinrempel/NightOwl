@@ -14,14 +14,37 @@ var  app = angular.module('NightOwl', []).constant( 'API_CONFIG',{
 		"Value"
 	],
 
-	"prefixes": [
-		"darklaunch"
-	],
+	
 
 	"dataCenters": [
 		{
 			"name": "Data Center 1", 
 			"value" : "dc1",
+			"prefixes":{ 
+				"darklaunch" : {
+					"dashboard": {
+						"core" : {},
+
+						"api":{
+							"1":{
+								"ANDROID" : {},
+								"APPLE" : {}
+							},
+
+							"2":{
+								"ANDROID" : {},
+								"APPLE" : {}
+							}
+						},
+
+						"apiold":{}
+					},
+
+					"service":{
+						"social-communication" : {}
+					}
+				}
+			},
 		},
 		{"name": "Data Center 2", "value" : "dc2"},
 		{"name": "Data Center 3", "value" : "dc3"}
@@ -36,4 +59,3 @@ var  app = angular.module('NightOwl', []).constant( 'API_CONFIG',{
         "Message"
     ]
 });
-
