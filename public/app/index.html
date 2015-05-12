@@ -37,12 +37,13 @@
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav" style="list-style-type:none">
-                <li><a href="#" ng-click="selectTab('list')">Codes</a></li>
-                <li><a href="#" ng-click="selectTab('audit')">Audits</a></li>
+                <li><a href="#" ng-class="{active : isSelected('list')}" ng-click="selectTab('list')">Codes</a></li>
+                <li><a href="#" ng-class="{active : selected === 'audit'}" ng-click="selectTab('audit')">Audits</a></li>
                 <li><a href="#" ng-click="logout()">Logout</a></li>
             </ul>
         </div>
 
+        <div id="loading">Loading...</div>
 
         <div class="container-fluid" id="page-content-wrapper">
             <div class="row">

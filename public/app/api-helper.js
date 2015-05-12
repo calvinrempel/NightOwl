@@ -119,11 +119,11 @@ var API_HELPER = (function () {
 			},
 
 			startLoading : function(element){
-				console.log("START LOADING");
+				$("#loading").fadeIn('fast');
 			},
 
 			stopLoading : function(element){
-				console.log("STOP LOADING");
+				$("#loading").fadeOut('fast');
 			}
 		};
 

@@ -45,6 +45,7 @@
                     if(val != "login"){
                         $("#wrapper").removeClass("toggled");
                     }
+                    $scope.$apply();
                 });
             });
 
