@@ -4,7 +4,7 @@ var API_HELPER = (function () {
 	function createInstance() {
 		var helper = {
 
-			API_URL : NIGHTOWL_CONFIG.API_URL,
+			API_URL : "http://nightowlAPI.local",
 
 			getToken : function(){
 				return localStorage.getItem("key");

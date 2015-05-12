@@ -5,7 +5,13 @@ app.controller('ListController', function($scope, $http) {
 		$scope.createMode = false;
 
 		// Gets the data center, prefix and filter type + expression
+		$scope.sort = {
+			column : 'key'
+		};
 		
+		$scope.test = function(code){
+			alert($scope.sort.column);
+		}
 
 		// Should filter the code results based on the selected prefix
 		$scope.reloadCodes = function(){

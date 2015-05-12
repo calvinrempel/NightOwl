@@ -1,0 +1,26 @@
+<table>
+	<thead>
+		<tr>
+			<td class="listTable">Key</td>
+			<td class="listTable">Restriction</td>
+			<td class="listTable">Value</td>
+			<td class="listTable">Description</td>
+			<td class="listTable">Available to JS</td>
+		</tr>
+	</thead>
+	<tr ng-repeat="code in array" id="code-{{$index}}">
+		<td class="listTable">{{ code.key }}<div style="font-size: 75%">{{ code.createdDate }}</div></td>
+		<td class="listTable"><select class="form-control" ng-model="code.restriction" ng-options="restriction for restriction in config.restrictions" disabled></select></td>
+		<td class="listTable"><input class="form-control" type="text" ng-model="code.value" disabled></td>
+		<td class="listTable"><textarea class="form-control" ng-model="code.description" cols=50 disabled></textarea></td>
+		<td class="listTable"><input class="form-control" type="checkbox" ng-checked="code.availableToJS == 'true'" ng-click="toggleJS(code)" disabled></td>
+		<td ng-hide="inEditMode($index)">
+				<button class="btn" ng-click="toggleEditMode($index)">Edit</button>
+			</td>
+			<td ng-show="inEditMode($index)">
+				<button class="btn" ng-click="saveCode(code); toggleEditMode($index)">OK</button>
+				<button class="btn" ng-click="discardChanges(code); toggleEditMode($index)">Cancel</button>
+			</td>
+			<td><button class="btn" ng-click="deleteFn(code)">Delete</button></td>
+	</tr>
+</table>

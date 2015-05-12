@@ -1,8 +1,8 @@
 (function(){
-	app.controller('MainController', function($scope, $http) {
+	app.controller('MainController', function($scope, $http, API_CONFIG) {
 		// Start on the login page
 		$scope.selected = 'login';
-		$scope.config = NIGHTOWL_CONFIG;
+		$scope.config = API_CONFIG;
 
         $scope.filters = {
             dataCenter : $scope.config.dataCenters[0].value,
