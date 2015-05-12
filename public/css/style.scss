@@ -1,0 +1,96 @@
+// Variables
+$brandColour: #00aeef;
+$textHighlightColour: white;
+$secondaryColour: black;
+$padding: 50px;
+$paddingSmall: 5px;
+$grey: #c4c4c4;
+$borderRadius: 4px;
+
+// Mixins
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+     -moz-border-radius: $radius;
+      -ms-border-radius: $radius;
+          border-radius: $radius;
+}
+
+@mixin active(){
+	color:$textHighlightColour !important;
+ 	background-color: $brandColour;
+}
+
+@mixin active-alt(){
+	color:$textHighlightColour !important;
+ 	background-color: $secondaryColour;
+}
+
+//Styles
+h2, h3, h4 {
+    color:$grey;
+}
+
+/* Loading indicator */
+#loading{
+    position: absolute;
+    margin-left: 45%;
+    margin-top: 10%;
+    background-color: $brandColour;
+    padding: 3px 5px 3px 7px;
+    font-style: bold;
+    color: white;
+    display:none;
+    @include border-radius($borderRadius);
+}
+
+/* add a little wriggle room */
+.row{
+    padding-top: $padding;
+}
+.sidebar-nav{
+    padding-top: $padding;
+}
+td{
+    padding-right: $paddingSmall;
+}
+#title{
+    padding-bottom: $padding;
+}
+
+/* Make the active elements show of the brand colour */
+.active{
+    @include active();
+}
+
+/* Buttons should highlight on hover */
+.btn:hover{
+   @include active();
+}
+
+/* Table headers should have a border and be bigger */
+thead{
+    border-bottom: 1px solid$grey;
+    padding-bottom: 10px;
+    font-style: bold;
+    font-size:125%;
+}
+
+/* Highlight the rows on hover */
+table.data tbody tr:hover{
+    @include active();
+    @include border-radius($borderRadius);
+}
+
+/* The table buttons should highlight to a different colour */
+table.data .btn:hover{
+    @include active-alt();
+}
+
+/* The login button should always be highlighted */
+#login .btn{
+   @include active();
+}
+#login .btn:hover{
+   @include active-alt();
+}
+
