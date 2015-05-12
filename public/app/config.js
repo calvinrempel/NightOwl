@@ -10,8 +10,12 @@ var  app = angular.module('NightOwl', []).constant( 'API_CONFIG',{
 	],
 
 	"filters" : [
+		"All",
 		"Key",
-		"Value"
+		"Value",
+		"Date",
+		"Owner",
+		"Description"
 	],
 
 	
