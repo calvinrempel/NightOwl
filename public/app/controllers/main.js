@@ -6,7 +6,7 @@
 
         $scope.dc = {};
         $scope.filters = {};
-        
+
         $scope.getFilters = function(){
             return $scope.filters;
         }
@@ -22,6 +22,14 @@
             };
         }
 
+        $scope.populateCodes = function( codes ){
+            trimKeys(codes);
+            $scope.launchCodes = codes;
+            if( !$scope.isSelected('list') )
+                $scope.selectTab('list');
+            $scope.$apply();
+        }
+
         $scope.resetFilters = function(){
             if($scope.dc)
                 $scope.setDataCenter( $scope.dc );
@@ -31,15 +39,6 @@
         }
 
         $scope.resetFilters();
-        
-        
-		$scope.populateCodes = function( codes ){
-            trimKeys(codes);
-        	$scope.launchCodes = codes;
-            if( !$scope.isSelected('list') )
-                $scope.selectTab('list');
-        	$scope.$apply();
-        }
 
         $scope.populateAudits = function( audits ){
             console.log(audits);
