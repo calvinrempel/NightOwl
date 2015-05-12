@@ -1,0 +1,97 @@
+// Variables
+$brandColour: #00aeef;
+$textHighlightColour: white;
+$secondaryColour: black;
+$padding: 50px;
+$paddingSmall: 5px;
+$grey: #c4c4c4;
+$borderRadius: 4px;
+
+// Mixins
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+     -moz-border-radius: $radius;
+      -ms-border-radius: $radius;
+          border-radius: $radius;
+}
+
+@mixin active(){
+	color:$textHighlightColour !important;
+ 	background-color: $brandColour;
+}
+
+@mixin active-alt(){
+	color:$textHighlightColour !important;
+ 	background-color: $secondaryColour;
+}
+
+//Styles
+h2, h3, h4 {
+    color:$grey;
+}
+
+#loading{
+    position: absolute;
+    margin-left: 45%;
+    margin-top: 10%;
+    background-color: $brandColour;
+    padding: 3px 5px 3px 7px;
+    font-style: bold;
+    color: white;
+    display:none;
+    @include border-radius($borderRadius);
+}
+
+.row{
+    padding-top: $padding;
+}
+
+.active{
+    @include active();
+}
+
+.sidebar-nav{
+    padding-top: $padding;
+}
+
+thead{
+    position: relative;
+    top:-5px;
+    border-bottom: 1px solid$grey;
+    padding-bottom: 10px;
+    font-style: bold;
+    font-size:125%;
+}
+
+table.data tbody tr:hover{
+    @include active();
+    @include border-radius($borderRadius);
+}
+
+table.data .btn:hover{
+    background-color: $secondaryColour;
+    color: $textHighlightColour;
+    @include border-radius($borderRadius);
+}
+
+
+td{
+    padding-right: $paddingSmall;
+}
+
+.btn:hover{
+    background-color: $brandColour;
+    color: $textHighlightColour;
+}
+
+#login .btn{
+   @include active();
+}
+
+#login .btn:hover{
+   @include active-alt();
+}
+
+#title{
+    padding-bottom: $padding;
+}
