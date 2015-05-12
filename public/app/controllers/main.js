@@ -5,7 +5,11 @@
 		$scope.config = API_CONFIG;
 
         $scope.dc = {};
-
+        $scope.filters = {};
+        
+        $scope.getFilters = function(){
+            return $scope.filters;
+        }
 
         $scope.setDataCenter = function(dataCenter){
             $scope.dc = dataCenter;
@@ -60,10 +64,6 @@
                 });
             });
 
-        }
-
-        $scope.getFilters = function(){
-            return $scope.filters;
         }
 
         $scope.login = function(user, pw) {
