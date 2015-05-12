@@ -11,7 +11,7 @@ var API_HELPER = (function () {
 			},
 
 			saveCode : function( code, _callback, filters ){
-				var url = this.makePostURL(code);
+				var url = this.makePostURL(code, filters);
 				this.startLoading(null);
 				$.post(url, code).success(function(data, status, headers, config) {
 					console.log("saved!");
@@ -26,7 +26,7 @@ var API_HELPER = (function () {
 			deleteCode : function( code, _callback, filters ){
 				this.startLoading(null);
 				$.ajax({
-					url: this.makePostURL(code),
+					url: this.makePostURL(code, filters),
 					type: 'delete',
 					success: function(result) {
 						console.log("deleted!");
@@ -109,8 +109,8 @@ var API_HELPER = (function () {
 				});
 			},
 
-			makePostURL : function( code ){
-				return this.API_URL + "/codes/" + this.getToken() + "/" + encodeURIComponent(code.key);
+			makePostURL : function( code, filters ){
+				return this.API_URL + "/codes/" + this.getToken() + "/" + encodeURIComponent( filters.prefix + "/" + code.key );
 			},
 
 			// Save Token
