@@ -73,6 +73,10 @@ var API_HELPER = (function () {
 			  });
 			},
 
+            //case for last 24 hours
+            //var url = this.API_URL + '/audit/' + this.getToken() + '/{"time":{"$gt":"' + (Date.now()*1000-86400) + '"}';
+
+
             loadAudits : function( _callback, filters ){
         		var url = this.API_URL + '/audit/' + this.getToken() + '/';
 		        if(filters.filterBy == 'User') {
