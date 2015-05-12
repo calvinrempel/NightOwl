@@ -57,7 +57,7 @@
         $scope.login = function(user, pw) {
             API_HELPER.login(user, pw, function(token){
                 API_HELPER.saveToken(token);
-                API_HELPER.loadCodes($scope.populateCodes, $scope.invalidLogin, $scope.getFilters());                
+                API_HELPER.loadCodes($scope.populateCodes, $scope.getFilters());
             });
         }
         $scope.logout = function(){
