@@ -4,9 +4,12 @@
 		$scope.selected = 'login';
 		$scope.config = API_CONFIG;
 
-        $scope.setDataCenter = function(dataCenter){
-            $scope.prefixes = buildList(dataCenter.prefixes);
+        $scope.dc = {};
 
+
+        $scope.setDataCenter = function(dataCenter){
+            $scope.dc = dataCenter;
+            $scope.prefixes = buildList(dataCenter.prefixes);
             $scope.filters = {
                 dataCenter : dataCenter.value,
                 filterBy : $scope.config.filters[0],
@@ -15,7 +18,14 @@
             };
         }
 
-        $scope.setDataCenter( $scope.config.dataCenters[0] );
+        $scope.resetFilters = function(){
+            if($scope.dc)
+                $scope.setDataCenter( $scope.dc );
+            else
+                $scope.setDataCenter( $scope.config.dataCenters[0] );
+        }
+
+        $scope.resetFilters();
         
         
 		$scope.populateCodes = function( codes ){
