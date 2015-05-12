@@ -60,6 +60,9 @@ table.data .btn:hover {
   color: white !important;
   background-color: black; }
 
+/* The table should be full width */
+table.data{ width: 100%; }
+
 /* The login button should always be highlighted */
 #login .btn {
   color: white !important;
@@ -69,7 +72,6 @@ table.data .btn:hover {
   color: white !important;
   background-color: black; }
 
-/* Full width */
-.full-width{ width: 100% }
+
 
 /*# sourceMappingURL=style.css.map */
