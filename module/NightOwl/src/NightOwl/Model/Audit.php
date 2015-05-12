@@ -28,6 +28,8 @@ class Audit
     {
         $cursor = $this->db->ConsulAudit->find($query);
 
+        $retval = array();
+
         if($cursor)
         {
             foreach ($cursor as $doc) {

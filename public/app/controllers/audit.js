@@ -9,7 +9,9 @@ app.controller('AuditController', function($scope, $http) {
     };
 
     $scope.filterAudits = function(){
+        $scope.auditList = [];
         API_HELPER.loadAudits($scope.populateAudits, $scope.auditFilters);
+        $scope.apply;
     };
 
 
