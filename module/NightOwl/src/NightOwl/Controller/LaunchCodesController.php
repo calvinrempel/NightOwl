@@ -34,10 +34,12 @@ use NightOwl\Model\Auth;
 class LaunchCodesController extends AbstractRestfulController
 {
     /* Constants that define the available filter types. */
-    const FILTER_BY_KEY = 'Key';
-    const FILTER_BY_VALUE = 'Value';
-    const FILTER_BY_ALL = 'All';
-    const HARD_OUTPUT_LIMIT = 100;
+    const FILTER_BY_DATE        = 'Date';
+    const FILTER_BY_OWNER       = 'Owner';
+    const FILTER_BY_DESCRIPTION = 'Description';
+    const FILTER_BY_KEY         = 'Key';
+    const FILTER_BY_VALUE       = 'Value';
+    const FILTER_BY_ALL         = 'All';
 
     /* Return HTTP status codes */
     const RETURN_STATUS_SUCCESS = 200;
@@ -91,20 +93,17 @@ class LaunchCodesController extends AbstractRestfulController
         $codes = $codeProvider->getLaunchCodes($dc, $prefix, true);
 		$codes = $this->formatCodeOutput($codes);
 
+        // If there are codes to output, format and inject metadata.
+        if (count($codes) > 0)
+        {
+            // Get the MetaData from the Database and add it to the output
+            $codeProvider->injectMetadata($codes);
+        }
+
         // If the user has asked to filter by a valid parameter, filter the results.
         if ($this->isValidFilter($filterBy) && !is_null($filter))
         {
             $codes = $this->filterResults($prefix, $filterBy, $filter, $codes);
-        }
-
-        // If there are codes to output, format and inject metadata.
-        if (count($codes) > 0)
-        {
-            // Alter the structure of the codes for applicability on the client
-            $codes = array_slice($codes, 0, self::HARD_OUTPUT_LIMIT);
-
-            // Get the MetaData from the Database and add it to the output
-            $codeProvider->injectMetadata($codes);
         }
 
         // Return the results as a JSON string.
@@ -280,7 +279,10 @@ class LaunchCodesController extends AbstractRestfulController
     private function isValidFilter($filterBy)
     {
         // The available filter types.
-        $typeArray = array(self::FILTER_BY_KEY,
+        $typeArray = array(self::FILTER_BY_DATE,
+                           self::FILTER_BY_OWNER,
+                           self::FILTER_BY_DESCRIPTION,
+                           self::FILTER_BY_KEY,
                            self::FILTER_BY_VALUE,
                            self::FILTER_BY_ALL);
 
@@ -336,11 +338,20 @@ class LaunchCodesController extends AbstractRestfulController
             {
                 $filterVals[] = $key;
                 $filterVals[] = $code['value'];
+                $filterVals[] = $code['owner'];
+                $filterVals[] = $code['dateCreated'];
+                $filterVals[] = $code['description'];
             }
             else if ($filterBy == self::FILTER_BY_KEY)
                 $filterVals[] = $key;
             else if ($filterBy == self::FILTER_BY_VALUE)
                 $filterVals[] = $code['value'];
+            else if ($filterBy == self::FILTER_BY_OWNER)
+                $filterVals[] = $code['owner'];
+            else if ($filterBy == self::FILTER_BY_DATE)
+                $filterVals[] = $code['dateCreated'];
+            else if ($filterBy == self::FILTER_BY_DESCRIPTION)
+                $filterVals[] = $code['description'];
 
             // If the code matches the filter, add to output array.
             foreach ($filterVals as $val)
@@ -348,6 +359,7 @@ class LaunchCodesController extends AbstractRestfulController
                 if (preg_match("/$filter/i", $val))
                 {
                     $retval[] = $code;
+                    break;
                 }
             }
         }
