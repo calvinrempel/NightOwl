@@ -75,7 +75,7 @@ var API_HELPER = (function () {
 
             loadAudits : function( _callback, filters ){
         		var url = this.API_URL + '/audit/' + this.getToken() + '/';
-		        if(filters.filterBy == 'Owner') {
+		        if(filters.filterBy == 'User') {
 		            url = url + '{"owner":{"$regex":"' + filters.filter + '","$options":"-i"}}';
 		        }
 		        else if(filters.filterBy == 'Code') {
