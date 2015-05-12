@@ -3,6 +3,7 @@ app.controller('ListController', function($scope, $http) {
 		
 		// Create mode is off
 		$scope.createMode = false;
+		$scope.newCode = {};
 
 		// Gets the data center, prefix and filter type + expression
 		$scope.sort = {
@@ -51,32 +52,34 @@ app.controller('ListController', function($scope, $http) {
 			$scope.reloadCodes();
 		}
 
-		$scope.createCode = function(code){
+		$scope.createCode = function(){
 			var key, restriction, value, description, availableToJS;
 
-			key = $scope.filters.prefix + "/" + code.key,
+			key = $scope.filters.prefix + "/" + $scope.newCode.key,
 
-			restriction = code.restriction || 'boolean';
+			restriction = $scope.newCode.restriction || 'boolean';
 
-			value = code.value || "false";
+			value = $scope.newCode.value || "false";
 
-			description = code.description;
+			description = $scope.newCode.description;
 
-			if(code.availableToJS){
+			if($scope.newCode.availableToJS){
 				availableToJS = 'true';
 			}else{
 				availableToJS = 'false';
 			}
 
-			var newCode = {
+			var code = {
 				key :  key,
 				restriction : restriction,
 				value : value,
 				description : description,
 				availableToJS : availableToJS
 			};
-			console.log(newCode);
-			API_HELPER.saveCode( newCode, $scope.populateCodes, $scope.getFilters() );
+
+			API_HELPER.saveCode( code, $scope.populateCodes, $scope.getFilters() );
+			$scope.createMode = false;
+			$scope.newCode = {};
 		}
 
 		$scope.toggleJS = function(code){
