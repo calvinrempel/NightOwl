@@ -1,16 +1,40 @@
 h2, h3, h4 {
   color: #c4c4c4; }
 
+body {
+  font-size: 150%;
+  font-family: 'Open Sans', 'Helvetica Neue', Arial, Helvetica, sans-serif; }
+
+.btn:not(:last-child) {
+  margin-right: 5px; }
+
+.btn {
+  color: white !important;
+  background-color: #00aeef; }
+
+.btn:hover {
+  background-color: #0090c6; }
+
+.btn-group .btn {
+  background-color: #c4c4c4;
+  margin-right: 5px; }
+
+.btn-group .btn.active {
+  background-color: #00aeef; }
+
+.btn-danger {
+  background-color: #d9534f !important; }
+
 /* Loading indicator */
 #loading {
   position: absolute;
   margin-left: 45%;
   margin-top: 10%;
-  background-color: #00aeef;
   padding: 3px 5px 3px 7px;
   font-style: bold;
-  color: white;
   display: none;
+  color: white !important;
+  background-color: #00aeef;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   -ms-border-radius: 4px;
@@ -29,62 +53,27 @@ td {
 #title {
   padding-bottom: 50px; }
 
-/* Make the active elements show of the brand colour */
+/* Make the active elements show off the brand colour */
 .active {
   color: white !important;
   background-color: #00aeef; }
 
-/* Buttons should highlight on hover */
 .btn:hover {
-  color: white !important;
-  background-color: #00aeef; }
+  background-color: #0090c6; }
 
 /* Table headers should have a border and be bigger */
 thead {
-  border-bottom: 1px solid #c4c4c4;
   padding-bottom: 10px;
-  font-style: bold;
-  font-size: 125%; }
-
-/* Highlight the rows on hover */
-table.data tbody tr:hover {
-  color: white !important;
-  background-color: #00aeef;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  border-radius: 4px; }
-
-/* The table buttons should highlight to a different colour */
-table.data .btn:hover {
-  color: white !important;
-  background-color: black; }
+  font-style: bold; }
 
 /* The table should be full width */
-table.data{ width: 100%; }
+table.full-width {
+  width: 100%; }
 
-/* The login button should always be highlighted */
-#login .btn {
-  color: white !important;
-  background-color: #00aeef; }
+.delete {
+  background-color: red; }
 
-#login .btn:hover {
-  color: white !important;
-  background-color: black; }
-
-  div.bordered{
-      border: 1px solid #00aeef;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  border-radius: 4px; 
-  overflow: hidden;
-}
-
-thead{
-  background-color: #c4c4c4;
-}
-
-
+tbody {
+  border-top: 1px solid #ddd; }
 
 /*# sourceMappingURL=style.css.map */
