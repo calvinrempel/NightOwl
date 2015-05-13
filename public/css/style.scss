@@ -57,19 +57,17 @@ td{
     padding-bottom: $padding;
 }
 
-/* Make the active elements show of the brand colour */
+/* Make the active elements show off the brand colour */
 .active{
     @include active();
 }
-
-/* Buttons should highlight on hover */
 .btn:hover{
    @include active();
 }
 
 /* Table headers should have a border and be bigger */
 thead{
-    border-bottom: 1px solid$grey;
+    border-bottom: 1px solid $grey;
     padding-bottom: 10px;
     font-style: bold;
     font-size:125%;
@@ -89,7 +87,7 @@ table.data .btn:hover{
 /* The table should be full width */
 table.data{ width: 100%; }
 
-/* The login button should always be highlighted */
+/* The login button should always be branded */
 #login .btn{
    @include active();
 }
