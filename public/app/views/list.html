@@ -16,6 +16,7 @@
 					<thead>
 					<tr>
 						<td>Filter Codes</td>
+						<td></td>
 					</tr>
 					</thead>
 					<tr>
@@ -41,7 +42,7 @@
 		<div class="col-lg-12">
 			<form id="create">
 				<button class="btn" ng-hide="createMode" ng-click="createMode = true">Create New</button>
-				<table ng-show="createMode" mg-model="newCode" class="data">
+				<table ng-show="createMode" mg-model="newCode" class="full-width">
 					<thead>
 					<tr>
 						<td>Key</td>
@@ -72,7 +73,7 @@
 </div>
 <div class="row" ng-show="launchCodes.length">
 	<div class="col-lg-12">
-	<table class="data">
+	<table class="data full-width">
 		<thead>
 			<tr>
 				<td>Key</td>

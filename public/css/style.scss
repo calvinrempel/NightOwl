@@ -71,6 +71,7 @@ thead{
     padding-bottom: 10px;
     font-style: bold;
     font-size:125%;
+    background-color: $grey;
 }
 
 /* Highlight the rows on hover */
@@ -85,7 +86,7 @@ table.data .btn:hover{
 }
 
 /* The table should be full width */
-table.data{ width: 100%; }
+table.full-width{ width: 100%; }
 
 /* The login button should always be branded */
 #login .btn{
