@@ -3,6 +3,7 @@ app.controller('ListController', function($scope, $http) {
 		
 		// Create mode is off
 		$scope.createMode = false;
+		$scope.editMode = [];
 		$scope.newCode = {};
 
 		// Gets the data center, prefix and filter type + expression
@@ -17,23 +18,16 @@ app.controller('ListController', function($scope, $http) {
 		};
 
 		// Toggles inputs for given code between enabled and disabled
-		$scope.toggleEditMode = function(index){
-			var inputs = $scope.getInputs(index);
-			inputs.prop('disabled', !inputs.prop('disabled'));
+		$scope.editModeOn = function(index){
+			$scope.editMode[index] = true;
 		}
 
-		// Returns true if the current code is editable
+		$scope.editModeOff = function(index){
+			$scope.editMode[index] = false;
+		}
 		$scope.inEditMode = function(index){
-			var input = $scope.getInputs(index).first()
-			return !input.prop('disabled');
+			return ($scope.editMode[index] !== undefined && $scope.editMode[index] != false);
 		}
-
-		// Gets the inputs, select box, and textarea associated with the code
-		$scope.getInputs = function(index){
-			var selector = "tr#code-" + index;
-			return $(selector).find("td input, td select, td textarea");
-		}
-
 
 		// TODO: Save the code using the API
 		$scope.saveCode = function(code){ 
@@ -90,8 +84,6 @@ app.controller('ListController', function($scope, $http) {
 				code.availableToJS = "false";
 			}
 		}
-
-		
 
 	});
 })();

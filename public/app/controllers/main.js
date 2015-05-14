@@ -65,17 +65,6 @@
 
         }
 
-        $scope.login = function(user, pw) {
-            API_HELPER.login(user, pw, function(token){
-                API_HELPER.saveToken(token);
-                API_HELPER.loadCodes($scope.populateCodes, $scope.getFilters());
-            });
-        }
-        $scope.logout = function(){
-            API_HELPER.deleteToken();
-            location.reload(true);
-        }
-
         API_HELPER.loadCodes($scope.populateCodes, $scope.getFilters());
 
         function buildList(object, branch){
@@ -101,6 +90,19 @@
                 codes[i].key = codes[i].key.replace($scope.filters.prefix + "/", "");
             };
         }
+
+        $scope.login = function(user, pw) {
+            API_HELPER.login(user, pw, function(token){
+                API_HELPER.saveToken(token);
+                API_HELPER.loadCodes($scope.populateCodes, $scope.getFilters());
+            });
+        }
+        $scope.logout = function(){
+            API_HELPER.deleteToken();
+            location.reload(true);
+        }
+
+        
 	});
 
 })();

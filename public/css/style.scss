@@ -57,17 +57,6 @@ body{
     background-color: #d9534f !important;
 }
 
-/* Loading indicator */
-#loading{
-  position: absolute;
-  margin-left: 45%;
-  margin-top: 10%;
-  padding: 3px 5px 3px 7px;
-  font-style: bold;
-  display:none;
-  @include brand();
-  @include border-radius();
-}
 
 /* add a little wriggle room */
 .row{
@@ -107,4 +96,8 @@ table.full-width{ width: 100%; }
 
 tbody{
   border-top: 1px solid #ddd;
+}
+
+.btn-action{
+  background-color: #8DC63F;
 }
