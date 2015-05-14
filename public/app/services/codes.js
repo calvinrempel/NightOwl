@@ -3,7 +3,7 @@
 		var URL = API_CONFIG.API_URL
 
 		function getURL(filters){
-			var url = URL + "/codes/" + auth.getToken() + "/" + filters.dataCenter;
+			var url = URL + "/codes/" + filters.dataCenter;
 
 			if( filters.prefix ){
 				url = url + "/" + encodeURIComponent(filters.prefix);
@@ -17,13 +17,13 @@
 		}
 
 		function postURL(code, filters){
-			var url = URL + "/codes/" + auth.getToken() + "/" +  encodeURIComponent(code.key);
+			var url = URL + "/codes/" + filters.dataCenter + "/" +  encodeURIComponent(code.key);
 			return url;
 		}
 
 		function sanitize( code ){
 			var key, restriction, value, description, availableToJS;
-			
+
 			key = code.key;
 
 			restriction = code.restriction || 'boolean';
@@ -51,10 +51,10 @@
 		}
 
 		var codes = {
-			
+
 			save : function(code, filters, _callback){
 				code = sanitize(code);
-				
+
 				var url = postURL(code, filters);
 				loading.start();
 				$http.post(url, code)
@@ -100,7 +100,7 @@
 			}
 		};
 
-		
+
 		return codes;
 	});
 }());

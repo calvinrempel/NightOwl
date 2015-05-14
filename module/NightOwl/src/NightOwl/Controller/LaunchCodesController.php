@@ -12,10 +12,10 @@ use NightOwl\Model\Auth;
 *
 * Specifically, it provides the following endpoints:
 *    GET:
-*          /codes/{token}/{datacentre}/{prefix}[/{filterBy}/{filter}]
+*          /codes/{datacentre}/{prefix}[/{filterBy}/{filter}]
 *
 *    POST:
-*      /codes/{token}/{datacentre}/{key}
+*      /codes/{datacentre}/{key}
 *        BODY:
 *          {
 *            "restriction"   : "___",
@@ -52,7 +52,7 @@ class LaunchCodesController extends AbstractRestfulController
     *
     * This method is invoked indirectly by the Router which routes GET requests
     * in the form:
-    * /nightowl/codes/{token}/{dc}/{prefix}[/{filterBy}/{filter}]
+    * /nightowl/codes/{dc}/{prefix}[/{filterBy}/{filter}]
     * to this method. Note that the filterBy and filter are both optional, but
     * if filterBy is provided, then filter must also be provided.
     *
@@ -75,8 +75,7 @@ class LaunchCodesController extends AbstractRestfulController
             return $authResult;
         }
 
-        // Get all necessary data from the HTTP request.
-        $token    = $this->params('token');
+        // Get all necessary data from the HTTP request
         $dc       = $this->params('seg1');
         $prefix   = $this->params('seg2');
         $filterBy = $this->params('seg3');
@@ -143,9 +142,13 @@ class LaunchCodesController extends AbstractRestfulController
             return $authResult;
         }
 
+        print_r($data);
+
         // Retrieve Code parameters
         $dc = $this->params('seg1');
         $key = $this->params('seg2');
+
+        echo 'DC - ' . $dc;
 
         // Verify the presence of the arguments
         if (is_null($dc) ||
@@ -167,12 +170,12 @@ class LaunchCodesController extends AbstractRestfulController
         if (isset($data['owner']))
             $owner = $data['owner'];
         else
-            $owner = (new Auth())->getCurrentUser($this->params('token'));
+            $owner = (new Auth())->getCurrentUser();
 
         // Request Code Modification on Server
         $codeProvider = new LaunchCodesModel();
-        $success = $codeProvider->createorEditLaunchCode($this->params('token'), $dc,
-                        $key, $restriction, $value, $owner, $description, $js);
+        $success = $codeProvider->createorEditLaunchCode($dc, $key, $restriction,
+                        $value, $owner, $description, $js);
         if ($success)
         {
             return new \Zend\View\Model\JsonModel(array('status' => true));
@@ -213,7 +216,7 @@ class LaunchCodesController extends AbstractRestfulController
 
         // Request Code Creation on Server
         $codeProvider = new LaunchCodesModel();
-        if ($codeProvider->deleteLaunchCode($this->params('token'), $dc, $key))
+        if ($codeProvider->deleteLaunchCode($dc, $key))
         {
             return new \Zend\View\Model\JsonModel(array('status' => true));
         }
@@ -236,15 +239,12 @@ class LaunchCodesController extends AbstractRestfulController
     private function verifyAuthToken()
     {
         // Verify presence and validity of Auth Token
-        if (!is_null($this->params('token')))
-        {
-            $auth = new Auth();
-            $valid = $auth->auth($this->params('token'));
+        $auth = new Auth();
+        $valid = $auth->auth();
 
-            if ($valid)
-            {
-                return true;
-            }
+        if ($valid)
+        {
+            return true;
         }
 
         // If invalid (or missing) Auth Token, return error.
