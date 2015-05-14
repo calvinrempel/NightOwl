@@ -76,7 +76,7 @@
 					<textarea class="form-control" ng-model="newCode.description" cols=50></textarea>
 				</div>
 				<div class="col-md-1">
-					<input class="form-control" type="checkbox" ng-checked="newCode.availableToJS == 'true'" ng-click="toggleJS(code)" >
+					<input class="form-control" type="checkbox" ng-checked="newCode.availableToJS == 'true'" ng-click="toggleJS(newCode)" >
 				</div>
 				<div class="col-md-2">
 					<input class="btn btn-success" type="submit" value="Create" ng-click="createCode(); newCode = {}">
