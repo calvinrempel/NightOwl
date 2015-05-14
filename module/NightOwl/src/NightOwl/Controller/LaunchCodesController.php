@@ -15,7 +15,7 @@ use NightOwl\Model\Auth;
 *          /codes/{token}/{datacentre}/{prefix}[/{filterBy}/{filter}]
 *
 *    POST:
-*      /codes/{token}/{key}
+*      /codes/{token}/{datacentre}/{key}
 *        BODY:
 *          {
 *            "restriction"   : "___",
