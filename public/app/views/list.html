@@ -44,14 +44,14 @@
 		</div>
 		<div class="row" ng-show="createMode" mg-model="newCode">
 			<div class="row">
-				<div class="col-md-2">
+				<div class="col-md-4">
 					<h3>Key</h3>
 				</div>
-				<div class="col-md-2">
-					<h3>Restriction Type</h3>
+				<div class="col-md-1">
+					<h3>Restriction</h3>
 				</div>
 				<div class="col-md-2">
-					<h3>Restriction Value</h3>
+					<h3>Value</h3>
 				</div>
 				<div class="col-md-2">
 					<h3>Description</h3>
@@ -62,10 +62,10 @@
 			</div>
 
 			<div class="row">
-				<div class="col-md-2">
+				<div class="col-md-4">
 					<input class="form-control" type="text" ng-model="newCode.key">
 				</div>
-				<div class="col-md-2">
+				<div class="col-md-1">
 					<select class="form-control" ng-model="newCode.restriction" ng-options="restriction for restriction in config.restrictions"></select>
 				</div>
 				<div class="col-md-2">
@@ -74,11 +74,11 @@
 				<div class="col-md-2">
 					<textarea class="form-control" ng-model="newCode.description" cols=50></textarea>
 				</div>
-				<div class="col-md-2">
+				<div class="col-md-1">
 					<input class="form-control" type="checkbox" ng-checked="newCode.availableToJS == 'true'" ng-click="toggleJS(code)" >
 				</div>
 				<div class="col-md-2">
-					<input class="btn btn-success" type="submit" value="Create" ng-click="createCode()">
+					<input class="btn btn-success" type="submit" value="Create" ng-click="createCode(); newCode = {}">
 					<input class="btn btn-danger" type="button" value="Cancel" ng-click="createMode = false; newCode = {}">
 				</div>
 			</div>
@@ -87,14 +87,14 @@
 
 	<div id="codes" class="row data" ng-show="launchCodes.length">
 		<div class="row">
-			<div class="col-md-2">
+			<div class="col-md-4">
 				<h3>Key</h3>
 			</div>
-			<div class="col-md-2">
-				<h3>Restriction Type</h3>
+			<div class="col-md-1">
+				<h3>Restriction</h3>
 			</div>
 			<div class="col-md-2">
-				<h3>Restriction Value</h3>
+				<h3>Value</h3>
 			</div>
 			<div class="col-md-2">
 				<h3>Description</h3>
@@ -107,10 +107,10 @@
 		<div class="row" ng-repeat="code in launchCodes" >
 
 			<div class="row" ng-hide="inEditMode($index)">
-				<div class="col-md-2">
+				<div class="col-md-4">
 					{{code.key}}<div style="font-size: 75%">{{ code.dateCreated }}</div>
 				</div>
-				<div class="col-md-2">
+				<div class="col-md-1">
 					{{code.restriction}}
 				</div>
 				<div class="col-md-2 wrap">
@@ -119,7 +119,7 @@
 				<div class="col-md-2 wrap">
 					{{code.description}}
 				</div>
-				<div class="col-md-2">
+				<div class="col-md-1">
 					<img src="/img/icons/check.png" alt="Yes" ng-show="code.availableToJS == 'true'" /> 
 					<img src="/img/icons/x.png" alt="No" ng-show="code.availableToJS == 'false'" /> 
 				</div>
@@ -131,10 +131,10 @@
 
 
 			<div class="row" ng-show="inEditMode($index)">
-				<div class="col-md-2">
+				<div class="col-md-4">
 					{{code.key}}<div style="font-size: 75%">{{ code.dateCreated }}</div>
 				</div>
-				<div class="col-md-2">
+				<div class="col-md-1">
 					<select class="form-control" ng-model="code.restriction" ng-options="restriction for restriction in config.restrictions"></select>
 				</div>
 				<div class="col-md-2">
@@ -143,12 +143,12 @@
 				<div class="col-md-2">
 					<textarea class="form-control" ng-model="code.description" cols=50></textarea>
 				</div>
-				<div class="col-md-2">
+				<div class="col-md-1">
 					<input class="form-control" type="checkbox" ng-checked="code.availableToJS == 'true'" ng-click="toggleJS(code)" />
 				</div>
 				<div class="col-md-2">
 					<button class="btn btn-success" ng-click="saveCode(code); editModeOff($index)">OK</button>
-					<button class="btn btn-primary" ng-click="editModeOff($index)">Cancel</button>
+					<button class="btn btn-primary" ng-click="discardChanges($index)">Cancel</button>
 					<button class="btn btn-danger" ng-click="deleteCode(code); editModeOff($index)">Delete</button>
 				</div>
 			</div>
