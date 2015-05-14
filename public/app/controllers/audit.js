@@ -1,18 +1,25 @@
 
 (function(){
-app.controller('AuditController', function($scope, $http) {
-    $scope.auditList = [];
-
+app.controller('AuditController', function($scope, $http, audits) {
 	$scope.auditFilters = {
         filterBy : $scope.config.auditFilters[0],
         filter : ''
     };
 
     $scope.filterAudits = function(){
-        $scope.auditList = [];
-        API_HELPER.loadAudits($scope.populateAudits, $scope.auditFilters);
-        $scope.apply;
+        loadAudits();
     };
+
+    function loadAudits(){
+        audits.load($scope.auditFilters, function(success, data){
+            if(success){
+                $scope.auditList = data;
+                console.log($scope.auditList);
+            }
+        });
+    }
+
+    loadAudits();
 
 
 });

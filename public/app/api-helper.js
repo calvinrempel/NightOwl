@@ -1,8 +1,10 @@
-(function(){
-app.factory('codeAPI', function(API_CONFIG){
-	var helper = {
+var API_HELPER = (function () {
+	var instance;
 
-			API_URL : API_CONFIG.API_URL,
+	function createInstance() {
+		var helper = {
+
+			API_URL : "http://nightowlAPI.local",
 
 			getToken : function(){
 				return localStorage.getItem("key");
@@ -37,14 +39,7 @@ app.factory('codeAPI', function(API_CONFIG){
 			},
 
 			makeGetURL : function( filters ){
-				var url = this.API_URL + "/codes/" + this.getToken() + "/" + filters.dataCenter;
-				if( filters.prefix ){
-					url = url + "/" + encodeURIComponent(filters.prefix);
-				}
-				if( filters.filterBy && filters.filter ){
-					url = url + "/" + filters.filterBy + "/" + filters.filter;
-				}
-				return url;
+				
 			},
 
 			loadCodes : function( _callback, filters ){
@@ -108,7 +103,7 @@ app.factory('codeAPI', function(API_CONFIG){
 			},
 
 			makePostURL : function( code, filters ){
-				return this.API_URL + "/codes/" + this.getToken() + "/" + encodeURIComponent( filters.prefix + "/" + code.key );
+				
 			},
 
 			// Save Token
@@ -128,7 +123,14 @@ app.factory('codeAPI', function(API_CONFIG){
 				$("#loading").fadeOut('fast');
 			}
 		};
+
 		return helper;
-});
-		
-}());
+	}
+
+	if( !instance )
+		instance = createInstance();
+
+	return instance;
+})();
+
+
