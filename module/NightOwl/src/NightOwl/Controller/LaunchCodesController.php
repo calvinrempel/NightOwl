@@ -34,9 +34,12 @@ use NightOwl\Model\Auth;
 class LaunchCodesController extends AbstractRestfulController
 {
     /* Constants that define the available filter types. */
-    const FILTER_BY_KEY = 'Key';
-    const FILTER_BY_VALUE = 'Value';
-    const HARD_OUTPUT_LIMIT = 100;
+    const FILTER_BY_DATE        = 'Date';
+    const FILTER_BY_OWNER       = 'Owner';
+    const FILTER_BY_DESCRIPTION = 'Description';
+    const FILTER_BY_KEY         = 'Key';
+    const FILTER_BY_VALUE       = 'Value';
+    const FILTER_BY_ALL         = 'All';
 
     /* Return HTTP status codes */
     const RETURN_STATUS_SUCCESS = 200;
@@ -90,20 +93,17 @@ class LaunchCodesController extends AbstractRestfulController
         $codes = $codeProvider->getLaunchCodes($dc, $prefix, true);
 		$codes = $this->formatCodeOutput($codes);
 
-        // If the user has asked to filter by a valid parameter, filter the results.
-        if ($this->isValidFilter($filterBy) && !is_null($filter))
-        {
-            $codes = $this->filterResults($filterBy, $filter, $codes);
-        }
-
         // If there are codes to output, format and inject metadata.
         if (count($codes) > 0)
         {
-            // Alter the structure of the codes for applicability on the client
-            $codes = array_slice($codes, 0, self::HARD_OUTPUT_LIMIT);
-
             // Get the MetaData from the Database and add it to the output
             $codeProvider->injectMetadata($codes);
+        }
+
+        // If the user has asked to filter by a valid parameter, filter the results.
+        if ($this->isValidFilter($filterBy) && !is_null($filter))
+        {
+            $codes = $this->filterResults($prefix, $filterBy, $filter, $codes);
         }
 
         // Return the results as a JSON string.
@@ -156,10 +156,10 @@ class LaunchCodesController extends AbstractRestfulController
         }
 
         // Get the parameters
-        $restriction = $data['restriction'];
-        $value       = $data['value'];
+        $restriction = (isset($data['restriction']) ? $data['restriction'] : '');
+        $value       = (isset($data['value']) ? $data['value'] : '');
         $description = (isset($data['description']) ? $data['description'] : '');
-        $js          = $data['availableToJS'];
+        $js          = (isset($data['availableToJS']) ? $data['availableToJS'] : 'true');
         $owner       = '';
 
         if (isset($data['owner']))
@@ -279,7 +279,12 @@ class LaunchCodesController extends AbstractRestfulController
     private function isValidFilter($filterBy)
     {
         // The available filter types.
-        $typeArray = array(self::FILTER_BY_KEY, self::FILTER_BY_VALUE);
+        $typeArray = array(self::FILTER_BY_DATE,
+                           self::FILTER_BY_OWNER,
+                           self::FILTER_BY_DESCRIPTION,
+                           self::FILTER_BY_KEY,
+                           self::FILTER_BY_VALUE,
+                           self::FILTER_BY_ALL);
 
         // If the type is acceptable, return true.
         if (in_array($filterBy, $typeArray))
@@ -294,6 +299,7 @@ class LaunchCodesController extends AbstractRestfulController
     * Filter the list by the given value on the given key.
     *
     * Params:
+    *      $prefix   : the existing prefix to ignore in the filter.
     *      $filterBy : the key to filter on (e.g. "Key", "Value")
     *      $filter   : the value of the filter to match against
     *      $codes    : the current list of codes to run the filter on
@@ -307,10 +313,11 @@ class LaunchCodesController extends AbstractRestfulController
 	*		Calvin Rempel - May 8, 2015
 	*			- Added check to ensure codes exist before filtering them.
     */
-    private function filterResults($filterBy, $filter, $codes)
+    private function filterResults($prefix, $filterBy, $filter, $codes)
     {
         $retval = array();
         $matchVal;
+        $prefixLength = strlen($prefix);
 
 		// If there are no codes, return an empty array.
         if (!is_array($codes) || count($codes) == 0)
@@ -318,21 +325,42 @@ class LaunchCodesController extends AbstractRestfulController
             return $retval;
         }
 
-		
+
         // Check each code in the list to see if it matches the filter parameters
         // and if it does, add it to the output list.
         foreach ($codes as $code)
         {
+            $filterVals = array();
+            $key = substr($code['key'], $prefixLength);
+
             // Determine which value is being filtered on.
-            if ($filterBy == self::FILTER_BY_KEY)
-                $matchVal = $code['key'];
-            if ($filterBy == self::FILTER_BY_VALUE)
-                $matchVal = $code['value'];
-			
-            // If the code matches the filter, add to output array.
-            if (preg_match("/$filter/i", $matchVal))
+            if ($filterBy == self::FILTER_BY_ALL)
             {
-                $retval[] = $code;
+                $filterVals[] = $key;
+                $filterVals[] = $code['value'];
+                $filterVals[] = $code['owner'];
+                $filterVals[] = $code['dateCreated'];
+                $filterVals[] = $code['description'];
+            }
+            else if ($filterBy == self::FILTER_BY_KEY)
+                $filterVals[] = $key;
+            else if ($filterBy == self::FILTER_BY_VALUE)
+                $filterVals[] = $code['value'];
+            else if ($filterBy == self::FILTER_BY_OWNER)
+                $filterVals[] = $code['owner'];
+            else if ($filterBy == self::FILTER_BY_DATE)
+                $filterVals[] = $code['dateCreated'];
+            else if ($filterBy == self::FILTER_BY_DESCRIPTION)
+                $filterVals[] = $code['description'];
+
+            // If the code matches the filter, add to output array.
+            foreach ($filterVals as $val)
+            {
+                if (preg_match("/$filter/i", $val))
+                {
+                    $retval[] = $code;
+                    break;
+                }
             }
         }
 
@@ -369,9 +397,9 @@ class LaunchCodesController extends AbstractRestfulController
             $value = json_decode(base64_decode($code['Value']), true);
             $temp = array(
                 'key'           => $code['Key'],
-                'restriction'   => $value['restriction'],
-                'value'         => $value['value'],
-                'availableToJS' => $value['availableToJS']
+                'restriction'   => (isset($value['restriction']) ? $value['restriction'] : ''),
+                'value'         => (isset($value['value']) ? $value['value'] : ''),
+                'availableToJS' => (isset($value['availableToJS']) ? $value['availableToJS'] : '')
             );
 
             $output[] = $temp;

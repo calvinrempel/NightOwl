@@ -1,36 +1,81 @@
-var  app = angular.module('NightOwl', []);
+var  app = angular.module('NightOwl', []).constant( 'API_CONFIG',{
 
-var NIGHTOWL_CONFIG = {
-	API_URL:"http://nightowlAPI.local",
+	"API_URL":"http://nightowlAPI.local",
 
-	restrictions : [
+	"loadingID" : "#loading",
+
+	"restrictions" : [
 		"boolean",
 		"member_list",
 		"memberID",
 		"percent"
 	],
 
-	filters : [
+	"filters" : [
+		"All",
 		"Key",
-		"Value"
+		"Value",
+		"Date",
+		"Owner",
+		"Description"
 	],
 
-	prefixes: [
-		"darklaunch"
-	],
+	"defaultFilters" : {
+		"prefix" : "darklaunch",
+		"dataCenter" : "dc1",
+		"filterBy" : "All",
+		"filter" : ""
+	},
 
-	dataCenters: [
-		{"name": "Data Center 1", "value" : "dc1"},
+	"metadata" : {
+		"restrictions":{
+			"boolean":{"type":"select", "values":["true","false"]},
+			"member_list":{"type":"text"},
+			"memberID":{"type":"text"},
+			"percent":{"type":"text"}
+		}
+	},
+
+	"dataCenters": [
+		{
+			"name": "Data Center 1", 
+			"value" : "dc1",
+			"prefixes":{ 
+				"darklaunch" : {
+					"dashboard": {
+						"core" : {},
+
+						"api":{
+							"1":{
+								"ANDROID" : {},
+								"APPLE" : {}
+							},
+
+							"2":{
+								"ANDROID" : {},
+								"APPLE" : {}
+							}
+						},
+
+						"apiold":{}
+					},
+
+					"service":{
+						"social-communication" : {}
+					}
+				}
+			},
+		},
 		{"name": "Data Center 2", "value" : "dc2"},
 		{"name": "Data Center 3", "value" : "dc3"}
 	],
 
-	tokenName: "NightOwlAuth",
+	"tokenName": "NightOwlAuth",
 
-	auditFilters : [
+	"auditFilters" : [
         "All",
-        "Owner",
+        "User",
         "Code",
         "Message"
     ]
-};
+});

@@ -1,79 +1,55 @@
 (function(){
-app.controller('ListController', function($scope, $http) {
+app.controller('ListController', function($scope, $http, codes) {
 		
-		// Create mode is off
-		$scope.createMode = false;
+		init();
 
-		// Gets the data center, prefix and filter type + expression
-		
-
-		// Should filter the code results based on the selected prefix
-		$scope.reloadCodes = function(){
-			console.log($scope.filters);
-			API_HELPER.loadCodes($scope.populateCodes, $scope.getFilters());
-		};
-
-		// Toggles inputs for given code between enabled and disabled
-		$scope.toggleEditMode = function(index){
-			var inputs = $scope.getInputs(index);
-			inputs.prop('disabled', !inputs.prop('disabled'));
+		function init(){
+			$scope.createMode = false;
+			$scope.editMode = [];
+			$scope.newCode = {};
+			$scope.sort = {};
+			$scope.prefixes = [];
+			$scope.dc = {};
+			$scope.filters = {};
+			$scope.sortOptions = [];
+			setDataCenter($scope.config.dataCenters[0]);
 		}
 
-		// Returns true if the current code is editable
+
+		$scope.setDataCenter = function(dataCenter){
+			setDataCenter(dataCenter)
+        }
+        
+        // EDIT MODE FUNCTIONS
+		$scope.editModeOn = function(index){
+			$scope.editMode[index] = true;
+		}
+		$scope.editModeOff = function(index){
+			$scope.editMode[index] = false;
+		}
 		$scope.inEditMode = function(index){
-			var input = $scope.getInputs(index).first()
-			return !input.prop('disabled');
+			return ($scope.editMode[index] !== undefined && $scope.editMode[index] != false);
 		}
 
-		// Gets the inputs, select box, and textarea associated with the code
-		$scope.getInputs = function(index){
-			var selector = "tr#code-" + index;
-			return $(selector).find("td input, td select, td textarea");
-		}
-
-
-		// TODO: Save the code using the API
+		// CODE CRUD FUNCTIONS
 		$scope.saveCode = function(code){ 
-			console.log(code);
-			API_HELPER.saveCode( code, $scope.populateCodes, $scope.getFilters() );
+			saveCode(code);
 		}
-
-		// TODO: Delete the code using the API (MAKE SURE TO CONFIRM FIRST)
 		$scope.deleteCode = function(code){ 
-			API_HELPER.deleteCode( code, $scope.populateCodes, $scope.getFilters() ); 
+			if( window.confirm("Are you sure you wish to delete\n" + $scope.filters.prefix + "/" + code.key + "?" ) )
+				deleteCode(code)
+		}
+		$scope.createCode = function(){
+			createCode($scope.newCode);
 		}
 
-		// TODO: Discard the changes made to the code
-		$scope.discardChanges = function(code){
-			console.log("DISCARD THE CHANGES")
+		$scope.discardChanges = function(index){
+			loadCodes();
+			$scope.editModeOff(index);
 		}
 
-		$scope.createCode = function(code){
-			var key, restriction, value, description, availableToJS;
-
-			key = $scope.filters.prefix + "/" + code.key,
-
-			restriction = code.restriction || 'boolean';
-
-			value = code.value || "false";
-
-			description = code.description;
-
-			if(code.availableToJS){
-				availableToJS = 'true';
-			}else{
-				availableToJS = 'false';
-			}
-
-			var newCode = {
-				key :  key,
-				restriction : restriction,
-				value : value,
-				description : description,
-				availableToJS : availableToJS
-			};
-			console.log(newCode);
-			API_HELPER.saveCode( newCode, $scope.populateCodes, $scope.getFilters() );
+		$scope.reloadCodes = function(){
+			loadCodes();
 		}
 
 		$scope.toggleJS = function(code){
@@ -83,8 +59,91 @@ app.controller('ListController', function($scope, $http) {
 			}else{
 				code.availableToJS = "false";
 			}
-		}
+		} 
 
+        $scope.resetFilters = function(){
+            if($scope.dc !== undefined)
+                setDataCenter( $scope.dc );
+            else
+                setDataCenter( $scope.config.dataCenters[0] );
+        }
+        
+        function setDataCenter(dataCenter){
+        	$scope.dc = dataCenter;
+            $scope.prefixes = buildList(dataCenter.prefixes);
+            $scope.filters = {
+                dataCenter : dataCenter.value,
+                filterBy : $scope.config.filters[0],
+                prefix: $scope.prefixes[0],
+                filter : ''
+            };
+            loadCodes();
+        }
+
+        function loadCodes(){
+        	codes.load($scope.filters, function(success, data){
+        		if(success){
+	        		$scope.selectTab("list");
+	        		$scope.launchCodes = data.codes;
+	        		$scope.sortOptions = Object.keys(data.codes);
+	        		$scope.sort.field = $scope.sortOptions[0];
+	        		$scope.sort.desc = true;
+        		}
+        	});
+        }
+
+        function deleteCode( code ){
+        	codes.remove( code, $scope.filters, function(success, data){
+        		if(success){
+        			console.log("Code Deleted!");
+        			loadCodes();
+        		}
+        	}); 
+        }
+
+        function createCode( code ){
+        	code.key = $scope.filters.prefix + "/" + code.key
+        	codes.save(code, $scope.filters, function(success, data){
+        		if(success){
+        			console.log("Code Created!");
+        			$scope.createMode = false;
+        			loadCodes();
+        		}
+        	});
+        }
+
+        function saveCode( code ){
+        	codes.save(code, $scope.filters, function(success, data){
+        		if(success){
+        			console.log("Code Saved!");
+        		}
+        	});
+        }
+
+        function buildList(object, branch){
+            var array = [];
+            for(key in object){
+                if(!branch){
+                    array.push(key)
+                    if(!$.isEmptyObject(object[key]))
+                        array = array.concat(buildList(object[key], key));
+                }else{
+                    array.push(branch + "/" + key);
+                    if(!$.isEmptyObject(object[key]))
+                        array = array.concat(buildList(object[key], branch + "/" + key));
+                }
+                    
+            }
+            return array;
+        }
+
+        function trimKeys( codes ){
+            console.log($scope.filters.prefix);
+            for (var i = 0; i < codes.length; i++) {
+                codes[i].key = codes[i].key.replace($scope.filters.prefix + "/", "");
+            };
+        }
+        
 
 	});
 })();

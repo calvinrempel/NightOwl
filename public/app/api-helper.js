@@ -1,17 +1,15 @@
-var API_HELPER = (function () {
-	var instance;
+(function(){
+app.factory('codeAPI', function(API_CONFIG){
+	var helper = {
 
-	function createInstance() {
-		var helper = {
-
-			API_URL : NIGHTOWL_CONFIG.API_URL,
+			API_URL : API_CONFIG.API_URL,
 
 			getToken : function(){
 				return localStorage.getItem("key");
 			},
 
 			saveCode : function( code, _callback, filters ){
-				var url = this.makePostURL(code);
+				var url = this.makePostURL(code, filters);
 				this.startLoading(null);
 				$.post(url, code).success(function(data, status, headers, config) {
 					console.log("saved!");
@@ -26,7 +24,7 @@ var API_HELPER = (function () {
 			deleteCode : function( code, _callback, filters ){
 				this.startLoading(null);
 				$.ajax({
-					url: this.makePostURL(code),
+					url: this.makePostURL(code, filters),
 					type: 'delete',
 					success: function(result) {
 						console.log("deleted!");
@@ -41,7 +39,7 @@ var API_HELPER = (function () {
 			makeGetURL : function( filters ){
 				var url = this.API_URL + "/codes/" + this.getToken() + "/" + filters.dataCenter;
 				if( filters.prefix ){
-					url = url + "/" + filters.prefix;
+					url = url + "/" + encodeURIComponent(filters.prefix);
 				}
 				if( filters.filterBy && filters.filter ){
 					url = url + "/" + filters.filterBy + "/" + filters.filter;
@@ -62,7 +60,7 @@ var API_HELPER = (function () {
 
 				this.startLoading(null);
 				$.getJSON(url, function(json, textStatus) {
-					console.log("HELLO");
+					console.log(json);
 					_callback(json.codes);
 				})
 				.fail(function(){
@@ -73,20 +71,24 @@ var API_HELPER = (function () {
 			  });
 			},
 
+            //case for last 24 hours
+            //var url = this.API_URL + '/audit/' + this.getToken() + '/{"time":{"$gt":"' + (Date.now()*1000-86400) + '"}';
+
+
             loadAudits : function( _callback, filters ){
         		var url = this.API_URL + '/audit/' + this.getToken() + '/';
-		        if(filters.filterBy == 'Owner') {
-		            url = url + '{"owner":{"$regex":"' + filters.filter + '"}}';
+		        if(filters.filterBy == 'User') {
+		            url = url + '{"owner":{"$regex":"' + filters.filter + '","$options":"-i"}}';
 		        }
 		        else if(filters.filterBy == 'Code') {
-		            url = url + '{"code":{"$regex":"' + filters.filter + '"}}';
+		            url = url + '{"code":{"$regex":"' + filters.filter + '","$options":"-i"}}';
 		        }
 		        else if(filters.filterBy == 'Message') {
-		            url = url + '{"message":{"$regex":"' + filters.filter + '"}}';
+		            url = url + '{"message":{"$regex":"' + filters.filter + '","$options":"-i"}}';
 		        }
-		        else {
-		            url = url + '{}';
-		        }
+		        else if(filters.filterBy == 'All') {
+                    url = url + '{"$or":[{"owner":{"$regex":"' + filters.filter + '","$options":"-i"}},{"code":{"$regex":"' + filters.filter + '","$options":"-i"}},{"message":{"$regex":"' + filters.filter + '","$options":"-i"}}]}';
+                }
 
 		        console.log(url);
 		        this.startLoading(null);
@@ -105,8 +107,8 @@ var API_HELPER = (function () {
 				});
 			},
 
-			makePostURL : function( code ){
-				return this.API_URL + "/codes/" + this.getToken() + "/" + encodeURIComponent(code.key);
+			makePostURL : function( code, filters ){
+				return this.API_URL + "/codes/" + this.getToken() + "/" + encodeURIComponent( filters.prefix + "/" + code.key );
 			},
 
 			// Save Token
@@ -119,21 +121,14 @@ var API_HELPER = (function () {
 			},
 
 			startLoading : function(element){
-				console.log("START LOADING");
+				$("#loading").fadeIn('fast');
 			},
 
 			stopLoading : function(element){
-				console.log("STOP LOADING");
+				$("#loading").fadeOut('fast');
 			}
 		};
-
 		return helper;
-	}
-
-	if( !instance )
-		instance = createInstance();
-
-	return instance;
-})();
-
-
+});
+		
+}());

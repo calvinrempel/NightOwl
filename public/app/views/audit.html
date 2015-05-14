@@ -4,7 +4,7 @@
             <option value="">Filter By</option>
         </select>
         <input type="text" ng-model="auditFilters.filter" id="searchText">
-        <input type="submit" value="filter" ng-click="filterAudits()">
+        <input input class="btn" type="submit" value="filter" ng-click="filterAudits()">
     </form>
     <br/>
 </div>
@@ -18,7 +18,7 @@
             <td class="listTable">Message</td>
         </tr>
         </thead>
-        <tr ng-repeat="audit in auditList">
+        <tr ng-repeat="audit in auditList | orderBy:'time':true">
             <td class="listTable">{{audit.time}}</td>
             <td class="listTable">{{audit.owner}}</td>
             <td class="listTable">{{audit.code}}</td>
