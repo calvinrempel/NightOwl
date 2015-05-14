@@ -57,10 +57,6 @@ Unzip the package and copy the Consul binary to somewhere on the PATH so that it
 - On Windows systems, you can put it wherever you would like, as long as that location is on the %PATH%.
     
 ### Run the Consul agent
-
-**Note: ** to check Consul is installed properly, open a new Terminal/Command Prompt session and enter
-
-    $ consul
     
 To run the Consul agent, simply enter this into your Terminal/Command Prompt:
 
