@@ -8,6 +8,7 @@ namespace NightOwlTest;
 
 use Zend\Test\PHPUnit\Controller\AbstractControllerTestCase;
 use NightOwl\Model\Auth;
+use Zend\Stdlib\Parameters;
 
 /**
  * Description of LoginTest
@@ -23,6 +24,7 @@ class LoginTest extends AbstractControllerTestCase
     
     function testLogin()
     {
+        
         $this->getRequest()->setMethod('POST')
                 ->setPost(new Parameters(array('name' => 'dave', 'pass' => 'test')));
         $this->dispatch('/auth/login');

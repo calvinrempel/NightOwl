@@ -219,6 +219,8 @@ class Auth extends BaseModel implements LoginModelInterface{
      * @return boolean true if the user is authentificated false if no session
      * is found or the session has expired in Mongo.
      * 
+     * @throws MongoConnectionException when mongo cannot connect.
+     * 
      * This function is not directly accessable by a rest endpoint and is intended
      * be called by various other endpoints where authentification is required.
      */
@@ -231,25 +233,33 @@ class Auth extends BaseModel implements LoginModelInterface{
         $session = array('key' => $key, 'user' => $user);
         
         // Try to find a session with the correct key/username
-        if($session = $this->db->Session->findOne($session))
+        try
         {
-            // if a session was found check if it's still valid against the current time.
-            if($session['ttl'] < time())
+            if($session = $this->db->Session->findOne($session))
             {
-                return false;
+                // if a session was found check if it's still valid against the current time.
+                if($session['ttl'] < time())
+                {
+                    return false;
+                }
+                else
+                {
+                    // update the current session.
+                    $this->update_session();
+
+                    return true;
+                }
             }
             else
             {
-                // update the current session.
-                $this->update_session();
-                
-                return true;
+                return false;
             }
-        }  
-        else
-        {
-            return false;
         }
+        catch(MongoConnectionException $e)
+        {
+            throw $e;
+        }
+        
 
     }
 
