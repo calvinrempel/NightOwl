@@ -35,12 +35,11 @@ class Module implements AutoloaderProviderInterface
         return include __DIR__ . '/config/module.config.php';
     }
 
-    public function onBootstrap(MvcEvent $e)
+    /**
+     * I don't understand how I'm supposed to get this any other way.
+     */
+    private function getConfig()
     {
-        // You may not need to do this if you're doing it elsewhere in your
-        // application
-        $eventManager        = $e->getApplication()->getEventManager();
-        $moduleRouteListener = new ModuleRouteListener();
-        $moduleRouteListener->attach($eventManager);
+        return include __DIR__ . '../../../../../../config/autoload/local.php';
     }
 }

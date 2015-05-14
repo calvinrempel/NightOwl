@@ -8,6 +8,10 @@
 
 namespace NightOwl\Model;
 
+use Zend\Authentication\Storage\Session;
+use Zend\Authentication\AuthenticationService;
+use Zend\Session\Container;
+use Zend\Authentication\Adapter\AdapterInterface;
 use MongoClient;
 
 
@@ -16,19 +20,48 @@ use MongoClient;
  *
  * @author Marc
  */
-class Auth {
+class Auth extends BaseModel implements LoginModelInterface, AdapterInterface{
     protected $db;
-
-    public function __construct()
+    protected $session;
+    protected $auth;
+    
+    /**
+     * The TTL of the session.
+     */
+    const SESSION_LENGTH = 60 * 60; // 60 minutes~
+    
+    public function __construct($db)
     {
-        $config = $this->getConfig();
-        $dbn = $config['mongo']['name'];
-        $m = new MongoClient($config['mongo']['url']);
+        // init mongo connection.
+        $dbn = $db['name'];
+        $m = new MongoClient($db['url']);
         $this->db = $m->$dbn;
+        
+        // init auth.
+        $this->auth = new AuthService();
+        $this->auth->setStorage(new Session('nightowl_auth'));
     }
+    
 
+    /** 
+     * @author Marc Vouve
+     * 
+     * @designer Marc Vouve
+     * 
+     * @date April 30th
+     * 
+     * @revision May 13, added session.
+     * 
+     * @param array $user
+     * @param type $pass
+     * @return a unique key on success, or false on failure.
+     * 
+     * Creates a user session, on mongo that stores the IP and a unique session
+     * key. 
+     */
     public function login($user, $pass)
     {
+        
         $user = array('user' => $user);
 
         $userfound = $this->db->Auth->findOne($user);
@@ -38,21 +71,61 @@ class Auth {
             return false;
         }
 
-        if($userfound['keyTTL'] < time(0))
-            $userfound['key'] = substr(sha1(time(0) . rand()), 20);
-        $userfound['keyTTL'] = time(0) + 60 * 60;   // One hour
-
-        $this->db->Auth->update($user, $userfound);
-
-        if($userfound['pass'] === $pass)
+        if(password_verify($pass, $userfound['pass'])
         {
+            $this->session->user = $userfound['pass'];
+            $this->set_session();
+            
             return $userfound['key'];
         }
         else
         {
-
             return false;
         }
+    }
+    
+    /**
+     * @author Marc Vouve
+     * 
+     * @date May 13, 2015
+     * 
+     * This function creates/extends a session for the user.
+     */
+    private function set_session()
+    {
+        $request = \Zend\Http\PhpEnvironment\Request();
+        $session = array(
+            'user'  => $this->session->user, 
+            'key'   => $this->session->key,
+            'IP'    => $request->getServer('REMOTE_ADDR')
+            );
+        
+        // get the mongoID for the session if it exists.
+        $existing_session = $this->db->session->findOne($session);
+        
+        // check if a session was found, sets the session to that session if true.
+        if($existing_session !== NULL)
+        {
+            $session = $existing_session;
+        }
+        
+        // set the time to live.
+        $session['ttl'] = time() + self::SESSION_LENGTH;  
+        // create a new key.
+        $session['key'] = substr(sha1(time(0) . rand()), 20);
+        
+        // update the local session.
+        $this->session->key = $session['key'];
+        
+        // save the updated session.
+        $this->db->session->save($session);
+            
+    }
+    
+    
+    public function logout($user)
+    {
+        
     }
 
     public function auth($key)
@@ -97,11 +170,5 @@ class Auth {
         return $user['user'];
     }
 
-    /**
-     * I don't understand how I'm supposed to get this any other way.
-     */
-    private function getConfig()
-    {
-        return include __DIR__ . '../../../../../../config/autoload/local.php';
-    }
+    
 }
