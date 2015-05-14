@@ -97,7 +97,7 @@ class LaunchCodesController extends AbstractRestfulController
         if (count($codes) > 0)
         {
             // Get the MetaData from the Database and add it to the output
-            $codeProvider->injectMetadata($codes);
+            $codeProvider->injectMetadata($dc, $codes);
         }
 
         // If the user has asked to filter by a valid parameter, filter the results.
@@ -144,10 +144,12 @@ class LaunchCodesController extends AbstractRestfulController
         }
 
         // Retrieve Code parameters
-        $key = $this->params('seg1');
+        $dc = $this->params('seg1');
+        $key = $this->params('seg2');
 
         // Verify the presence of the arguments
-        if (is_null($key) ||
+        if (is_null($dc) ||
+            is_null($key) ||
             !isset($data['restriction']) ||
             !isset($data['value']) ||
             !isset($data['availableToJS']))
@@ -159,7 +161,7 @@ class LaunchCodesController extends AbstractRestfulController
         $restriction = (isset($data['restriction']) ? $data['restriction'] : '');
         $value       = (isset($data['value']) ? $data['value'] : '');
         $description = (isset($data['description']) ? $data['description'] : '');
-        $js          = (isset($data['availableToJS']) ? $data['availableToJS'] : 'true');
+        $js          = (isset($data['availableToJS']) ? $data['availableToJS'] : 'false');
         $owner       = '';
 
         if (isset($data['owner']))
@@ -169,8 +171,9 @@ class LaunchCodesController extends AbstractRestfulController
 
         // Request Code Modification on Server
         $codeProvider = new LaunchCodesModel();
-        if ( $codeProvider->createorEditLaunchCode($this->params('token'), $key,
-            $restriction, $value, $owner, $description, $js) )
+        $success = $codeProvider->createorEditLaunchCode($this->params('token'), $dc,
+                        $key, $restriction, $value, $owner, $description, $js);
+        if ($success)
         {
             return new \Zend\View\Model\JsonModel(array('status' => true));
         }
@@ -199,17 +202,18 @@ class LaunchCodesController extends AbstractRestfulController
         }
 
         // Retrieve Code parameters
-        $key = $this->params('seg1');
+        $dc = $this->params('seg1');
+        $key = $this->params('seg2');
 
         // Verify presence of required parameters
-        if (is_null($key))
+        if (is_null($dc) || is_null($key))
         {
             return $this->prepareInvalidArgumentResponse();
         }
 
         // Request Code Creation on Server
         $codeProvider = new LaunchCodesModel();
-        if ( $codeProvider->deleteLaunchCode($this->params('token'), $key) )
+        if ($codeProvider->deleteLaunchCode($this->params('token'), $dc, $key))
         {
             return new \Zend\View\Model\JsonModel(array('status' => true));
         }
@@ -399,7 +403,8 @@ class LaunchCodesController extends AbstractRestfulController
                 'key'           => $code['Key'],
                 'restriction'   => (isset($value['restriction']) ? $value['restriction'] : ''),
                 'value'         => (isset($value['value']) ? $value['value'] : ''),
-                'availableToJS' => (isset($value['availableToJS']) ? $value['availableToJS'] : '')
+                'availableToJS' => (isset($value['isAvailableToJs']) ? ($value['isAvailableToJs'] ? 'true' : 'false') : ''),
+                'createdDate'   => (isset($value['createdDate']) ? $value['createdDate'] : '')
             );
 
             $output[] = $temp;
