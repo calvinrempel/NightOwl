@@ -31,10 +31,15 @@ class Auth extends BaseModel implements LoginModelInterface{
      */
     protected $session;
     
+    /**
+     *
+     * @var SessionManager: the session manager used by the session.
+     */
     protected $session_manager;
     
     /**
-     * @const The TTL of the session.
+     * @const The TTL of the session. NOTE: this is only actually accounted for
+     * server side. the cookie may not provide acurate info.
      */
     const SESSION_LENGTH = 3600; // 60 minutes~
     
@@ -78,23 +83,21 @@ class Auth extends BaseModel implements LoginModelInterface{
     public function login($user, $pass)
     {
         
-        $user = array('user' => $user);
+        $db_user = array('user' => $user);
 
-        $userfound = $this->db->Auth->findOne($user);
+        $userfound = $this->db->Auth->findOne($db_user);
 
-        if($userfound == NULL)
+        if($userfound === NULL)
         {
             return false;
         }
 
         if(password_verify($pass, $userfound['pass']))
         {
+            $this->session->user = $userfound['user'];
+            $key = $this->update_session();
             
-            var_dump($this->session);
-            $this->session->user = $userfound['pass'];
-            $this->set_session();
-            
-            return $userfound['key'];
+            return $key;
         }
         else
         {
@@ -111,17 +114,16 @@ class Auth extends BaseModel implements LoginModelInterface{
      * 
      * This function creates/extends a session for the user.
      */
-    private function set_session()
+    private function update_session()
     {
-        $request = \Zend\Http\PhpEnvironment\Request();
+        $request = new \Zend\Http\PhpEnvironment\Request();
         $session = array(
-            'user'  => $this->session->user, 
-            'key'   => $this->session->key,
+            'user'  => $this->session->user,
             'IP'    => $request->getServer('REMOTE_ADDR')
             );
         
         // get the mongoID for the session if it exists.
-        $existing_session = $this->db->session->findOne($session);
+        $existing_session = $this->db->Session->findOne($session);
         
         // check if a session was found, sets the session to that session if true.
         if($existing_session !== NULL)
@@ -131,59 +133,101 @@ class Auth extends BaseModel implements LoginModelInterface{
         
         // set the time to live.
         $session['ttl'] = time() + self::SESSION_LENGTH;  
-        // create a new key.
+        // create a new key. key is based on a random number and the current time.
+        // the key is regenerated everytime the session is updated.
         $session['key'] = substr(sha1(time(0) . rand()), 20);
         
         // update the local session.
         $this->session->key = $session['key'];
         
         // save the updated session.
-        $this->db->session->save($session);
+        $this->db->Session->save($session);
+        
+        return $session['key'];
             
     }
-    
+    /**
+     * This function can be used to create an account. it was added when passwords
+     * started to be obfuscated in storage.
+     * 
+     * @date May 13, 2015
+     * 
+     * @author Marc Vouve
+     * 
+     * @param type $user the username of the account being created.
+     * @param type $pass the password of the account being created.
+     * @return boolean if the account creation was successful.
+     */
     public function create_account($user, $pass)
     {
+        
+        // check if username is already in use.
         if($this->db->Auth->findOne(array('user' => $user)))
         {
             return false;
         }
+          
+        // create user.
+        $bcrypt = new \Zend\Crypt\Password\Bcrypt();
+        $secure_pass = $bcrypt->create($pass);
         
-        $user = array('user' => $user, 'pass' => $pass);
-        
+        $user = array('user' => $user, 'pass' => $secure_pass);
         $this->db->Auth->insert($user);
+        
+        return true;
         
     }
     
-    
+    /**
+     * 
+     * @return boolean
+     */
     public function logout()
     {
+        $request = new \Zend\Http\PhpEnvironment\Request();
         $session = array(
             'user'  => $this->session->user, 
             'key'   => $this->session->key,
-            'IP'    => $request->getServer('REMOTE_ADDR')
+            'IP'    => $request->getServer('REMOTE_ADDR'),
             );
         
         $this->session_manager->getStorage()->clear(self::SESSION_NAME);
-        $current = $this->db->Session->remove($session); 
+        $this->db->Session->remove($session); 
+        
+        return true;
     }
 
-    public function auth($key)
+    /**
+     * 
+     * @param type $key
+     * @return boolean
+     */
+    public function auth()
     {
-        $token = array('key' => $key);
-        if(($user = $this->db->Auth->findOne($token)) === NULL )
+        
+        $key = $this->session->key;
+        $user = $this->session->user;
+        
+        $session = array('key' => $key, 'user' => $user);
+        
+        if($session = $this->db->findOne($session))
+        {
+            if($session['ttl'] < time())
+            {
+                return false;
+            }
+            else
+            {
+                $this->update_session();
+                
+                return true;
+            }
+        }
+        
+        else
         {
             return false;
         }
-        if( $user['keyTTL'] < time(0) )
-        {
-            $user['key'] = '';
-            $this->db->Auth->update($token, $user);
-
-            return false;
-        }
-
-        return true;
 
     }
 

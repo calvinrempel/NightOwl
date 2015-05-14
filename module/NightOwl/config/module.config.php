@@ -15,7 +15,7 @@ return array(
              'login' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/auth/:method[/:id][/:pw]',
+                     'route'    => '/auth[/:method][/:id][/:pw]',
                      'defaults' => array(
                          'controller' => 'NightOwl\Controller\AuthRest',
                      ),
