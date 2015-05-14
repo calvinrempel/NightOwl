@@ -1,114 +1,159 @@
 <div ng-controller="ListController">
-	<div class="row" ng-controller="ListController">
-		<div class="col-lg-12">
-			<div ng-repeat="dc in config.dataCenters" class="btn-group">
-				<button class="btn" ng-class="{active: filters.dataCenter == dc.value}" ng-click="setDataCenter(dc)">{{dc.name}}</button>
+
+	<div id="dataCenters" class="row" >
+		<div class="col-md-12 btn-group">
+			<button ng-repeat="dc in config.dataCenters" class="btn" ng-class="filters.dataCenter == dc.value ? 'btn-secondary' : 'btn-primary'" ng-click="setDataCenter(dc)">{{dc.name}}</button>
+		</div>
+	</div>
+
+	<div id="filter"class="row">
+		<div class="row">
+			<div class="col-md-12">
+				<h2>Filter Codes</h2>
 			</div>
-			<br/>
-			<br/>
+		</div>
+		<div class="row">
+			<div class="col-md-1">
+				<h3>Prefix:</h3>
+			</div>
+			<div class="col-md-3">
+				<select class="form-control" ng-model="filters.prefix" ng-options="prefix for prefix in prefixes"></select>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-1">
+				<select class="form-control" ng-model="filters.filterBy" ng-options="filter for filter in config.filters"></select>
+			</div>
+			<div class="col-md-3">
+				<input class="form-control" type="text" ng-model="filters.filter" />
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-1 col-md-offset-2">
+				<input type="button" class="btn btn-danger" ng-click="resetFilters()" value="Clear Filters"/>
+			</div>
+			<div class="col-md-1">
+				<input class="btn btn-success" type="submit" value="Filter" ng-click="reloadCodes()"/>
+			</div>
 		</div>
 	</div>
 
-	<div class="row">
-		<div class="col-lg-12">
-			<form id="filter">
-				<table class="table-condensed">
-					<thead>
-						<tr>
-							<th>Filter Codes</th>
-							<th></th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>Prefix:</td>
-							<td><select class="form-control" ng-model="filters.prefix" ng-options="prefix for prefix in prefixes"></select></td>
-						</tr>
-						<tr>
-							<td><select class="form-control" ng-model="filters.filterBy" ng-options="filter for filter in config.filters"></select>
-							</td>
-							<td><input class="form-control" type="text" ng-model="filters.filter"></td>
-						</tr>
-						<tr>
-							<td></td>
-							<td align="right"><input type="button" class="btn btn-secondary" ng-click="resetFilters()" value="Clear Filters"><input class="btn btn-success" type="submit" value="Filter" ng-click="reloadCodes()"></td>
-						</tr>
-					</tbody>
-				</table>
-			</form>
+	<div id="create" class="row">
+		<div class="col-md-1" ng-hide="createMode">
+			<button class="btn btn-primary" ng-click="createMode = true">Create New</button>
+		</div>
+		<div class="row" ng-show="createMode" mg-model="newCode">
+			<div class="row">
+				<div class="col-md-2">
+					<h3>Key</h3>
+				</div>
+				<div class="col-md-2">
+					<h3>Restriction Type</h3>
+				</div>
+				<div class="col-md-2">
+					<h3>Restriction Value</h3>
+				</div>
+				<div class="col-md-2">
+					<h3>Description</h3>
+				</div>
+				<div class="col-md-2">
+					<h3>Available To JS?</h3>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-2">
+					<input class="form-control" type="text" ng-model="newCode.key">
+				</div>
+				<div class="col-md-2">
+					<select class="form-control" ng-model="newCode.restriction" ng-options="restriction for restriction in config.restrictions"></select>
+				</div>
+				<div class="col-md-2">
+					<input class="form-control" type="text" ng-model="newCode.value">
+				</div>
+				<div class="col-md-2">
+					<textarea class="form-control" ng-model="newCode.description" cols=50></textarea>
+				</div>
+				<div class="col-md-2">
+					<input class="form-control" type="checkbox" ng-checked="newCode.availableToJS == 'true'" ng-click="toggleJS(code)" >
+				</div>
+				<div class="col-md-2">
+					<input class="btn btn-success" type="submit" value="Create" ng-click="createCode()">
+					<input class="btn btn-danger" type="button" value="Cancel" ng-click="createMode = false; newCode = {}">
+				</div>
+			</div>
 		</div>
 	</div>
 
-	<div class="row">
-		<div class="col-lg-12">
-			<form id="create">
-				<button class="btn btn-primary" ng-hide="createMode" ng-click="createMode = true">Create New</button>
-				<table ng-show="createMode" mg-model="newCode" class="full-width table">
-					<thead>
-						<tr>
-							<th>Key</th>
-							<th>Restriction</th>
-							<th>Value</th>
-							<th>Description</th>
-							<th>Available to JS?</th>
-							<th></th>
-							<th></th>
-						</tr>
-					</thead>
-					<tr>
-						<td><input class="form-control" type="text" ng-model="newCode.key" /></td>
-						<td>
-							<select class="form-control" ng-model="newCode.restriction" ng-init="newCode.restriction = config.restrictions[0]"
-							ng-options="restriction for restriction in config.restrictions">
-						</select>
-					</td>
-					<td><input class="form-control" type="text" ng-model="newCode.value" ng-init="newCode.value = 0" /></td>
-					<td><textarea class="form-control" ng-model="newCode.description"></textarea></td>
-					<td><input class="form-control" type="checkbox" ng-model="newCode.availableToJS" ng-init="newCode.availableToJS = 0" /></td>
-					<td><input class="form-control btn btn-action" type="button" value="Create" ng-click="createCode()"></td>
-					<td><input class="form-control btn" type="button" value="Cancel" ng-click="createMode = false"></td>
-				</tr>
-			</table>
-		</form>
+	<div id="codes" class="row data" ng-show="launchCodes.length">
+		<div class="row">
+			<div class="col-md-2">
+				<h3>Key</h3>
+			</div>
+			<div class="col-md-2">
+				<h3>Restriction Type</h3>
+			</div>
+			<div class="col-md-2">
+				<h3>Restriction Value</h3>
+			</div>
+			<div class="col-md-2">
+				<h3>Description</h3>
+			</div>
+			<div class="col-md-2">
+				<h3>Available To JS?</h3>
+			</div>
+		</div>
+
+		<div class="row" ng-repeat="code in launchCodes" >
+
+			<div class="row" ng-hide="inEditMode($index)">
+				<div class="col-md-2">
+					{{code.key}}<div style="font-size: 75%">{{ code.dateCreated }}</div>
+				</div>
+				<div class="col-md-2">
+					{{code.restriction}}
+				</div>
+				<div class="col-md-2 wrap">
+					{{code.value}}
+				</div>
+				<div class="col-md-2 wrap">
+					{{code.description}}
+				</div>
+				<div class="col-md-2">
+					<img src="/img/icons/check.png" alt="Yes" ng-show="code.availableToJS == 'true'" /> 
+					<img src="/img/icons/x.png" alt="No" ng-show="code.availableToJS == 'false'" /> 
+				</div>
+				<div class="col-md-2">
+					<button class="btn btn-success" ng-click="editModeOn($index)">Edit</button>
+
+				</div>
+			</div>
+
+
+			<div class="row" ng-show="inEditMode($index)">
+				<div class="col-md-2">
+					{{code.key}}<div style="font-size: 75%">{{ code.dateCreated }}</div>
+				</div>
+				<div class="col-md-2">
+					<select class="form-control" ng-model="code.restriction" ng-options="restriction for restriction in config.restrictions"></select>
+				</div>
+				<div class="col-md-2">
+					<input class="form-control" type="text" ng-model="code.value" />
+				</div>
+				<div class="col-md-2">
+					<textarea class="form-control" ng-model="code.description" cols=50></textarea>
+				</div>
+				<div class="col-md-2">
+					<input class="form-control" type="checkbox" ng-checked="code.availableToJS == 'true'" ng-click="toggleJS(code)" />
+				</div>
+				<div class="col-md-2">
+					<button class="btn btn-success" ng-click="saveCode(code); editModeOff($index)">OK</button>
+					<button class="btn btn-primary" ng-click="editModeOff($index)">Cancel</button>
+					<button class="btn btn-danger" ng-click="deleteCode(code); editModeOff($index)">Delete</button>
+				</div>
+			</div>
+
+		</div>
+
 	</div>
-</div>
-<div class="row" ng-show="launchCodes.length">
-	<div class="col-lg-12">
-		<table class="table-hover table-striped" width="100%">
-			<thead>
-				<tr>
-					<th>Key</th>
-					<th>Restriction</th>
-					<th>Value</th>
-					<th>Description</th>
-					<th>Available to JS</th>
-					<th></th>
-					<th></th>
-				</tr>
-			</thead>
-			<tr ng-repeat="code in launchCodes" id="code-{{$index}}">
-
-						<td ng-if="!inEditMode($index)">{{code.key}}<div style="font-size: 75%">{{ code.dateCreated }}</div></td>
-						<td ng-if="!inEditMode($index)">{{code.restriction}}</td>
-						<td ng-if="!inEditMode($index)">{{code.value}}</td>
-						<td ng-if="!inEditMode($index)">{{code.description}}</td>
-						<td ng-if="!inEditMode($index)">
-							<img src="/img/icons/check.png" alt="Yes" ng-show="code.availableToJS == 'true'" />
-							<img src="/img/icons/x.png" alt="No" ng-show="code.availableToJS == 'false'" />
-						</td>
-						<td ng-if="!inEditMode($index)"><button class="btn" ng-click="editModeOn($index)">Edit</button></td>
-
-						<td ng-if="inEditMode($index)">{{code.key}}<div style="font-size: 75%">{{ code.dateCreated }}</div></td>
-						<td ng-if="inEditMode($index)"><select class="form-control" ng-model="code.restriction" ng-options="restriction for restriction in config.restrictions"></select></td>
-						<td ng-if="inEditMode($index)"><input class="form-control" type="text" ng-model="code.value"></td>
-						<td ng-if="inEditMode($index)"><textarea class="form-control" ng-model="code.description" cols=50></textarea></td>
-						<td ng-if="inEditMode($index)"><input class="form-control" type="checkbox" ng-checked="code.availableToJS == 'true'" ng-click="toggleJS(code)" disabled></td>
-						<td ng-if="inEditMode($index)"><button class="btn btn-action" ng-click="saveCode(code); editModeOff($index)">OK</button></td>
-						<td ng-if="inEditMode($index)"><button class="btn" ng-click="discardChanges(code); editModeOff($index)">Cancel</button></td>
-						<td ng-if="inEditMode($index)"><button class="btn-danger btn" ng-click="deleteCode(code); editModeOff($index)">Delete</button></td>
-
-			</tr>
-		</table>
-	</div>
-</div>
 </div>
