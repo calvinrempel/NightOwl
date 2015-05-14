@@ -15,7 +15,7 @@ return array(
              'login' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/login[/:id][/:pw]',
+                     'route'    => '/auth[/:method][/:id][/:pw]',
                      'defaults' => array(
                          'controller' => 'NightOwl\Controller\AuthRest',
                      ),
@@ -41,8 +41,10 @@ return array(
             ),
          ),
      ),
-     'view_manager' => array(
-         'strategies' => array(
+     'view_manager' => array( 
+        'display_not_found_reason' => true,
+        'display_exceptions'       => true,
+        'strategies' => array(
            'ViewJsonStrategy',
         ),
     ),

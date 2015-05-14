@@ -8,6 +8,9 @@
 
 namespace NightOwl\Model;
 
+use Zend\Authentication\AuthenticationService;
+use Zend\Session\SessionManager;
+use Zend\Session\Container;
 use MongoClient;
 
 
@@ -16,69 +19,239 @@ use MongoClient;
  *
  * @author Marc
  */
-class Auth {
-    protected $db;
+class Auth extends BaseModel implements LoginModelInterface{
+    /**
+     *
+     * @var Container: The session container.
+     */
+    protected $session;
+
+    /**
+     *
+     * @var SessionManager: the session manager used by the session.
+     */
+    protected $session_manager;
+
+    /**
+     * @const The TTL of the session. NOTE: this is only actually accounted for
+     * server side. the cookie may not provide acurate info.
+     */
+    const SESSION_LENGTH = 3600; // 60 minutes~
+
+    const SESSION_NAME = 'nightowl_auth';
 
     public function __construct()
     {
-        $config = $this->getConfig();
-        $dbn = $config['mongo']['name'];
-        $m = new MongoClient($config['mongo']['url']);
-        $this->db = $m->$dbn;
+        // configure session manager.
+        $this->session_manager = new SessionManager();
+        Container::setDefaultManager($this->session_manager);
+
+        // init session.
+        $this->session = new Container(self::SESSION_NAME);
     }
 
+
+    /**
+     * @author Marc Vouve
+     *
+     * @designer Marc Vouve
+     *
+     * @date April 30th
+     *
+     * @revision May 13, added session.
+     *
+     * @param array $user
+     * @param type $pass
+     * @return a unique key on success, or false on failure.
+     *
+     * Creates a user session, on mongo that stores the IP and a unique session
+     * key.
+     */
     public function login($user, $pass)
     {
-        $user = array('user' => $user);
 
-        $userfound = $this->db->Auth->findOne($user);
+        $db_user = array('user' => $user);
 
-        if($userfound == NULL)
+        $userfound = $this->getDB()->Auth->findOne($db_user);
+
+        if($userfound === NULL)
         {
             return false;
         }
 
-        if($userfound['keyTTL'] < time(0))
-            $userfound['key'] = substr(sha1(time(0) . rand()), 20);
-        $userfound['keyTTL'] = time(0) + 60 * 60;   // One hour
-
-        $this->db->Auth->update($user, $userfound);
-
-        if($userfound['pass'] === $pass)
+        if(password_verify($pass, $userfound['pass']))
         {
-            return $userfound['key'];
+            $this->session->user = $userfound['user'];
+            $key = $this->update_session();
+
+            return $key;
         }
         else
         {
-
             return false;
         }
     }
 
-    public function auth($key)
+    /**
+     * @author Marc Vouve
+     *
+     * @designer Marc Vouve
+     *
+     * @date May 13, 2015
+     *
+     * This function creates/extends a session for the user. It is also called
+     * within auth as it is
+     */
+    private function update_session()
     {
-        $token = array('key' => $key);
-        if(($user = $this->db->Auth->findOne($token)) === NULL )
-        {
-            return false;
-        }
-        if( $user['keyTTL'] < time(0) )
-        {
-            $user['key'] = '';
-            $this->db->Auth->update($token, $user);
+        $request = new \Zend\Http\PhpEnvironment\Request();
+        $session = array(
+            'user'  => $this->session->user,
+            'IP'    => $request->getServer('REMOTE_ADDR')
+            );
 
+        // get the mongoID for the session if it exists.
+        $existing_session = $this->getDB()->Session->findOne($session);
+
+        // check if a session was found, sets the session to that session if true.
+        if($existing_session !== NULL)
+        {
+            $session = $existing_session;
+        }
+
+        // set the time to live.
+        $session['ttl'] = time() + self::SESSION_LENGTH;
+        // create a new key. key is based on a random number and the current time.
+        // the key is regenerated everytime the session is updated.
+        $session['key'] = substr(sha1(time(0) . rand()), 20);
+
+        // update the local session.
+        $this->session->key = $session['key'];
+
+        // save the updated session.
+        $this->getDB()->Session->save($session);
+
+        return $session['key'];
+
+    }
+    /**
+     * This function can be used to create an account. it was added when passwords
+     * started to be obfuscated in storage.
+     *
+     * @date May 13, 2015
+     *
+     * @author Marc Vouve
+     *
+     * @param type $user the username of the account being created.
+     * @param type $pass the password of the account being created.
+     * @return boolean if the account creation was successful.
+     */
+    public function create_account($user, $pass)
+    {
+
+        // check if username is already in use.
+        if($this->getDB()->Auth->findOne(array('user' => $user)))
+        {
             return false;
         }
+
+        // create user.
+        $bcrypt = new \Zend\Crypt\Password\Bcrypt();
+        $secure_pass = $bcrypt->create($pass);
+
+        $user = array('user' => $user, 'pass' => $secure_pass);
+        $this->getDB()->Auth->insert($user);
 
         return true;
 
     }
 
     /**
-	 * Get the username of the user with the given authentication token.
-	 *
-	 * Params:
-	 *		$token   : the users authentication token
+     * @author Marc Vouve
+     *
+     * @date May 13, 2015
+     *
+     * @return boolean true.
+     *
+     * This function logs a user out of the system. It clears the session locally
+     * and erases the session from mongo.
+     *
+     * NOTE: Sessions are based on IP as well as user. This is meant to somewhat mimic
+     * the popular trend to allow users to force a logout from a specific machine remotely.
+     * That functionality is still todo.
+     */
+    public function logout()
+    {
+        $request = new \Zend\Http\PhpEnvironment\Request();
+        $session = array(
+            'user'  => $this->session->user,
+            'key'   => $this->session->key,
+            'IP'    => $request->getServer('REMOTE_ADDR'),
+            );
+
+        // Zends way of clearing a cookie.
+        $this->session_manager->getStorage()->clear(self::SESSION_NAME);
+        $this->getDB()->Session->remove($session);
+
+        return true;
+    }
+
+    /**
+     * @author Marc Vouve
+     *
+     * @date (original) May 2, 2015
+     *
+     * @revision May 14, 2015 - pretty much rewrote the whole thing.
+     *
+     * @return boolean true if the user is authentificated false if no session
+     * is found or the session has expired in Mongo.
+     *
+     * @throws MongoConnectionException when mongo cannot connect.
+     *
+     * This function is not directly accessable by a rest endpoint and is intended
+     * be called by various other endpoints where authentification is required.
+     */
+    public function auth()
+    {
+
+        $key = $this->session->key;
+        $user = $this->session->user;
+
+        $session = array('key' => $key, 'user' => $user);
+
+        // Try to find a session with the correct key/username
+        try
+        {
+            if($session = $this->getDB()->Session->findOne($session))
+            {
+                // if a session was found check if it's still valid against the current time.
+                if($session['ttl'] < time())
+                {
+                    return false;
+                }
+                else
+                {
+                    // update the current session.
+                    $this->update_session();
+
+                    return true;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch(MongoConnectionException $e)
+        {
+            throw $e;
+        }
+
+
+    }
+
+    /**
+	 * Get the username of the user.
 	 *
 	 * Returns: The logged in users username if the token is value, False if the
      *          token is invalid.
@@ -86,22 +259,10 @@ class Auth {
 	 * Author: Calvin Rempel
 	 * Date: May 3, 2015
 	 */
-    public function getCurrentUser($token)
+    public function getCurrentUser()
     {
-        $utoken = array('key' => $token);
-        if(($user = $this->db->Auth->findOne($utoken)) === NULL )
-        {
-            return false;
-        }
-
-        return $user['user'];
+        return $this->session->user;
     }
 
-    /**
-     * I don't understand how I'm supposed to get this any other way.
-     */
-    private function getConfig()
-    {
-        return include __DIR__ . '../../../../../../config/autoload/local.php';
-    }
+
 }

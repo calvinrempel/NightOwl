@@ -14,7 +14,7 @@ use MongoClient;
 * Author: Calvin Rempel
 * Date: April 30, 2015
 */
-class LaunchCodesModel
+class LaunchCodesModel extends BaseModel
 {
     /* HTTP Statuses that indicate Consul response types. */
     const CONSUL_SUCCESS_CODE = 200;
@@ -28,11 +28,6 @@ class LaunchCodesModel
     public function __construct()
     {
         $this->config = $this->getConfig();
-
-        // Create DB
-        $dbn = $this->config['mongo']['name'];
-        $m = new MongoClient($this->config['mongo']['url']);
-        $this->db = $m->$dbn;
 
         // Create Audit Controller
         $this->audit = new Audit();
@@ -97,7 +92,6 @@ class LaunchCodesModel
     * Create a new launch code in both Consul and the MongoDB.
     *
     * Params:
-    *       $token         : the users authorization token
     *       $dataCentre    : the dataCentre to edit/create in
     *		$key           : the Launch Code Key
     *		$restriction   : the restriction type (eg "boolean")
@@ -120,7 +114,7 @@ class LaunchCodesModel
     *      Calvin Rempel - May 13, 2015
     *          - Added datacenter to the parameters
     */
-    public function createOrEditLaunchCode($token, $dataCentre, $key, $restriction, $value, $owner, $description, $availableToJS)
+    public function createOrEditLaunchCode($dataCentre, $key, $restriction, $value, $owner, $description, $availableToJS)
     {
         $createdDate = date('Y-m-d H:i:s');
         $mode = 'CREATE';
@@ -164,11 +158,11 @@ class LaunchCodesModel
             $options = array('upsert' => true);
 
             // Create/Edit the LaunchCode in Mongo
-            $this->db->LaunchCodes->update($where, $obj, $options);
+            $this->getDB()->LaunchCodes->update($where, $obj, $options);
 
             // Log the Action if a meaningful change was made.
             if ($logMessage != "")
-                $this->log($token, $dataCentre, $key, $mode, $logMessage);
+                $this->log($dataCentre, $key, $mode, $logMessage);
 
             return true;
         }
@@ -180,7 +174,6 @@ class LaunchCodesModel
     * Delete a Launch Code from Consul (and eventually MongoDB).
     *
     * Params:
-    *       $token      : the users authorization token.
     *       $dataCentre : the dataCentre to remove from.
     *		$key        : the key of the launch code to delete.
     *
@@ -193,7 +186,7 @@ class LaunchCodesModel
     *      Calvin Rempel - May 3, 2015
     *          - Added Mongo entry deletion.
     */
-    public function deleteLaunchCode($token, $dataCentre, $key)
+    public function deleteLaunchCode($dataCentre, $key)
     {
         $url = $this->getConsulKVUrl() . $key . '?dc=' . $dataCentre;
         $status = 0;
@@ -204,8 +197,8 @@ class LaunchCodesModel
         // Return true on success / false on failure
         if ($status == self::CONSUL_SUCCESS_CODE)
         {
-            $this->log($token, $dataCentre, $key, 'DELETE', "");
-            $this->db->LaunchCodes->remove(array('key' => $key, 'dataCentre' => $dataCentre));
+            $this->log($dataCentre, $key, 'DELETE', "");
+            $this->getDB()->LaunchCodes->remove(array('key' => $key, 'dataCentre' => $dataCentre));
             return true;
         }
 
@@ -253,7 +246,7 @@ class LaunchCodesModel
         }
 
         // Get the MetaData from Mongo
-        $metadata = $this->db->LaunchCodes->find(array('key' => array('$in' => $keys), 'dataCentre' => $dataCentre));
+        $metadata = $this->getDB()->LaunchCodes->find(array('key' => array('$in' => $keys), 'dataCentre' => $dataCentre));
 
         // Inject MetaData into the codes
         foreach ($metadata as $codeData)
@@ -370,23 +363,10 @@ class LaunchCodesModel
     /**
      * Log an action to the Audit Log.
      */
-    private function log($token, $dataCentre, $key, $action, $changeMessage)
+    private function log($dataCentre, $key, $action, $changeMessage)
     {
-        $this->audit->LogEdit($token, $action . "  -  DC ($dataCentre)  -  " . $changeMessage, $key);
+        $this->audit->LogEdit($action . "  -  DC ($dataCentre)  -  " . $changeMessage, $key);
     }
-
-    /**
-    * I don't understand how I'm supposed to get this any other way.
-    */
-    private function getConfig()
-    {
-        return include __DIR__ . '../../../../../../config/autoload/local.php';
-    }
-
-    /**
-    * A reference to the MonogDB database that holds LaunchCode metadata.
-    */
-    private $db;
 
     /**
     * A reference to an Audit Model for logging audit information.
