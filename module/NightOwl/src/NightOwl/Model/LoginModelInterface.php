@@ -19,9 +19,20 @@ namespace NightOwl\Model;
 interface LoginModelInterface {
     
     /**
+     * @function auth()
      * 
+     * @designer Marc Vouve
+     * 
+     * @programmer Marc Vouve
+     * 
+     * @date May 11, 2015
+     * 
+     * @date May 14, 2015 - removed key from this interface. it shouldn't be
+     * nessesary.
+     * 
+     * This function authentificates against the stored information.
      */
-    public function auth($key);
+    public function auth();
     
     /**
      * @function Login
@@ -56,7 +67,8 @@ interface LoginModelInterface {
      * 
      * @prototype logout($user)
      * 
-     * @param type $user The username of the user logging out.
+     * @param string $user The username of the user logging out.
+     * @param string $pass The password being used to log in.
      * 
      * @returns key: true on success, false on failure.
      * 

@@ -112,7 +112,8 @@ class Auth extends BaseModel implements LoginModelInterface{
      * 
      * @date May 13, 2015
      * 
-     * This function creates/extends a session for the user.
+     * This function creates/extends a session for the user. It is also called
+     * within auth as it is
      */
     private function update_session()
     {
@@ -230,7 +231,7 @@ class Auth extends BaseModel implements LoginModelInterface{
         $session = array('key' => $key, 'user' => $user);
         
         // Try to find a session with the correct key/username
-        if($session = $this->db->findOne($session))
+        if($session = $this->db->Session->findOne($session))
         {
             // if a session was found check if it's still valid against the current time.
             if($session['ttl'] < time())
