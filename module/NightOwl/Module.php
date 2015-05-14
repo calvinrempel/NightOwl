@@ -35,11 +35,4 @@ class Module implements AutoloaderProviderInterface
         return include __DIR__ . '/config/module.config.php';
     }
 
-    /**
-     * I don't understand how I'm supposed to get this any other way.
-     */
-    private function getConfig()
-    {
-        return include __DIR__ . '../../../../../../config/autoload/local.php';
-    }
 }

@@ -8,10 +8,9 @@
 
 namespace NightOwl\Model;
 
-use Zend\Authentication\Storage\Session;
 use Zend\Authentication\AuthenticationService;
+use Zend\Session\SessionManager;
 use Zend\Session\Container;
-use Zend\Authentication\Adapter\AdapterInterface;
 use MongoClient;
 
 
@@ -20,26 +19,41 @@ use MongoClient;
  *
  * @author Marc
  */
-class Auth extends BaseModel implements LoginModelInterface, AdapterInterface{
+class Auth extends BaseModel implements LoginModelInterface{
+    /**
+     *
+     * @var MongoDB: The database in which auth is stored.
+     */
     protected $db;
+    /**
+     *
+     * @var Container: The session container.
+     */
     protected $session;
-    protected $auth;
+    
+    protected $session_manager;
     
     /**
-     * The TTL of the session.
+     * @const The TTL of the session.
      */
-    const SESSION_LENGTH = 60 * 60; // 60 minutes~
+    const SESSION_LENGTH = 3600; // 60 minutes~
     
-    public function __construct($db)
+    public function __construct()
     {
+        // Load Config.
+        $db = $this->getConfig()['mongo'];
+        
         // init mongo connection.
         $dbn = $db['name'];
         $m = new MongoClient($db['url']);
         $this->db = $m->$dbn;
+
+        // configure session manager.
+        $this->session_manager = new SessionManager();
+        Container::setDefaultManager($this->session_manager);
         
-        // init auth.
-        $this->auth = new AuthService();
-        $this->auth->setStorage(new Session('nightowl_auth'));
+        // init session.
+        $this->session = new Container('nightowl_auth');
     }
     
 
@@ -71,8 +85,10 @@ class Auth extends BaseModel implements LoginModelInterface, AdapterInterface{
             return false;
         }
 
-        if(password_verify($pass, $userfound['pass'])
+        if(password_verify($pass, $userfound['pass']))
         {
+            
+            var_dump($this->session);
             $this->session->user = $userfound['pass'];
             $this->set_session();
             
@@ -86,6 +102,8 @@ class Auth extends BaseModel implements LoginModelInterface, AdapterInterface{
     
     /**
      * @author Marc Vouve
+     * 
+     * @designer Marc Vouve
      * 
      * @date May 13, 2015
      * 
@@ -120,6 +138,19 @@ class Auth extends BaseModel implements LoginModelInterface, AdapterInterface{
         // save the updated session.
         $this->db->session->save($session);
             
+    }
+    
+    public function create_account($user, $pass)
+    {
+        if($this->db->Auth->findOne(array('user' => $user)))
+        {
+            return false;
+        }
+        
+        $user = array('user' => $user, 'pass' => $pass);
+        
+        $this->db->Auth->insert($user);
+        
     }
     
     
