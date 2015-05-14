@@ -27,6 +27,15 @@ var  app = angular.module('NightOwl', []).constant( 'API_CONFIG',{
 		"filter" : ""
 	},
 
+	"metadata" : {
+		"restrictions":{
+			"boolean":{"type":"select", "values":["true","false"]},
+			"member_list":{"type":"text"},
+			"memberID":{"type":"text"},
+			"percent":{"type":"text"}
+		}
+	},
+
 	"dataCenters": [
 		{
 			"name": "Data Center 1", 

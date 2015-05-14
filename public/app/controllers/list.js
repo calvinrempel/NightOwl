@@ -102,6 +102,7 @@ app.controller('ListController', function($scope, $http, codes) {
         }
 
         function createCode( code ){
+        	code.key = $scope.filters.prefix + "/" + code.key
         	codes.save(code, $scope.filters, function(success, data){
         		if(success){
         			console.log("Code Created!");

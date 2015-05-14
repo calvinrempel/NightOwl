@@ -17,11 +17,7 @@
 		}
 
 		function postURL(code, filters){
-			if( filters && filters.prefix !== undefined){
-				var url = URL + "/codes/" + auth.getToken() + "/" + encodeURIComponent( filters.prefix + "/" + code.key );
-			}else{
-				var url = URL + "/codes/" + auth.getToken() + "/" +  encodeURIComponent(code.key);
-			}
+			var url = URL + "/codes/" + auth.getToken() + "/" +  encodeURIComponent(code.key);
 			return url;
 		}
 
