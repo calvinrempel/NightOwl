@@ -179,8 +179,18 @@ class Auth extends BaseModel implements LoginModelInterface{
     }
     
     /**
+     * @author Marc Vouve
      * 
-     * @return boolean
+     * @date May 13, 2015
+     * 
+     * @return boolean true.
+     * 
+     * This function logs a user out of the system. It clears the session locally
+     * and erases the session from mongo.
+     * 
+     * NOTE: Sessions are based on IP as well as user. This is meant to somewhat mimic
+     * the popular trend to allow users to force a logout from a specific machine remotely.
+     * That functionality is still todo.
      */
     public function logout()
     {
@@ -191,6 +201,7 @@ class Auth extends BaseModel implements LoginModelInterface{
             'IP'    => $request->getServer('REMOTE_ADDR'),
             );
         
+        // Zends way of clearing a cookie.
         $this->session_manager->getStorage()->clear(self::SESSION_NAME);
         $this->db->Session->remove($session); 
         
@@ -198,9 +209,17 @@ class Auth extends BaseModel implements LoginModelInterface{
     }
 
     /**
+     * @author Marc Vouve
      * 
-     * @param type $key
-     * @return boolean
+     * @date (original) May 2, 2015
+     * 
+     * @revision May 14, 2015 - pretty much rewrote the whole thing.
+     * 
+     * @return boolean true if the user is authentificated false if no session
+     * is found or the session has expired in Mongo.
+     * 
+     * This function is not directly accessable by a rest endpoint and is intended
+     * be called by various other endpoints where authentification is required.
      */
     public function auth()
     {
@@ -210,20 +229,22 @@ class Auth extends BaseModel implements LoginModelInterface{
         
         $session = array('key' => $key, 'user' => $user);
         
+        // Try to find a session with the correct key/username
         if($session = $this->db->findOne($session))
         {
+            // if a session was found check if it's still valid against the current time.
             if($session['ttl'] < time())
             {
                 return false;
             }
             else
             {
+                // update the current session.
                 $this->update_session();
                 
                 return true;
             }
-        }
-        
+        }  
         else
         {
             return false;
