@@ -69,7 +69,8 @@
 					<select class="form-control" ng-model="newCode.restriction" ng-options="restriction for restriction in config.restrictions"></select>
 				</div>
 				<div class="col-md-2">
-					<input class="form-control" type="text" ng-model="newCode.value">
+					<input ng-if="config.metadata.restrictions[newCode.restriction].type == 'text'"class="form-control" type="text" ng-model="newCode.value" />
+					<select ng-if="config.metadata.restrictions[newCode.restriction].type == 'select'" class="form-control" ng-model="newCode.value" ng-options="value for value in config.metadata.restrictions[newCode.restriction].values"></select>
 				</div>
 				<div class="col-md-2">
 					<textarea class="form-control" ng-model="newCode.description" cols=50></textarea>
@@ -138,7 +139,8 @@
 					<select class="form-control" ng-model="code.restriction" ng-options="restriction for restriction in config.restrictions"></select>
 				</div>
 				<div class="col-md-2">
-					<input class="form-control" type="text" ng-model="code.value" />
+					<input ng-if="config.metadata.restrictions[code.restriction].type == 'text'"class="form-control" type="text" ng-model="code.value" />
+					<select ng-if="config.metadata.restrictions[code.restriction].type == 'select'" class="form-control" ng-model="code.value" ng-options="value for value in config.metadata.restrictions[code.restriction].values"></select>
 				</div>
 				<div class="col-md-2">
 					<textarea class="form-control" ng-model="code.description" cols=50></textarea>
