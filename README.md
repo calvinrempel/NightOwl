@@ -3,10 +3,11 @@ NightOwl
 
 Introduction
 ------------
-An administration panel for Hootsuite's Dark Launch Codes.
+An administration panel and server-side facade for Hootsuite's Dark Launch codes. You can use this admin panel to create and edit Dark Launch codes in various contexts and data centres. In addition, there is a history tab in which you can see all the changes made to the codes.
 
 Required Software
 -----------------
+- Consul
 - PHP
 - MongoDB
 - MongoDB PHP Driver
@@ -34,6 +35,36 @@ Users are located in the Auth collection using this format:
 
 
 * This format is temporary it is assumed that it will be changed at a later date to something more secure.
+
+Consul Agent Setup
+----------------
+### OS X
+
+Ensure you have cask plugin installed for homebrew:
+
+    $ brew install caskroom/cask/brew-cask
+
+You can then easily install Consul with:
+
+    $ brew cask install consul
+    
+### Windows & Linux/Unix
+
+To install Consul, find the appropriate package for your system and download it from here: https://www.consul.io/downloads.html
+
+Unzip the package and copy the Consul binary to somewhere on the PATH so that it can be executed.
+- On Unix systems, ~/bin and /usr/local/bin are common installation directories, depending on if you want to restrict the install to a single user or expose it to the entire system.
+- On Windows systems, you can put it wherever you would like, as long as that location is on the %PATH%.
+    
+### Run the Consul agent
+
+**Note: ** to check Consul is installed properly, open a new Terminal/Command Prompt session and enter
+
+    $ consul
+    
+To run the Consul agent, simply enter this into your Terminal/Command Prompt:
+
+    $ consul agent -server -bootstrap-expect 1 -data-dir <data-directory>
 
 Web Server Setup
 ----------------
