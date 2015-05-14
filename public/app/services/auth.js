@@ -17,10 +17,10 @@
 		var auth = {
 			
 			login: function(user, pw, _callback){
-				var url = URL + '/login/' + user + '/' + pw;
+				var url = URL + '/auth/login';
 				
 				loading.start();
-				$http.get( url )
+				$http.post( url, {name:user, pass:pw} )
 		        .success(function(data) {
 		            saveToken(data);
 		            _callback(true);
