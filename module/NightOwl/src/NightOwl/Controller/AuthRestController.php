@@ -42,7 +42,14 @@ class AuthRestController extends AbstractRestfulController
     
     public function create($data)
     {
-        
+        if($this->params('method') === 'login')
+        {
+            
+        }
+        if($this->params('method') === 'create')
+        {
+            
+        }
     }
     
     public function update($id, $data)
@@ -52,6 +59,9 @@ class AuthRestController extends AbstractRestfulController
     
     public function delete($id)
     {
-        
+        if($this->params('method') === 'delete')
+        {
+            $this->Auth->logout();
+        }
     }
 }

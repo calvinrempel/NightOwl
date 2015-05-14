@@ -62,7 +62,7 @@ interface LoginModelInterface {
      * 
      * This method logs a user out from the server.
      */
-    public function logout($user);
+    public function logout();
     
     /**
      * @function getCurrentUsers

@@ -38,6 +38,8 @@ class Auth extends BaseModel implements LoginModelInterface{
      */
     const SESSION_LENGTH = 3600; // 60 minutes~
     
+    const SESSION_NAME = 'nightowl_auth';
+    
     public function __construct()
     {
         // Load Config.
@@ -53,7 +55,7 @@ class Auth extends BaseModel implements LoginModelInterface{
         Container::setDefaultManager($this->session_manager);
         
         // init session.
-        $this->session = new Container('nightowl_auth');
+        $this->session = new Container(self::SESSION_NAME);
     }
     
 
@@ -154,7 +156,7 @@ class Auth extends BaseModel implements LoginModelInterface{
     }
     
     
-    public function logout($user)
+    public function logout()
     {
         $session = array(
             'user'  => $this->session->user, 
@@ -162,6 +164,7 @@ class Auth extends BaseModel implements LoginModelInterface{
             'IP'    => $request->getServer('REMOTE_ADDR')
             );
         
+        $this->session_manager->getStorage()->clear(self::SESSION_NAME);
         $current = $this->db->Session->remove($session); 
     }
 
