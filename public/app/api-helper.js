@@ -1,10 +1,8 @@
-var API_HELPER = (function () {
-	var instance;
+(function(){
+app.factory('codeAPI', function(API_CONFIG){
+	var helper = {
 
-	function createInstance() {
-		var helper = {
-
-			API_URL : "http://nightowlAPI.local",
+			API_URL : API_CONFIG.API_URL,
 
 			getToken : function(){
 				return localStorage.getItem("key");
@@ -130,14 +128,7 @@ var API_HELPER = (function () {
 				$("#loading").fadeOut('fast');
 			}
 		};
-
 		return helper;
-	}
-
-	if( !instance )
-		instance = createInstance();
-
-	return instance;
-})();
-
-
+});
+		
+}());

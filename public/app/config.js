@@ -2,6 +2,8 @@ var  app = angular.module('NightOwl', []).constant( 'API_CONFIG',{
 
 	"API_URL":"http://nightowlAPI.local",
 
+	"loadingID" : "#loading",
+
 	"restrictions" : [
 		"boolean",
 		"member_list",
@@ -18,7 +20,12 @@ var  app = angular.module('NightOwl', []).constant( 'API_CONFIG',{
 		"Description"
 	],
 
-	
+	"defaultFilters" : {
+		"prefix" : "darklaunch",
+		"dataCenter" : "dc1",
+		"filterBy" : "All",
+		"filter" : ""
+	},
 
 	"dataCenters": [
 		{
