@@ -156,7 +156,13 @@ class Auth extends BaseModel implements LoginModelInterface{
     
     public function logout($user)
     {
+        $session = array(
+            'user'  => $this->session->user, 
+            'key'   => $this->session->key,
+            'IP'    => $request->getServer('REMOTE_ADDR')
+            );
         
+        $current = $this->db->Session->remove($session); 
     }
 
     public function auth($key)
