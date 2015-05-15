@@ -1,26 +1,43 @@
 <div class="row" ng-controller="AuditController">
     <form id="audit" style="clear:both">
-        <select id="searchOption" ng-model="auditFilters.filterBy" ng-init="config.searches[0]" ng-options="auditFilter for auditFilter in config.auditFilters">
-            <option value="">Filter By</option>
+        <select id="searchOption" ng-model="auditFilters.filterBy" ng-options="auditFilter for auditFilter in config.auditFilters">
         </select>
-        <input type="text" ng-model="auditFilters.filter" id="searchText">
-        <input input class="btn" type="submit" value="filter" ng-click="filterAudits()">
+        <br />
+        <input class="form-control" type="text" ng-model="auditFilters.filter" id="searchText" ng-hide="auditFilters.filterBy == 'Last 24 Hours'">
+       <br ng-hide="auditFilters.filterBy == 'Last 24 Hours'">
+        <input input class="btn btn-success" type="submit" value="filter" ng-click="filterAudits()">
     </form>
     <br/>
-    <table ng-show="auditList.length">
-        <thead>
-        <tr>
-            <td>Date</td>
-            <td>Owner</td>
-            <td>Code</td>
-            <td>Message</td>
-        </tr>
-        </thead>
-        <tr ng-repeat="audit in auditList | orderBy:'time':true">
-            <td>{{audit.time}}</td>
-            <td>{{audit.owner}}</td>
-            <td>{{audit.code}}</td>
-            <td>{{audit.message}}</td>
-        </tr>
-    </table>
+    <div class="data" ng-show="auditList.length">
+        <div class="row">
+            <div class="col-md-2">
+                <h3>Date</h3>
+            </div>
+            <div class="col-md-1">
+                <h3>User</h3>
+            </div>
+            <div class="col-md-4">
+                <h3>Code</h3>
+            </div>
+            <div class="col-md-5">
+                <h3>Message</h3>
+            </div>
+        </div>
+        <div class="row" ng-repeat="audit in auditList | orderBy:'time':true">
+            <div class="row">
+                <div class="col-md-2">
+                    {{audit.time}}
+                </div>
+                <div class="col-md-1">
+                    {{audit.owner}}
+                </div>
+                <div class="col-md-4 wrap">
+                    {{audit.code}}
+                </div>
+                <div class="col-md-5 wrap">
+                    {{audit.message}}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
