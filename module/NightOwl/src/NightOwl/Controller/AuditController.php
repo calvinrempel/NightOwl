@@ -11,6 +11,7 @@ namespace NightOwl\Controller;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use NightOwl\Model\Audit;
 use NightOwl\Model\Auth;
+use Zend\Stdlib\Parameters;
 
 
 class AuditController extends AbstractRestfulController

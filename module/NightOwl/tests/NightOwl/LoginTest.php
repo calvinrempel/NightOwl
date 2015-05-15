@@ -32,25 +32,43 @@ class LoginTest extends AbstractControllerTestCase
         
     }
     
+    
     function testInvalidLogin()
     {
-        $this->getRequest()->setMethod('GET');
-        $this->dispatch('/login/McBuppy/wrongpass');
+        $this->getRequest()->setMethod('POST')
+                ->setPost(new Parameters(array('name' => 'asdf', 'pass' => 'test')));
+        $this->dispatch('/auth/login');
         $this->assertResponseStatusCode(401); 
     }
     
     function testAuthValidate()
     {
-        $this->getRequest()->setMethod('GET');
-        $this->dispatch('/login/McBuppy/test');
+        $this->getRequest()->setMethod('POST')
+                ->setPost(new Parameters(array('name' => 'dave', 'pass' => 'test')));
+        $this->dispatch('/auth/login');
+        $auth = new Auth();
+        $this->assertEquals($auth->auth(), true);
+    }
+    
+    function testLogout()
+    {
+        $this->getRequest()->setMethod('POST')
+                ->setPost(new Parameters(array('name' => 'dave', 'pass' => 'test')));
+        $this->dispatch('/auth/login');
         $json = json_decode($this->getResponse()->getBody());
         $auth = new Auth();
-        $this->assertEquals($auth->auth($json->key), true);
+        $this->assertEquals($auth->auth(), true);
+        
+        $this->getRequest()->setMethod('DELETE');
+        $this->dispatch('/auth/logout');
+        $this->assertEquals($auth->auth(), false);
     }
+    
     function testInvalidAuthValidate()
     {
-        $this->getRequest()->setMethod('GET');
-        $this->dispatch('/login/McBuppy/test');
+        $this->getRequest()->setMethod('POST')
+                ->setPost(new Parameters(array('name' => 'dave', 'pass' => 'asdf')));
+        $this->dispatch('/auth/login');
         $json = json_decode($this->getResponse()->getBody());
         $auth = new Auth();
         $this->assertEquals($auth->auth('fakekey'), false);
