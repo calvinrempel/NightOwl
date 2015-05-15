@@ -1,5 +1,5 @@
 (function(){
-	app.controller('MainController', function($scope, $http, API_CONFIG) {
+	app.controller('MainController', function($scope, $http, API_CONFIG, auth) {
 		// Start on the login page
 		$scope.selected = 'login';
 		$scope.config = API_CONFIG;
@@ -30,12 +30,11 @@
             }
         }
 
-        $scope.logout = function(){
-            API_HELPER.deleteToken();
-            location.reload(true);
-        }
+		$scope.logout = function(){
+	    	auth.logout();
+	    };
 
-        
+
 	});
 
 })();

@@ -1,10 +1,13 @@
 (function(){
 app.controller('LoginController', function($scope, $http, auth) {
-    
+
 
     $scope.loginHandler = function(success){
       if(success){
         $scope.selectTab("list")
+      }
+      else {
+          alert("Invalid Login");
       }
     };
 
@@ -12,8 +15,6 @@ app.controller('LoginController', function($scope, $http, auth) {
         auth.login(user,pw, $scope.loginHandler)
     };
 
-    $scope.logout = function(){
-    	auth.logout();
-    };
+
 });
 })();

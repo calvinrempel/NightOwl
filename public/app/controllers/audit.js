@@ -15,7 +15,10 @@ app.controller('AuditController', function($scope, $http, audits) {
             if(success){
                 $scope.auditList = data;
                 console.log($scope.auditList);
-            }
+            } else if( data === 401 ){
+				if ($scope.selected !== 'login')
+					location.reload();
+			}
         });
     }
 
