@@ -30,7 +30,7 @@
 
 			value = code.value || "false";
 
-			description = code.description;
+			description = code.description || "";
 
 			if(code.availableToJS){
 				availableToJS = 'true';
@@ -62,7 +62,7 @@
 					_callback(true);
 				})
 				.error(function(data, status){
-					callback(false, status);
+					_callback(false, status);
 				})
 				.finally(function(){
 					loading.stop();
