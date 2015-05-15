@@ -1,6 +1,6 @@
 (function(){
 	app.factory('auth', function($http, API_CONFIG, loading){
-		var URL = API_CONFIG.API_URL  + '/login/'
+		var URL = API_CONFIG.API_URL;
 		// /auth/login post data name:username pass:password
 
 		function saveToken(data){
@@ -18,10 +18,10 @@
 		var auth = {
 			
 			login: function(user, pw, _callback){
-				var url = URL + user + '/' + pw;
+				var url = URL + '/auth/login';
 				
 				loading.start();
-				$http.get( url )
+				$http.post( url, {name:user, pass:pw} )
 		        .success(function(data) {
 		            saveToken(data);
 		            _callback(true);

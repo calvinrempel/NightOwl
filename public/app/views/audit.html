@@ -7,22 +7,20 @@
         <input input class="btn" type="submit" value="filter" ng-click="filterAudits()">
     </form>
     <br/>
-</div>
-<div>
-    <table>
+    <table ng-show="auditList.length">
         <thead>
         <tr>
-            <td class="listTable">Date</td>
-            <td class="listTable">Owner</td>
-            <td class="listTable">Code</td>
-            <td class="listTable">Message</td>
+            <td>Date</td>
+            <td>Owner</td>
+            <td>Code</td>
+            <td>Message</td>
         </tr>
         </thead>
         <tr ng-repeat="audit in auditList | orderBy:'time':true">
-            <td class="listTable">{{audit.time}}</td>
-            <td class="listTable">{{audit.owner}}</td>
-            <td class="listTable">{{audit.code}}</td>
-            <td class="listTable">{{audit.message}}</td>
+            <td>{{audit.time}}</td>
+            <td>{{audit.owner}}</td>
+            <td>{{audit.code}}</td>
+            <td>{{audit.message}}</td>
         </tr>
     </table>
 </div>
