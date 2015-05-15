@@ -3,10 +3,10 @@
 		var URL = API_CONFIG.API_URL;
 
 		var auth = {
-			
+
 			login: function(user, pw, _callback){
 				var url = URL + '/auth/login';
-				
+
 				loading.start();
 				$http.post( url, {name:user, pass:pw} )
 		        .success(function(data) {
@@ -21,7 +21,7 @@
 			},
 
 			logout: function(){
-				var url = URL + 'auth/logout';
+				var url = URL + '/auth/logout';
 
 				loading.start();
 				$http.delete( url )
@@ -31,13 +31,13 @@
 				.finally(function(data){
 					loading.stop();
 				});
-				
+
 			},
 
 			getToken: function(){return getToken();}
 		};
 
-		
+
 		return auth;
 	});
 }());
