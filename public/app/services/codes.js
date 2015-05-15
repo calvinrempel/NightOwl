@@ -17,14 +17,14 @@
 		}
 
 		function postURL(code, filters){
-			var url = URL + "/codes/" + filters.dataCenter + "/" +  encodeURIComponent(code.key);
+			var url = URL + "/codes/" + filters.dataCenter + "/" +  prefix(code.key, filters.prefix);
 			return url;
 		}
 
-		function sanitize( code ){
+		function sanitize( code, filters ){
 			var key, restriction, value, description, availableToJS;
 
-			key = code.key;
+			key = prefix(code.key, filters.prefix);
 
 			restriction = code.restriction || 'boolean';
 
@@ -49,6 +49,8 @@
 
 			return newCode;
 		}
+
+		function prefix(code, prefix){ return encodeURIComponent(prefix + "/" + code); }
 
 		var codes = {
 
