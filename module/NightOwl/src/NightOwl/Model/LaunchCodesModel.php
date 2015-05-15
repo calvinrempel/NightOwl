@@ -128,7 +128,7 @@ class LaunchCodesModel extends BaseModel
         // If Code already exists, edit existing code
         if (is_array($code) && count($code) != 0)
         {
-            $mode = 'EDIT';
+            $mode = 'EDIT -';
 
             $code = json_decode(base64_decode($code[0]['Value']), true);
             $createdDate = $code['createdDate'];
