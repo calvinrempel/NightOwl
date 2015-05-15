@@ -142,13 +142,9 @@ class LaunchCodesController extends AbstractRestfulController
             return $authResult;
         }
 
-        print_r($data);
-
         // Retrieve Code parameters
         $dc = $this->params('seg1');
         $key = $this->params('seg2');
-
-        echo 'DC - ' . $dc;
 
         // Verify the presence of the arguments
         if (is_null($dc) ||
@@ -164,8 +160,18 @@ class LaunchCodesController extends AbstractRestfulController
         $restriction = (isset($data['restriction']) ? $data['restriction'] : '');
         $value       = (isset($data['value']) ? $data['value'] : '');
         $description = (isset($data['description']) ? $data['description'] : '');
-        $js          = (isset($data['availableToJS']) ? $data['availableToJS'] : 'false');
+        $js          = (isset($data['availableToJS']) ? $data['availableToJS'] : false);
         $owner       = '';
+
+        // Convert JS to boolean type
+        if ($js === 'true')
+        {
+            $js = true;
+        }
+        else
+        {
+            $js = false;
+        }
 
         if (isset($data['owner']))
             $owner = $data['owner'];

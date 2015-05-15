@@ -5,7 +5,7 @@
 		var audits = {
 
 			load: function(filters, _callback){
-				var url = URL + '/audit/' + auth.getToken() + '/';
+				var url = URL + '/audit/';
 		        if(filters.filterBy == 'User') {
 		            url = url + '{"owner":{"$regex":"' + filters.filter + '","$options":"-i"}}';
 		        }
