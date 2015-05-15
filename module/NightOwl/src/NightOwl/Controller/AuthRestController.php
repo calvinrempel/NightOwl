@@ -87,7 +87,7 @@ class AuthRestController extends AbstractRestfulController
         // attempt to authentificate user.
         if($key = $this->auth->login($name, $pass))
         {
-            $this->responce->setStatusCode(201);
+            $this->response->setStatusCode(201);
             return new \Zend\View\Model\JsonModel(array('status' => true, 'key'=> $key));
         }
         else
