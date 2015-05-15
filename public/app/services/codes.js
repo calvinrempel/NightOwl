@@ -55,7 +55,7 @@
 		var codes = {
 
 			save : function(code, filters, _callback){
-				code = sanitize(code);
+				code = sanitize(code, filters);
 
 				var url = postURL(code, filters);
 				loading.start();
