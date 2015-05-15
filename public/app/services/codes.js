@@ -32,7 +32,7 @@
 
 			description = code.description || "";
 
-			if(code.availableToJS){
+			if(code.availableToJS && code.availableToJS != "false"){
 				availableToJS = 'true';
 			}else{
 				availableToJS = 'false';
