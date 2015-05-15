@@ -1,5 +1,5 @@
 (function(){
-app.controller('ListController', function($scope, $http, codes) {
+app.controller('ListController', function($scope, $http, codes, auth) {
 		
 		init();
 
@@ -84,11 +84,13 @@ app.controller('ListController', function($scope, $http, codes) {
         	codes.load($scope.filters, function(success, data){
         		if(success){
 	        		$scope.selectTab("list");
-	        		$scope.launchCodes = data.codes;
+	        		$scope.launchCodes = trimKeys( data.codes );
 	        		$scope.sortOptions = Object.keys(data.codes);
 	        		$scope.sort.field = $scope.sortOptions[0];
 	        		$scope.sort.desc = true;
-        		}
+        		}else if( data === 401 ){
+                    auth.logout()
+                }
         	});
         }
 
@@ -97,7 +99,9 @@ app.controller('ListController', function($scope, $http, codes) {
         		if(success){
         			console.log("Code Deleted!");
         			loadCodes();
-        		}
+        		}else if( data === 401 ){
+                    auth.logout()
+                }
         	}); 
         }
 
@@ -108,7 +112,9 @@ app.controller('ListController', function($scope, $http, codes) {
         			console.log("Code Created!");
         			$scope.createMode = false;
         			loadCodes();
-        		}
+        		}else if( data === 401 ){
+                    auth.logout()
+                }
         	});
         }
 
@@ -116,7 +122,9 @@ app.controller('ListController', function($scope, $http, codes) {
         	codes.save(code, $scope.filters, function(success, data){
         		if(success){
         			console.log("Code Saved!");
-        		}
+        		}else if( data === 401 ){
+                    auth.logout()
+                }
         	});
         }
 
@@ -141,7 +149,8 @@ app.controller('ListController', function($scope, $http, codes) {
             console.log($scope.filters.prefix);
             for (var i = 0; i < codes.length; i++) {
                 codes[i].key = codes[i].key.replace($scope.filters.prefix + "/", "");
-            };
+            }
+            return codes;
         }
         
 
