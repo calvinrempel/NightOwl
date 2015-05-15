@@ -4,6 +4,7 @@ namespace NightOwlTest;
 
 use Zend\Test\PHPUnit\Controller\AbstractControllerTestCase;
 use NightOwl\Model\Auth;
+use Zend\Stdlib\Parameters;
 
 class LaunchCodesModel extends AbstractControllerTestCase
 {
@@ -14,15 +15,17 @@ class LaunchCodesModel extends AbstractControllerTestCase
 
     function testLogin()
     {
-        $this->getRequest()->setMethod('GET');
-        $this->dispatch('/login/McBuppy/test');
-        $this->assertResponseStatusCode(200);
+        $this->getRequest()->setMethod('POST')
+                ->setPost(new Parameters(array('name' => 'dave', 'pass' => 'test')));;
+        $this->dispatch('/auth/login');
+        $this->assertResponseStatusCode(201);
     }
 
     function testInvalidLogin()
     {
-        $this->getRequest()->setMethod('GET');
-        $this->dispatch('/login/McBuppy/wrongpass');
+        $this->getRequest()->setMethod('POST')
+                ->setPost(new Parameters(array('name' => 'sam', 'pass' => 'fakepass')));;
+        $this->dispatch('/auth/login');
         $this->assertResponseStatusCode(401);
     }
 
@@ -32,7 +35,7 @@ class LaunchCodesModel extends AbstractControllerTestCase
         $this->dispatch('/login/McBuppy/test');
         $json = json_decode($this->getResponse()->getBody());
         $auth = new Auth();
-        $this->assertEquals($auth->auth($json->key), true);
+        $this->assertEquals($auth->auth(), true);
     }
     function testInvalidAuthValidate()
     {
