@@ -12,19 +12,19 @@
 			if( filters.filterBy && filters.filter ){
 				url = url + "/" + filters.filterBy + "/" + filters.filter;
 			}
-
+			console.log(url);
 			return url;
 		}
 
 		function postURL(code, filters){
-			var url = URL + "/codes/" + auth.getToken() + "/" +  encodeURIComponent(code.key);
+			var url = URL + "/codes/" + auth.getToken() + "/" +  addPrefix(code.key, filters.prefix);
 			return url;
 		}
 
-		function sanitize( code ){
+		function sanitize( code, filters ){
 			var key, restriction, value, description, availableToJS;
 			
-			key = code.key;
+			key = addPrefix( code.key, filters.prefix );
 
 			restriction = code.restriction || 'boolean';
 
@@ -50,10 +50,14 @@
 			return newCode;
 		}
 
+		function addPrefix(key, prefix){
+			return encodeURIComponent(prefix + "/" + key);
+		}
+
 		var codes = {
 			
 			save : function(code, filters, _callback){
-				code = sanitize(code);
+				code = sanitize(code, filters);
 				
 				var url = postURL(code, filters);
 				loading.start();

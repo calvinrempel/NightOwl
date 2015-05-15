@@ -14,7 +14,6 @@ app.controller('AuditController', function($scope, $http, audits) {
         audits.load($scope.auditFilters, function(success, data){
             if(success){
                 $scope.auditList = data;
-                console.log($scope.auditList);
             }
         });
     }

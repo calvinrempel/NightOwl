@@ -84,7 +84,7 @@ app.controller('ListController', function($scope, $http, codes) {
         	codes.load($scope.filters, function(success, data){
         		if(success){
 	        		$scope.selectTab("list");
-	        		$scope.launchCodes = data.codes;
+	        		$scope.launchCodes = trimKeys(data.codes);
 	        		$scope.sortOptions = Object.keys(data.codes);
 	        		$scope.sort.field = $scope.sortOptions[0];
 	        		$scope.sort.desc = true;
@@ -102,7 +102,6 @@ app.controller('ListController', function($scope, $http, codes) {
         }
 
         function createCode( code ){
-        	code.key = $scope.filters.prefix + "/" + code.key
         	codes.save(code, $scope.filters, function(success, data){
         		if(success){
         			console.log("Code Created!");
@@ -138,12 +137,13 @@ app.controller('ListController', function($scope, $http, codes) {
         }
 
         function trimKeys( codes ){
-            console.log($scope.filters.prefix);
             for (var i = 0; i < codes.length; i++) {
                 codes[i].key = codes[i].key.replace($scope.filters.prefix + "/", "");
-            };
+            }
+            return codes;
         }
         
 
 	});
+
 })();
