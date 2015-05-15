@@ -18,11 +18,20 @@
 		        else if(filters.filterBy == 'All') {
                     url = url + '{"$or":[{"owner":{"$regex":"' + filters.filter + '","$options":"-i"}},{"code":{"$regex":"' + filters.filter + '","$options":"-i"}},{"message":{"$regex":"' + filters.filter + '","$options":"-i"}}]}';
                	}
+                else if(filters.filterBy == 'Most Recent') {
+                    var d = new Date();
+                    var day = d.getDate();
+                    d.setDate(day-1);
+                    var date = d.toJSON();
 
+                    url = url + '{"time":{"$gt":"' + date + '"}}';
+                }
+                console.log(url);
 		        loading.start();
 		        $http.get(url)
 		        .success(function(data){
 		        	_callback(true, data);
+                        console.log(url);
 		        })
 		    	.error(function(data, status){
 		    		_callback(false, status)
