@@ -12,7 +12,7 @@ use NightOwl\Model\Auth;
 use MongoClient;
 use DateTime;
 
-class Audit
+class Audit extends BaseModel
 {
     /**
      * @date May 3, 2015
@@ -63,20 +63,11 @@ class Audit
     public function LogEdit($message, $code)
     {
         $auth = new Auth();
-        $data = array('owner'   => $auth->getCurrentUser($key),
+        $data = array('owner'   => $auth->getCurrentUser(),
                       'code'    => $code,
                       'time'    => date('Y-m-d H:i:s'),
                       'message' => $message);
 
         return (boolean) $this->getDB()->ConsulAudit->insert($data)["ok"];
-    }
-
-
-    /**
-     * I don't understand how I'm supposed to get this any other way.
-     */
-    private function getConfig()
-    {
-        return include __DIR__ . '../../../../../../config/autoload/local.php';
     }
 }
