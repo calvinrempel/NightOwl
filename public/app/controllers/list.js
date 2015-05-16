@@ -16,19 +16,23 @@ app.controller('ListController', function($scope, loading, codes) {
 		// CODE CRUD FUNCTIONS
 
 		$scope.saveCode = function(code){
-            loading.start();
-
-			codes.save(code, $scope.filters)
-            .success(function(data){
-                console.log("Code Saved!");
-            })
-            .error(function(data, status){
-                if(status == 401 && $scope.selected !== "login")
-                    location.reload();
-            })
-            .finally(function(){
-                loading.stop();
-            });
+            
+            if( code.key !== undefined ){
+            	loading.start();
+				codes.save(code, $scope.filters)
+	            .success(function(data){
+	                console.log("Code Saved!");
+	                $scope.loadCodes();
+	            })
+	            .error(function(data, status){
+	                if(status == 401 && $scope.selected !== "login")
+	                    location.reload();
+	            })
+	            .finally(function(){
+	                loading.stop();
+	            });
+           }else
+           		alert("The code must have a key!");
 		}
 
 		$scope.deleteCode = function(code){
