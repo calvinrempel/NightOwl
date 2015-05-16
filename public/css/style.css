@@ -51,3 +51,15 @@ div.wrap{
   cursor: pointer;
   color: white;
 }
+
+.jira {
+    border: 2px solid yellow;
+}
+
+.stale {
+    background: red;
+}
+
+.pristine {
+    background: green;
+}

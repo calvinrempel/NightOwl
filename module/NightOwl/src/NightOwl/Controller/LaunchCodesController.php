@@ -347,21 +347,21 @@ class LaunchCodesController extends AbstractRestfulController
             if ($filterBy == self::FILTER_BY_ALL)
             {
                 $filterVals[] = $key;
-                $filterVals[] = $code['value'];
-                $filterVals[] = $code['owner'];
-                $filterVals[] = $code['dateCreated'];
-                $filterVals[] = $code['description'];
+                if (isset($code['value'])) $filterVals[] = $code['value'];
+                if (isset($code['owner'])) $filterVals[] = $code['owner'];
+                if (isset($code['dateCreated'])) $filterVals[] = $code['dateCreated'];
+                if (isset($code['description'])) $filterVals[] = $code['description'];
             }
             else if ($filterBy == self::FILTER_BY_KEY)
                 $filterVals[] = $key;
             else if ($filterBy == self::FILTER_BY_VALUE)
-                $filterVals[] = $code['value'];
+                if (isset($code['value'])) $filterVals[] = $code['value'];
             else if ($filterBy == self::FILTER_BY_OWNER)
-                $filterVals[] = $code['owner'];
+                if (isset($code['owner'])) $filterVals[] = $code['owner'];
             else if ($filterBy == self::FILTER_BY_DATE)
-                $filterVals[] = $code['dateCreated'];
+                if (isset($code['dateCreated'])) $filterVals[] = $code['dateCreated'];
             else if ($filterBy == self::FILTER_BY_DESCRIPTION)
-                $filterVals[] = $code['description'];
+                if (isset($code['description'])) $filterVals[] = $code['description'];
 
             // If the code matches the filter, add to output array.
             foreach ($filterVals as $val)
