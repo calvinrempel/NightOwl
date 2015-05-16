@@ -12,7 +12,7 @@
 			if( filters.filterBy && filters.filter ){
 				url = url + "/" + filters.filterBy + "/" + filters.filter;
 			}
-			console.log(url);
+			
 			return url;
 		}
 

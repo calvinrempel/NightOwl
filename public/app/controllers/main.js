@@ -22,11 +22,9 @@
 
         $scope.loadCodes = function(){
             loading.start();
-            console.log("HELLO");
             codes.load( $scope.filters )
             .success(function(data){
-                listCodes( data.codes );
-                $scope.selectTab("list");
+                listCodes(data.codes);
             })
             .error(function(data, status){
                 if(status == 401 && $scope.selected !== "login")
@@ -123,11 +121,12 @@
         }
 
         function listCodes( codes ){
+
             $scope.sort.keys = Object.keys( codes[0] );
             $scope.sort.descending = "false";
             $scope.sort.type = $scope.sort.keys[0];
             $scope.launchCodes = trimKeys( codes );
-            console.log($scope.sort);
+            $scope.selectTab("list");
         }
 
         

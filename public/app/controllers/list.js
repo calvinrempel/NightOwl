@@ -1,5 +1,5 @@
 (function(){
-app.controller('ListController', function($scope) {
+app.controller('ListController', function($scope, loading, codes) {
 		
 
         // EDIT MODE FUNCTIONS
