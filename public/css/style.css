@@ -46,3 +46,8 @@ div.wrap{
   text-align: left;
   margin-left: 0;
 }
+
+.datalink:hover{
+  cursor: pointer;
+  color: white;
+}
