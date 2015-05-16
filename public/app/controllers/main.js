@@ -96,7 +96,7 @@
 
         $scope.showAudits = function(code){
             $scope.auditFilters.filterBy = "Code";
-            $scope.auditFilters.filter = code.key;
+            $scope.auditFilters.filter = "^" + $scope.filters.prefix + "/" + code.key + "$";
             $scope.selectTab("audit");
         }
 
@@ -122,6 +122,7 @@
         function trimKeys( codes ){
             for (var i = 0; i < codes.length; i++) {
                 codes[i].key = codes[i].key.replace($scope.filters.prefix + "/", "");
+				codes[i].hoursSinceChanged = parseInt(codes[i].hoursSinceChanged);
             }
             return codes;
         }
@@ -139,7 +140,7 @@
             $scope.selectTab("list");
         }
 
-        
+
 
 
         init();

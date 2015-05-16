@@ -6,17 +6,19 @@
 
 			load: function(filters, _callback){
 				var url = URL + '/audit/';
+				var filter = encodeURIComponent(filters.filter);
+
 		        if(filters.filterBy == 'User') {
-		            url = url + '{"owner":{"$regex":"' + filters.filter + '","$options":"-i"}}';
+		            url = url + '{"owner":{"$regex":"' + filter + '","$options":"-i"}}';
 		        }
 		        else if(filters.filterBy == 'Code') {
-		            url = url + '{"code":{"$regex":"' + filters.filter + '","$options":"-i"}}';
+		            url = url + '{"code":{"$regex":"' + filter + '","$options":"-i"}}';
 		        }
 		        else if(filters.filterBy == 'Message') {
-		            url = url + '{"message":{"$regex":"' + filters.filter + '","$options":"-i"}}';
+		            url = url + '{"message":{"$regex":"' + filter + '","$options":"-i"}}';
 		        }
 		        else if(filters.filterBy == 'All') {
-                    url = url + '{"$or":[{"owner":{"$regex":"' + filters.filter + '","$options":"-i"}},{"code":{"$regex":"' + filters.filter + '","$options":"-i"}},{"message":{"$regex":"' + filters.filter + '","$options":"-i"}}]}';
+                    url = url + '{"$or":[{"owner":{"$regex":"' + filter + '","$options":"-i"}},{"code":{"$regex":"' + filter + '","$options":"-i"}},{"message":{"$regex":"' + filter + '","$options":"-i"}}]}';
                	}
                 else if(filters.filterBy == 'Last 24 Hours') {
                     var d = new Date();
