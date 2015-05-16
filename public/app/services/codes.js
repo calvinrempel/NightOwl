@@ -30,11 +30,10 @@
 			code.value = code.value || "false";
 
 			code.description = code.description || "";
-
-			if(!code.availableToJS || code.availableToJS == "false"){
-				code.availableToJS = 'false';
-			}else{
+			if(code.availableToJS !== undefined && code.availableToJS !== "false"){
 				code.availableToJS = 'true';
+			}else{
+				code.availableToJS = 'false';
 			}
 
 			return code;

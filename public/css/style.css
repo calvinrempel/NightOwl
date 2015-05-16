@@ -69,3 +69,8 @@ a.active {
 .pristine {
     background: #99FFCC !important;
 }
+
+a.active{
+  background-color: #00aeef;
+  color:white !important ;
+}
