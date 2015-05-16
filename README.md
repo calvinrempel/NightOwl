@@ -17,24 +17,30 @@ Configuration
 **config/autoload/local.php**
 ```PHP
 return array(
-    'dbaccess' => 'mongodb://<user>:<pass>@<host>:<port>/<collection>'
+    'mongo'    => array(
+        'url'  => 'mongodb://<user>:<pass>@<host>:<port>/<collection-name>',
+        'name' => '<collection-name>',
+    ),
+    'consul'   => array(
+        'host'    => 'localhost',
+        'port'    => '8500'
+    ),
 );
 ```
 
+**public/app/config.js**
+```JS
+    "API_URL" : <url to public folder> (e.g. "http://nightowl.local"),
+```
 **User Format (in mongo *Auth* collection)**
 
 Users are located in the Auth collection using this format:
 ```JSON
 {
     "user": "{username}",
-    "pass": "{plain_text_pass}",
-    "key": "",
-    "keyTTL": ""
+    "pass": "{bcrypt string}",
 }  
 ```
-
-
-* This format is temporary it is assumed that it will be changed at a later date to something more secure.
 
 Consul Agent Setup
 ----------------
@@ -58,7 +64,7 @@ Unzip the package and copy the Consul binary to somewhere on the PATH so that it
     
 ### Run the Consul agent
     
-To run the Consul agent, simply enter this into your Terminal/Command Prompt:
+To run the Consul agent, enter this into your Terminal/Command Prompt:
 
     $ consul agent -server -bootstrap-expect 1 -data-dir <data-directory>
 
@@ -81,8 +87,11 @@ interfaces.
 To setup apache, setup a virtual host to point to the public/ directory of the
 project and you should be ready to go! It should look something like below:
 
+**Note: ** Ensure that "AllowEncodedSlashes On" is set.
+
     <VirtualHost *:80>
-        ServerName nightowl.localhost
+        AllowEncodedSlashes On
+        ServerName nightowl.local
         DocumentRoot /path/to/nightowl/public
         SetEnv APPLICATION_ENV "development"
         <Directory /path/to/nightowl/public>
