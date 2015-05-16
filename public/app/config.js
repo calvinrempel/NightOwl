@@ -36,9 +36,9 @@ var  app = angular.module('NightOwl', []).constant( 'API_CONFIG',{
 	"metadata" : {
 		"restrictions":{
 			"boolean":{"type":"select", "values":["true","false"]},
-			"member_list":{"type":"text"},
+			"member_list":{"type":"text", "placeholder":"comma seperated list"},
 			"memberID":{"type":"text"},
-			"percent":{"type":"text"}
+			"percent":{"type":"text", "placeholder":"between 0 and 100"}
 		}
 	},
 

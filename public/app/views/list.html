@@ -64,18 +64,18 @@
 
 			<div class="row">
 				<div class="col-md-4">
-					<input class="form-control" type="text" ng-model="newCode.key">
+					<input class="form-control" type="text" ng-model="newCode.key" placeholder="KEY_NAME">
 					<div>Code will be created in {{filters.prefix}}</div>
 				</div>
 				<div class="col-md-1">
 					<select class="form-control" ng-model="newCode.restriction" ng-options="restriction for restriction in config.restrictions"></select>
 				</div>
 				<div class="col-md-2">
-					<input ng-if="config.metadata.restrictions[newCode.restriction].type == 'text'"class="form-control" type="text" ng-model="newCode.value" />
+					<input ng-if="config.metadata.restrictions[newCode.restriction].type == 'text'"class="form-control" type="text" ng-model="newCode.value" placeholder="{{config.metadata.restrictions[newCode.restriction].placeholder}}" />
 					<select ng-if="config.metadata.restrictions[newCode.restriction].type == 'select'" class="form-control" ng-model="newCode.value" ng-options="value for value in config.metadata.restrictions[newCode.restriction].values"></select>
 				</div>
 				<div class="col-md-2">
-					<textarea class="form-control" ng-model="newCode.description" cols=50></textarea>
+					<textarea class="form-control" ng-model="newCode.description" placeholder="description" cols=50></textarea>
 				</div>
 				<div class="col-md-1">
 					<input class="form-control" type="checkbox" ng-checked="newCode.availableToJS == 'true'" ng-click="toggleJS(newCode)" >
@@ -117,7 +117,7 @@
 				</div>
 			</div>
 
-			<div class="row" ng-repeat="code in launchCodes | orderBy : sort.type : sort.descending == 'true'" ng-class="{ jira : code.jiraTicket, stale : hoursSinceChanged > 730, pristine : hoursSinceChanged == -1}">
+			<div class="row" ng-repeat="code in launchCodes | orderBy : sort.type : sort.descending == 'true'" ng-class="{ jira : code.jiraTicket == 'true', stale : hoursSinceChanged > 730, pristine : hoursSinceChanged == -1}">
 
 				<div class="row" ng-hide="inEditMode($index)">
 					<div class="col-md-4 datalink" ng-click="showAudits(code)" >
@@ -151,7 +151,7 @@
 						<select class="form-control" ng-model="code.restriction" ng-options="restriction for restriction in config.restrictions"></select>
 					</div>
 					<div class="col-md-2">
-						<input ng-if="config.metadata.restrictions[code.restriction].type == 'text'"class="form-control" type="text" ng-model="code.value" />
+						<input ng-if="config.metadata.restrictions[code.restriction].type == 'text'"class="form-control" type="text" ng-model="code.value" placeholder="{{config.metadata.restrictions[code.restriction].placeholder}}" />
 						<select ng-if="config.metadata.restrictions[code.restriction].type == 'select'" class="form-control" ng-model="code.value" ng-options="value for value in config.metadata.restrictions[code.restriction].values"></select>
 					</div>
 					<div class="col-md-2">
