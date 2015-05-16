@@ -121,11 +121,14 @@
         }
 
         function listCodes( codes ){
-
-            $scope.sort.keys = Object.keys( codes[0] );
-            $scope.sort.descending = "false";
-            $scope.sort.type = $scope.sort.keys[0];
-            $scope.launchCodes = trimKeys( codes );
+            if( codes.length > 0 ){
+                $scope.sort.keys = Object.keys( codes[0] );
+                $scope.sort.descending = "false";
+                $scope.sort.type = $scope.sort.keys[0];
+                $scope.launchCodes = trimKeys( codes );
+            }else{
+                $scope.launchCodes = [];
+            }
             $scope.selectTab("list");
         }
 
