@@ -98,7 +98,7 @@
 		</div>
 		<br>
 		<div id="codes" class="row data">
-			
+
 			<div class="row">
 				<div class="col-md-4">
 					<h3>Key</h3>
@@ -117,7 +117,7 @@
 				</div>
 			</div>
 
-			<div class="row" ng-repeat="code in launchCodes | orderBy : sort.type : sort.descending == 'true'" ng-class="{ jira : code.jiraTicket == 'true', stale : hoursSinceChanged > 730, pristine : hoursSinceChanged == -1}">
+			<div class="row" ng-repeat="code in launchCodes | orderBy : sort.type : sort.descending == 'true'" ng-class="{ jira : code.jiraTicket == 'true', stale : code.hoursSinceChanged > 730, pristine : code.hoursSinceChanged == -1}">
 
 				<div class="row" ng-hide="inEditMode($index)">
 					<div class="col-md-4 datalink" ng-click="showAudits(code)" >
@@ -133,8 +133,8 @@
 						{{code.description}}
 					</div>
 					<div class="col-md-1">
-						<img src="/img/icons/check.png" alt="Yes" ng-show="code.availableToJS == 'true'" /> 
-						<img src="/img/icons/x.png" alt="No" ng-show="code.availableToJS == 'false'" /> 
+						<img src="/img/icons/check.png" alt="Yes" ng-show="code.availableToJS == 'true'" />
+						<img src="/img/icons/x.png" alt="No" ng-show="code.availableToJS == 'false'" />
 					</div>
 					<div class="col-md-2">
 						<button class="btn btn-success" ng-click="editModeOn($index)">Edit</button>
