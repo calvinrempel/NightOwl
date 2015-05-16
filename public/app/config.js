@@ -67,8 +67,7 @@ var  app = angular.module('NightOwl', []).constant( 'API_CONFIG',{
 			},
 		},
 		{"name": "Data Center 2", "value" : "dc2"},
-		{"name": "Data Center 3", "value" : "dc3"},
-		{"name": "Data Center 4", "value" : "dc4"}
+		{"name": "Data Center 3", "value" : "dc3"}
 	],
 
 	"tokenName": "NightOwlAuth",
