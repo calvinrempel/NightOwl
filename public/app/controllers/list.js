@@ -1,7 +1,7 @@
 (function(){
-app.controller('ListController', function($scope, $http, codes, auth) {
+app.controller('ListController', function($scope, $http, codes, auth, loading) {
 
-		init();
+		
 
 		function init(){
 			$scope.createMode = false;
@@ -12,13 +12,11 @@ app.controller('ListController', function($scope, $http, codes, auth) {
 			$scope.dc = {};
 			$scope.filters = {};
 			$scope.sortOptions = [];
-			setDataCenter($scope.config.dataCenters[0]);
+			$scope.setDataCenter($scope.config.dataCenters[0]);
 		}
 
 
-		$scope.setDataCenter = function(dataCenter){
-			setDataCenter(dataCenter)
-        }
+		
 
         // EDIT MODE FUNCTIONS
 		$scope.editModeOn = function(index){
@@ -32,28 +30,75 @@ app.controller('ListController', function($scope, $http, codes, auth) {
 		}
 
 		// CODE CRUD FUNCTIONS
+        $scope.loadCodes = function(){
+            loading.start();
+            codes.load($scope.filters)
+            .success(function(data){
+                listCodes( data.codes );
+            })
+            .error(function(data, status){
+                if(status == 401 && $scope.selected !== "login")
+                    location.reload();
+            })
+            .finally(function(){
+                loading.stop()
+            });
+        }
+
 		$scope.saveCode = function(code){
-			saveCode(code);
-		}
-		$scope.deleteCode = function(code){
-			if( window.confirm("Are you sure you wish to delete\n" + $scope.filters.prefix + "/" + code.key + "?" ) )
-				deleteCode(code)
-		}
-		$scope.createCode = function(){
-			createCode($scope.newCode);
+            loading.start();
+
+			codes.save(code, $scope.filters)
+            .success(function(data){
+                console.log("Code Saved!");
+            })
+            .error(function(data, status){
+                if(status == 401 && $scope.selected !== "login")
+                    location.reload();
+            })
+            .finally(function(){
+                loading.stop();
+            });
 		}
 
+		$scope.deleteCode = function(code){
+            var prompt = "Are you sure you wish to delete\n" + $scope.filters.prefix + "/" + code.key + "?";
+			if( window.confirm( prompt ) ){
+				loading.start();
+                codes.delete()
+                .success(function(){
+                    console.log("Code Deleted!");
+                })
+                .error(function(data, status){
+                    if(status == 401 && $scope.selected !== "login")
+                        location.reload();
+                })
+                .finally(function(){
+                    loading.stop()
+                });
+            }
+		}
+
+        $scope.setDataCenter = function(dataCenter){
+            $scope.dc = dataCenter;
+            $scope.prefixes = buildList(dataCenter.prefixes);
+            $scope.filters = {
+                dataCenter : dataCenter.value,
+                filterBy : $scope.config.filters[0],
+                prefix: $scope.prefixes[0],
+                filter : ''
+            };
+            $scope.loadCodes();
+        }
+
+
+
 		$scope.discardChanges = function(index){
-			loadCodes();
+			$scope.loadCodes();
 			$scope.editModeOff(index);
 		}
 
-		$scope.reloadCodes = function(){
-			loadCodes();
-		}
-
 		$scope.toggleJS = function(code){
-			console.log(code);
 			if(code.availableToJS == "false"){
 				code.availableToJS = "true";
 			}else{
@@ -63,70 +108,9 @@ app.controller('ListController', function($scope, $http, codes, auth) {
 
         $scope.resetFilters = function(){
             if($scope.dc !== undefined)
-                setDataCenter( $scope.dc );
+                $scope.setDataCenter( $scope.dc );
             else
-                setDataCenter( $scope.config.dataCenters[0] );
-        }
-
-        function setDataCenter(dataCenter){
-        	$scope.dc = dataCenter;
-            $scope.prefixes = buildList(dataCenter.prefixes);
-            $scope.filters = {
-                dataCenter : dataCenter.value,
-                filterBy : $scope.config.filters[0],
-                prefix: $scope.prefixes[0],
-                filter : ''
-            };
-            loadCodes();
-        }
-
-        function loadCodes(){
-        	codes.load($scope.filters, function(success, data){
-        		if(success){
-	        		$scope.selectTab("list");
-
-	        		$scope.launchCodes = trimKeys( data.codes );
-	        		$scope.sortOptions = Object.keys(data.codes);
-	        		$scope.sort.field = $scope.sortOptions[0];
-	        		$scope.sort.desc = true;
-        		}else if( data === 401 ){
-					if ($scope.selected !== 'login')
-						location.reload();
-                }
-        	});
-        }
-
-        function deleteCode( code ){
-        	codes.remove( code, $scope.filters, function(success, data){
-        		if(success){
-        			console.log("Code Deleted!");
-        			loadCodes();
-        		}else if( data === 401 ){
-                    location.reload();
-                }
-        	});
-        }
-
-        function createCode( code ){
-        	codes.save(code, $scope.filters, function(success, data){
-        		if(success){
-        			console.log("Code Created!");
-        			$scope.createMode = false;
-        			loadCodes();
-        		}else if( data === 401 ){
-					location.reload();
-                }
-        	});
-        }
-
-        function saveCode( code ){
-        	codes.save(code, $scope.filters, function(success, data){
-        		if(success){
-        			console.log("Code Saved!");
-        		}else if( data === 401 ){
-					location.reload();
-                }
-        	});
+                $scope.setDataCenter( $scope.config.dataCenters[0] );
         }
 
         function buildList(object, branch){
@@ -151,6 +135,14 @@ app.controller('ListController', function($scope, $http, codes, auth) {
                 codes[i].key = codes[i].key.replace($scope.filters.prefix + "/", "");
             }
             return codes;
+        }
+
+        function listCodes( codes ){
+            $scope.selectTab("list");
+            $scope.launchCodes = trimKeys( codes );
+            $scope.sortOptions = Object.keys( codes );
+            $scope.sort.field = $scope.sortOptions[0];
+            $scope.sort.desc = true;
         }
 
 

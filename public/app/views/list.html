@@ -17,7 +17,7 @@
 				<h3>Prefix:</h3>
 			</div>
 			<div class="col-md-3">
-				<select class="form-control" ng-model="filters.prefix" ng-options="prefix for prefix in prefixes"></select>
+				<select class="form-control" ng-change="loadCodes()" ng-model="filters.prefix" ng-options="prefix for prefix in prefixes"></select>
 			</div>
 		</div>
 		<div class="row">
@@ -33,7 +33,7 @@
 				<input type="button" class="btn btn-danger" ng-click="resetFilters()" value="Clear Filters"/>
 			</div>
 			<div class="col-md-1">
-				<input class="btn btn-success" type="submit" value="Filter" ng-click="reloadCodes()"/>
+				<input class="btn btn-success" type="submit" value="Filter" ng-click="loadCodes()"/>
 			</div>
 		</div>
 	</div>
@@ -80,7 +80,7 @@
 					<input class="form-control" type="checkbox" ng-checked="newCode.availableToJS == 'true'" ng-click="toggleJS(newCode)" >
 				</div>
 				<div class="col-md-2">
-					<input class="btn btn-success" type="submit" value="Create" ng-click="createCode(); newCode = {}">
+					<input class="btn btn-success" type="submit" value="Create" ng-click="saveCode(newCode); newCode = {}">
 					<input class="btn btn-danger" type="button" value="Cancel" ng-click="createMode = false; newCode = {}">
 				</div>
 			</div>
