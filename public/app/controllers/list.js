@@ -42,7 +42,7 @@ app.controller('ListController', function($scope, loading, codes) {
                 codes.remove(code, $scope.filters)
                 .success(function(){
                     console.log("Code Deleted!");
-                    loadCodes();
+                    $scope.loadCodes();
                 })
                 .error(function(data, status){
                     if(status == 401 && $scope.selected !== "login")
