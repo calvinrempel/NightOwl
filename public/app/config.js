@@ -25,6 +25,7 @@ var  app = angular.module('NightOwl', []).constant( 'API_CONFIG',{
 		"Description"
 	],
 
+
 	"defaultFilters" : {
 		"prefix" : "darklaunch",
 		"dataCenter" : "dc1",
