@@ -94,6 +94,12 @@
                 $scope.setDataCenter( $scope.config.dataCenters[0] );
         }
 
+        $scope.showAudits = function(code){
+            $scope.auditFilters.filterBy = "Code";
+            $scope.auditFilters.filter = code.key;
+            $scope.selectTab("audit");
+        }
+
 
 
         function buildList(object, branch){
