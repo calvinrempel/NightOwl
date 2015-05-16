@@ -40,3 +40,9 @@ div.wrap{
 #filter input[type="submit"]{
   width:100%;
 }
+
+#list hr{
+  width: 50%;
+  text-align: left;
+  margin-left: 0;
+}

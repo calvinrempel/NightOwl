@@ -5,19 +5,20 @@
 			<button ng-repeat="dc in config.dataCenters" class="btn" ng-class="filters.dataCenter == dc.value ? 'btn-secondary' : 'btn-primary'" ng-click="setDataCenter(dc)">{{dc.name}}</button>
 		</div>
 	</div>
-
-	<div id="filter"class="row">
+	<hr>
+	<div class="row">
+		<div class="col-md-12">
+			<h3>Prefix:</h3>
+		</div>
+		<div class="col-md-3">
+			<select class="form-control" ng-change="loadCodes()" ng-model="filters.prefix" ng-options="prefix for prefix in prefixes"></select>
+		</div>
+	</div>
+	<hr>
+	<div id="filter" class="row">
 		<div class="row">
 			<div class="col-md-12">
-				<h2>Filter Codes</h2>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-1">
-				<h3>Prefix:</h3>
-			</div>
-			<div class="col-md-3">
-				<select class="form-control" ng-change="loadCodes()" ng-model="filters.prefix" ng-options="prefix for prefix in prefixes"></select>
+				<h3>Filter:</h3>
 			</div>
 		</div>
 		<div class="row">
@@ -37,7 +38,7 @@
 			</div>
 		</div>
 	</div>
-
+	<hr>
 	<div id="create" class="row">
 		<div class="col-md-1" ng-hide="createMode">
 			<button class="btn btn-primary" ng-click="createMode = true">Create New</button>
@@ -86,7 +87,7 @@
 			</div>
 		</div>
 	</div>
-
+	<hr>
 	<div id="codes" class="row data" ng-show="launchCodes.length">
 		<div class="row">
 			<div class="col-md-4">
