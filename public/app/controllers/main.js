@@ -8,11 +8,10 @@
             $scope.createMode = false;
             $scope.editMode = [];
             $scope.newCode = {};
-            $scope.sort = {};
             $scope.prefixes = [];
             $scope.dc = {};
             $scope.filters = {};
-            $scope.sortOptions = [];
+            $scope.sort = {};
             $scope.setDataCenter($scope.config.dataCenters[0]);
             $scope.auditFilters = {
                 filterBy : $scope.config.auditFilters[0],
@@ -25,7 +24,7 @@
             loading.start();
             codes.load( $scope.filters )
             .success(function(data){
-                listCodes( data.codes );
+                listCodes(data.codes);
             })
             .error(function(data, status){
                 if(status == 401 && $scope.selected !== "login")
@@ -122,11 +121,12 @@
         }
 
         function listCodes( codes ){
-            $scope.selectTab("list");
+
+            $scope.sort.keys = Object.keys( codes[0] );
+            $scope.sort.descending = "false";
+            $scope.sort.type = $scope.sort.keys[0];
             $scope.launchCodes = trimKeys( codes );
-            $scope.sortOptions = Object.keys( codes );
-            $scope.sort.field = $scope.sortOptions[0];
-            $scope.sort.desc = true;
+            $scope.selectTab("list");
         }
 
         
