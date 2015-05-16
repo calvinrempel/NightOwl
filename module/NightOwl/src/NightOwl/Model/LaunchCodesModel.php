@@ -14,10 +14,13 @@ use MongoClient;
 * Author: Calvin Rempel
 * Date: April 30, 2015
 */
-class LaunchCodesModel
+class LaunchCodesModel extends BaseModel
 {
     /* HTTP Statuses that indicate Consul response types. */
     const CONSUL_SUCCESS_CODE = 200;
+
+    /* The number of seconds in an hour. */
+    const SECONDS_PER_HOUR = 3600;
 
     /**
     * Create a new instance of LaunchCodesModel and connect to the MongoDB.
@@ -25,11 +28,6 @@ class LaunchCodesModel
     public function __construct()
     {
         $this->config = $this->getConfig();
-
-        // Create DB
-        $dbn = $this->config['mongo']['name'];
-        $m = new MongoClient($this->config['mongo']['url']);
-        $this->db = $m->$dbn;
 
         // Create Audit Controller
         $this->audit = new Audit();
@@ -94,10 +92,10 @@ class LaunchCodesModel
     * Create a new launch code in both Consul and the MongoDB.
     *
     * Params:
-    *    $token         : the users authorization token
+    *       $dataCentre    : the dataCentre to edit/create in
     *		$key           : the Launch Code Key
     *		$restriction   : the restriction type (eg "boolean")
-    *		$value 		     : the value associated with the restriction (eg "true")
+    *		$value 		   : the value associated with the restriction (eg "true")
     *		$description   : a description of the Launch Code
     *		$availableToJS : true or false - whether the code is available in JavaScript.
     *
@@ -112,39 +110,59 @@ class LaunchCodesModel
 	*
 	*	   Calvin Rempel - May 8, 2015
 	*		   - Fix: Creation date set on creation, not altered on edit.
+    *
+    *      Calvin Rempel - May 13, 2015
+    *          - Added datacenter to the parameters
     */
-    public function createOrEditLaunchCode($token, $key, $restriction, $value, $owner, $description, $availableToJS)
+    public function createOrEditLaunchCode($dataCentre, $key, $restriction, $value, $owner, $description, $availableToJS)
     {
-        $logMessage = ' - CREATE - ';
+        $createdDate = date('Y-m-d H:i:s');
+        $mode = 'CREATE';
+
+        // Build the Creation Log Message
+        $logMessage = " RESTRICTION = $restriction; VALUE = $value; JS = " . ($availableToJS ? 'true;' : 'false;');
+
+        // Try to get the code from Consul
+        $code = $this->getLaunchCodes($dataCentre, $key, false);
+
+        // If Code already exists, edit existing code
+        if (is_array($code) && count($code) != 0)
+        {
+            $mode = 'EDIT -';
+
+            $code = json_decode(base64_decode($code[0]['Value']), true);
+            $createdDate = $code['createdDate'];
+
+            // Build the Edit Log Message
+            $logMessage = "";
+            if ($code['restriction'] != $restriction)
+                $logMessage .= " RESTRICTION = $restriction;";
+            if ($code['value'] != $value)
+                $logMessage .= " VALUE = $value;";
+            if ($code['isAvailableToJs'] != $availableToJS)
+                $logMessage .= " JS = " . ($availableToJS ? 'true;' : 'false;');
+        }
 
         // Try to set the code in Consul. If that works, add to Mongo.
-        if ($this->setInConsul($key, $restriction, $value, $availableToJS))
+        if ($this->setInConsul($dataCentre, $key, $restriction, $value, $availableToJS, $createdDate))
         {
             // Setup update/creation constraints
-            $where = array('key' => $key);
+            $where = array('key' => $key, 'dataCentre' => $dataCentre);
             $obj = array(
                 'key'         => $key,
+                'dataCentre'  => $dataCentre,
                 'description' => $description,
-                'createdDate' => date('Y-m-d H:i:s'),
                 'owner'       => $owner,
+                'lastTouched' => date('Y-m-d H:i:s')
             );
             $options = array('upsert' => true);
 
-            // If the code doesn't already exist, set the creation date.
-            $code = array('key' => $key);
-            if(!is_null(($code = $this->db->LaunchCodes->findOne($code))))
-            {
-                $obj['createdDate'] = $code['createdDate'];
-                $logMessage = ' - EDIT - ';
-            }
-
             // Create/Edit the LaunchCode in Mongo
-            $this->db->LaunchCodes->update($where, $obj, $options);
+            $this->getDB()->LaunchCodes->update($where, $obj, $options);
 
-            // Log the edit
-            $logMessage .= $restriction . ' - ' . $value . ' JS(' . $availableToJS . ')';
-
-            $this->audit->LogEdit($token, $logMessage, $key);
+            // Log the Action if a meaningful change was made.
+            if ($logMessage != "")
+                $this->log($dataCentre, $key, $mode, $logMessage);
 
             return true;
         }
@@ -156,8 +174,8 @@ class LaunchCodesModel
     * Delete a Launch Code from Consul (and eventually MongoDB).
     *
     * Params:
-    *    $token : the users authorization token
-    *		$key   : the key of the launch code to delete.
+    *       $dataCentre : the dataCentre to remove from.
+    *		$key        : the key of the launch code to delete.
     *
     * Returns: True on success, False on failure.
     *
@@ -168,9 +186,9 @@ class LaunchCodesModel
     *      Calvin Rempel - May 3, 2015
     *          - Added Mongo entry deletion.
     */
-    public function deleteLaunchCode($token, $key)
+    public function deleteLaunchCode($dataCentre, $key)
     {
-        $url = $this->getConsulKVUrl() . $key;
+        $url = $this->getConsulKVUrl() . $key . '?dc=' . $dataCentre;
         $status = 0;
 
         // Attempt to Delete from Consul
@@ -179,8 +197,8 @@ class LaunchCodesModel
         // Return true on success / false on failure
         if ($status == self::CONSUL_SUCCESS_CODE)
         {
-            $this->audit->LogEdit($token, ' - DELETE - ', $key);
-            $this->db->LaunchCodes->remove(array('key' => $key));
+            $this->log($dataCentre, $key, 'DELETE', "");
+            $this->getDB()->LaunchCodes->remove(array('key' => $key, 'dataCentre' => $dataCentre));
             return true;
         }
 
@@ -192,6 +210,7 @@ class LaunchCodesModel
     * the code in the array.
     *
     * Params:
+    *      $dataCentre : the dataCentre that the codes are in.
     *      $codes : the array of codes (which contains at least the key "key").
     *               When the function completes, each code in the array will
     *               have it's available metadata added to it.
@@ -203,10 +222,11 @@ class LaunchCodesModel
     *      Calvin Rempel - May 3, 2015
     *          - Added MetaData retrieval from MongoDB
     */
-    public function injectMetadata(&$codes)
+    public function injectMetadata($dataCentre, &$codes)
     {
         $keys = array();
         $count = count($codes);
+        $now = time();
 
         // Build the query parameters for Mongo lookup.
         for ($i = 0; $i < $count; $i++)
@@ -218,18 +238,27 @@ class LaunchCodesModel
         $codeMap = array();
         foreach ($codes as &$code)
         {
+            $code['description'] = '';
+            $code['owner'] = '';
+            $code['hoursSinceChanged'] = '-1';
+            $code['jiraTicket'] = (preg_match("/^[a-zA-Z]+[-_]\d+/", $code['key']) ? 'true' : 'false');
             $codeMap[$code['key']] = &$code;
         }
 
         // Get the MetaData from Mongo
-        $metadata = $this->db->LaunchCodes->find(array('key' => array('$in' => $keys)));
+        $metadata = $this->getDB()->LaunchCodes->find(array('key' => array('$in' => $keys), 'dataCentre' => $dataCentre));
 
         // Inject MetaData into the codes
         foreach ($metadata as $codeData)
         {
+            // Get the number of hours since the code was last touched
+            $lastTouched = strtotime($codeData["lastTouched"]);
+            $deltaTime = floor(($now - $lastTouched) / self::SECONDS_PER_HOUR);
+
+            // Set the metadata values of the code
             $codeMap[$codeData['key']]['description'] = $codeData["description"];
-            $codeMap[$codeData['key']]['dateCreated'] = $codeData["createdDate"];
             $codeMap[$codeData['key']]['owner'] = $codeData["owner"];
+            $codeMap[$codeData['key']]['hoursSinceChanged'] = $deltaTime;
         }
     }
 
@@ -290,26 +319,33 @@ class LaunchCodesModel
     * currently exist, it will be created.
     *
     * Params:
+    *       $dataCentre    : the datacentre to set the value in
     *		$key 		   : the Launch Code key
     *		$restriction   : the restriction type of the code (eg "boolean")
     *		$value		   : the value associated with the restriction (eg "true")
-    *      $availableToJS : true or false - whether the code is available in JavaScript.
+    *       $availableToJS : true or false - whether the code is available in JavaScript.
+    *       $createdDate   : the date the code was created.
     *
     * Returns: True if successfully set, False on failure.
     *
     * Author: Calvin Rempel
     * Date: April 1, 2015
+    *
+    * REVISIONS:
+    *       Calvin Rempel - May 13, 2015
+    *           - Added DataCentre to set data in to parameter list
     */
-    private function setInConsul($key, $restriction, $value, $availableToJS)
+    private function setInConsul($dataCentre, $key, $restriction, $value, $availableToJS, $createdDate)
     {
         // Create the value to store in Consul
         $consulData = new \stdClass();
-        $consulData->restriction  = $restriction;
-        $consulData->value        = $value;
-        $consulData->availableToJS = $availableToJS;
+        $consulData->value           = $value;
+        $consulData->restriction     = $restriction;
+        $consulData->isAvailableToJs = ($availableToJS ? 1 : 0);
+        $consulData->createdDate     = $createdDate;
 
         // Create the URL to PUT to.
-        $url = $this->getConsulKVUrl() . $key;
+        $url = $this->getConsulKVUrl() . $key . '?dc=' . $dataCentre;
         $status;
 
         // Make creation request to Consul
@@ -325,17 +361,12 @@ class LaunchCodesModel
     }
 
     /**
-    * I don't understand how I'm supposed to get this any other way.
-    */
-    private function getConfig()
+     * Log an action to the Audit Log.
+     */
+    private function log($dataCentre, $key, $action, $changeMessage)
     {
-        return include __DIR__ . '../../../../../../config/autoload/local.php';
+        $this->audit->LogEdit($action . "  -  DC ($dataCentre)  -  " . $changeMessage, $key);
     }
-
-    /**
-    * A reference to the MonogDB database that holds LaunchCode metadata.
-    */
-    private $db;
 
     /**
     * A reference to an Audit Model for logging audit information.

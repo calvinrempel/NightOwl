@@ -1,6 +1,6 @@
 (function(){
-app.controller('ListController', function($scope, $http, codes) {
-		
+app.controller('ListController', function($scope, $http, codes, auth) {
+
 		init();
 
 		function init(){
@@ -19,7 +19,7 @@ app.controller('ListController', function($scope, $http, codes) {
 		$scope.setDataCenter = function(dataCenter){
 			setDataCenter(dataCenter)
         }
-        
+
         // EDIT MODE FUNCTIONS
 		$scope.editModeOn = function(index){
 			$scope.editMode[index] = true;
@@ -32,10 +32,10 @@ app.controller('ListController', function($scope, $http, codes) {
 		}
 
 		// CODE CRUD FUNCTIONS
-		$scope.saveCode = function(code){ 
+		$scope.saveCode = function(code){
 			saveCode(code);
 		}
-		$scope.deleteCode = function(code){ 
+		$scope.deleteCode = function(code){
 			if( window.confirm("Are you sure you wish to delete\n" + $scope.filters.prefix + "/" + code.key + "?" ) )
 				deleteCode(code)
 		}
@@ -59,7 +59,7 @@ app.controller('ListController', function($scope, $http, codes) {
 			}else{
 				code.availableToJS = "false";
 			}
-		} 
+		}
 
         $scope.resetFilters = function(){
             if($scope.dc !== undefined)
@@ -67,7 +67,7 @@ app.controller('ListController', function($scope, $http, codes) {
             else
                 setDataCenter( $scope.config.dataCenters[0] );
         }
-        
+
         function setDataCenter(dataCenter){
         	$scope.dc = dataCenter;
             $scope.prefixes = buildList(dataCenter.prefixes);
@@ -84,11 +84,15 @@ app.controller('ListController', function($scope, $http, codes) {
         	codes.load($scope.filters, function(success, data){
         		if(success){
 	        		$scope.selectTab("list");
-	        		$scope.launchCodes = trimKeys(data.codes);
+
+	        		$scope.launchCodes = trimKeys( data.codes );
 	        		$scope.sortOptions = Object.keys(data.codes);
 	        		$scope.sort.field = $scope.sortOptions[0];
 	        		$scope.sort.desc = true;
-        		}
+        		}else if( data === 401 ){
+					if ($scope.selected !== 'login')
+						location.reload();
+                }
         	});
         }
 
@@ -97,8 +101,10 @@ app.controller('ListController', function($scope, $http, codes) {
         		if(success){
         			console.log("Code Deleted!");
         			loadCodes();
-        		}
-        	}); 
+        		}else if( data === 401 ){
+                    location.reload();
+                }
+        	});
         }
 
         function createCode( code ){
@@ -107,7 +113,9 @@ app.controller('ListController', function($scope, $http, codes) {
         			console.log("Code Created!");
         			$scope.createMode = false;
         			loadCodes();
-        		}
+        		}else if( data === 401 ){
+					location.reload();
+                }
         	});
         }
 
@@ -115,7 +123,9 @@ app.controller('ListController', function($scope, $http, codes) {
         	codes.save(code, $scope.filters, function(success, data){
         		if(success){
         			console.log("Code Saved!");
-        		}
+        		}else if( data === 401 ){
+					location.reload();
+                }
         	});
         }
 
@@ -131,7 +141,7 @@ app.controller('ListController', function($scope, $http, codes) {
                     if(!$.isEmptyObject(object[key]))
                         array = array.concat(buildList(object[key], branch + "/" + key));
                 }
-                    
+
             }
             return array;
         }
@@ -142,7 +152,7 @@ app.controller('ListController', function($scope, $http, codes) {
             }
             return codes;
         }
-        
+
 
 	});
 

@@ -73,6 +73,7 @@ var  app = angular.module('NightOwl', []).constant( 'API_CONFIG',{
 	"tokenName": "NightOwlAuth",
 
 	"auditFilters" : [
+        "Last 24 Hours",
         "All",
         "User",
         "Code",

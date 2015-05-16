@@ -32,4 +32,40 @@ describe('Night Owl', function() {
     });
 
   });
+
+    describe('Launch code audit controller', function() {
+
+        describe('Data center', function() {
+            var $scope, controller;
+
+            beforeEach(function() {
+                $scope = {};
+                controller = $controller('ListController', { $scope: $scope });
+            });
+
+            it('should default to west', function() {
+                expect($scope.region).toEqual('west');
+            });
+
+        });
+
+    });
+
+    describe('Launch code login controller', function() {
+
+        describe('Login should succeed with username "McBuppy" and password "test"', function() {
+            var $scope, controller, auth;
+
+            beforeEach(function() {
+                $scope = {};
+                controller = $controller('LoginController', { $scope: $scope });
+            });
+
+            it('should succeed', function(name, pw) {
+                expect(auth.login(name,pw, $scope.loginHandler)).toEqual('west');
+            });
+
+        });
+
+    });
 });

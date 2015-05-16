@@ -15,7 +15,7 @@ return array(
              'login' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/login[/:id][/:pw]',
+                     'route'    => '/auth[/:method][/:id][/:pw]',
                      'defaults' => array(
                          'controller' => 'NightOwl\Controller\AuthRest',
                      ),
@@ -24,7 +24,7 @@ return array(
              'codes' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route' =>  '/codes[/:token][/:seg1][/:seg2][/:seg3][/:seg4]',
+                     'route' =>  '/codes[/:seg1][/:seg2][/:seg3][/:seg4]',
                      'defaults' => array(
                          'controller' => 'NightOwl\Controller\LaunchCodes',
                      ),
@@ -33,7 +33,7 @@ return array(
             'audit' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/audit[/:token][/:query]',
+                    'route' => '/audit[/:query]',
                     'defaults' => array(
                         'controller' => 'NightOwl\Controller\Audit',
                     )
@@ -42,7 +42,9 @@ return array(
          ),
      ),
      'view_manager' => array(
-         'strategies' => array(
+        'display_not_found_reason' => true,
+        'display_exceptions'       => true,
+        'strategies' => array(
            'ViewJsonStrategy',
         ),
     ),

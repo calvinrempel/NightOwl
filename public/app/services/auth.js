@@ -1,28 +1,15 @@
 (function(){
 	app.factory('auth', function($http, API_CONFIG, loading){
-		var URL = API_CONFIG.API_URL
-
-		function saveToken(data){
-			localStorage.setItem("key", data.key);
-		}
-
-		function getToken(){
-			return localStorage.getItem("key");
-		}
-
-		function destroyToken(){
-			localStorage.removeItem("key");
-		}
+		var URL = API_CONFIG.API_URL;
 
 		var auth = {
-			
+
 			login: function(user, pw, _callback){
-				var url = URL + '/login/' + user + '/' + pw;
-				
+				var url = URL + '/auth/login';
+
 				loading.start();
-				$http.get( url )
+				$http.post( url, {name:user, pass:pw} )
 		        .success(function(data) {
-		            saveToken(data);
 		            _callback(true);
 		        })
 		        .error(function() {
@@ -34,14 +21,23 @@
 			},
 
 			logout: function(){
-				destroyToken();
-				location.reload(true);
+				var url = URL + '/auth/logout';
+
+				loading.start();
+				$http.delete( url )
+				.success(function(data){
+					location.reload(true);
+				})
+				.finally(function(data){
+					loading.stop();
+				});
+
 			},
 
 			getToken: function(){return getToken();}
 		};
 
-		
+
 		return auth;
 	});
 }());

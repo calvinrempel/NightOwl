@@ -5,7 +5,7 @@
 		var audits = {
 
 			load: function(filters, _callback){
-				var url = URL + '/audit/' + auth.getToken() + '/';
+				var url = URL + '/audit/';
 		        if(filters.filterBy == 'User') {
 		            url = url + '{"owner":{"$regex":"' + filters.filter + '","$options":"-i"}}';
 		        }
@@ -18,14 +18,23 @@
 		        else if(filters.filterBy == 'All') {
                     url = url + '{"$or":[{"owner":{"$regex":"' + filters.filter + '","$options":"-i"}},{"code":{"$regex":"' + filters.filter + '","$options":"-i"}},{"message":{"$regex":"' + filters.filter + '","$options":"-i"}}]}';
                	}
+                else if(filters.filterBy == 'Last 24 Hours') {
+                    var d = new Date();
+                    var day = d.getDate();
+                    d.setDate(day-1);
+                    var date = d.toJSON();
+
+                    url = url + '{"time":{"$gt":"' + date + '"}}';
+                }
 
 		        loading.start();
 		        $http.get(url)
 		        .success(function(data){
 		        	_callback(true, data);
+
 		        })
 		    	.error(function(data, status){
-		    		_callback(false, status)
+		    		_callback(false, status);
 		    	})
 		        .finally(function() {
                     loading.stop();

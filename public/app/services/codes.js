@@ -3,7 +3,7 @@
 		var URL = API_CONFIG.API_URL
 
 		function getURL(filters){
-			var url = URL + "/codes/" + auth.getToken() + "/" + filters.dataCenter;
+			var url = URL + "/codes/" + filters.dataCenter;
 
 			if( filters.prefix ){
 				url = url + "/" + encodeURIComponent(filters.prefix);
@@ -17,7 +17,9 @@
 		}
 
 		function postURL(code, filters){
+
 			var url = URL + "/codes/" + auth.getToken() + "/" +  addPrefix(code.key, filters.prefix);
+
 			return url;
 		}
 
@@ -30,9 +32,9 @@
 
 			value = code.value || "false";
 
-			description = code.description;
+			description = code.description || "";
 
-			if(code.availableToJS){
+			if(code.availableToJS && code.availableToJS != "false"){
 				availableToJS = 'true';
 			}else{
 				availableToJS = 'false';
@@ -55,10 +57,10 @@
 		}
 
 		var codes = {
-			
+
 			save : function(code, filters, _callback){
 				code = sanitize(code, filters);
-				
+
 				var url = postURL(code, filters);
 				loading.start();
 				$http.post(url, code)
@@ -66,7 +68,7 @@
 					_callback(true);
 				})
 				.error(function(data, status){
-					callback(false, status);
+					_callback(false, status);
 				})
 				.finally(function(){
 					loading.stop();
@@ -104,7 +106,7 @@
 			}
 		};
 
-		
+
 		return codes;
 	});
 }());

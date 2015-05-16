@@ -19,14 +19,15 @@ use NightOwl\Model\Auth;
 
 class AuthControllerTestCase extends AbstractControllerTestCase
 {
-    protected $user = 'McBuppy';
+    protected $user = 'dave';
     protected $pass = 'test';
-    protected $key;
+    protected $container;
     
     public function setUp()
     {
-        $this->getRequest()->setMethod('GET');
-        $this->dispatch('/login/McBuppy/test');
+        $this->getRequest()->setMethod('POST')
+                ->setPost(new Parameters(array('name' => 'dave', 'pass' => 'test')));
+        $this->dispatch('/auth');
         $json = json_decode($this->getResponse()->getBody());
         $this->key = $json->key;
         

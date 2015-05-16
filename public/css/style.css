@@ -17,6 +17,8 @@
 
 div.wrap{
   word-wrap: break-word;
+  max-height: 120px;
+  overflow-y: auto;
 }
 
 .btn-primary.active{
