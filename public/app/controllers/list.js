@@ -1,6 +1,6 @@
 (function(){
 app.controller('ListController', function($scope, loading, codes) {
-		
+
 
         // EDIT MODE FUNCTIONS
 		$scope.editModeOn = function(index){
@@ -16,7 +16,7 @@ app.controller('ListController', function($scope, loading, codes) {
 		// CODE CRUD FUNCTIONS
 
 		$scope.saveCode = function(code){
-            
+
             if( code.key !== undefined ){
             	loading.start();
 				codes.save(code, $scope.filters)
@@ -41,7 +41,7 @@ app.controller('ListController', function($scope, loading, codes) {
 				loading.start();
                 codes.remove(code, $scope.filters)
                 .success(function(){
-                    console.log("Code Deleted!");
+                    alert("Code Deleted!");
                     $scope.loadCodes();
                 })
                 .error(function(data, status){
@@ -54,7 +54,7 @@ app.controller('ListController', function($scope, loading, codes) {
             }
 		}
 
-        
+
 
 
 
@@ -71,7 +71,7 @@ app.controller('ListController', function($scope, loading, codes) {
 			}
 		}
 
-        
+
 
 	});
 

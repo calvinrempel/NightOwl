@@ -53,15 +53,15 @@ div.wrap{
 }
 
 .jira {
-    border: 2px solid yellow;
+    border: 2px solid #FFCC66;
 }
 
 .stale {
-    background: red;
+    background: #FFCCCC;
 }
 
 .pristine {
-    background: green;
+    background: #99FFCC;
 }
 
 a.active{
