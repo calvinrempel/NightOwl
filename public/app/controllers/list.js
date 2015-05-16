@@ -21,7 +21,7 @@ app.controller('ListController', function($scope, loading, codes) {
             	loading.start();
 				codes.save(code, $scope.filters)
 	            .success(function(data){
-	                console.log("Code Saved!");
+	                alert("Code Saved!");
 	                $scope.loadCodes();
 	            })
 	            .error(function(data, status){
@@ -39,9 +39,10 @@ app.controller('ListController', function($scope, loading, codes) {
             var prompt = "Are you sure you wish to delete\n" + $scope.filters.prefix + "/" + code.key + "?";
 			if( window.confirm( prompt ) ){
 				loading.start();
-                codes.delete()
+                codes.remove(code, $scope.filters)
                 .success(function(){
                     console.log("Code Deleted!");
+                    loadCodes();
                 })
                 .error(function(data, status){
                     if(status == 401 && $scope.selected !== "login")
