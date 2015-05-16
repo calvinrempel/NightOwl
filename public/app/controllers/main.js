@@ -96,7 +96,7 @@
 
         $scope.showAudits = function(code){
             $scope.auditFilters.filterBy = "Code";
-            $scope.auditFilters.filter = code.key;
+            $scope.auditFilters.filter = "^" + $scope.filters.prefix + "/" + code.key + "$";
             $scope.selectTab("audit");
         }
 
@@ -139,7 +139,7 @@
             $scope.selectTab("list");
         }
 
-        
+
 
 
         init();

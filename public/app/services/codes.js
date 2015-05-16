@@ -12,7 +12,7 @@
 			if( filters.filterBy && filters.filter ){
 				url = url + "/" + filters.filterBy + "/" + filters.filter;
 			}
-			
+
 			return url;
 		}
 
@@ -22,7 +22,7 @@
 
 		function sanitize( code, filters ){
 			var key, restriction, value, description, availableToJS;
-			
+
 			code.key = filters.prefix + "/" + code.key;
 
 			code.restriction = code.restriction || 'boolean';
@@ -31,10 +31,10 @@
 
 			code.description = code.description || "";
 
-			if(code.availableToJS && code.availableToJS != "false"){
-				code.availableToJS = 'true';
-			}else{
+			if(!code.availableToJS || code.availableToJS == "false"){
 				code.availableToJS = 'false';
+			}else{
+				code.availableToJS = 'true';
 			}
 
 			return code;
@@ -49,18 +49,18 @@
 
 				return $http.post(url, code);
 			},
-				
+
 
 			load : function(filters){
 				var url = getURL(filters);
-				
+
 				return $http.get( url );
 			},
 
 			remove : function( code, filters){
 				code = sanitize(code, filters);
 				var url = postURL(code, filters);
-				
+
 				return $http.delete( url );
 			}
 		};
