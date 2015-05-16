@@ -1,5 +1,5 @@
 (function(){
-	app.factory('codes', function($http, API_CONFIG, auth, loading){
+	app.factory('codes', function($http, API_CONFIG, loading){
 		var URL = API_CONFIG.API_URL
 
 		function getURL(filters){
@@ -12,93 +12,56 @@
 			if( filters.filterBy && filters.filter ){
 				url = url + "/" + filters.filterBy + "/" + filters.filter;
 			}
-
+			console.log(url);
 			return url;
 		}
 
 		function postURL(code, filters){
-			var url = URL + "/codes/" + filters.dataCenter + "/" +  prefix(code.key, filters.prefix);
-			return url;
+			return URL + "/codes/" + filters.dataCenter + "/" +  encodeURIComponent(code.key);
 		}
 
 		function sanitize( code, filters ){
 			var key, restriction, value, description, availableToJS;
+			
+			code.key = filters.prefix + "/" + code.key;
 
-			key = prefix(code.key, filters.prefix);
+			code.restriction = code.restriction || 'boolean';
 
-			restriction = code.restriction || 'boolean';
+			code.value = code.value || "false";
 
-			value = code.value || "false";
-
-			description = code.description || "";
+			code.description = code.description || "";
 
 			if(code.availableToJS && code.availableToJS != "false"){
-				availableToJS = 'true';
+				code.availableToJS = 'true';
 			}else{
-				availableToJS = 'false';
+				code.availableToJS = 'false';
 			}
 
-			var newCode = {
-				key :  key,
-				restriction : restriction,
-				value : value,
-				description : description,
-				availableToJS : availableToJS
-			};
-			console.log(newCode);
-
-			return newCode;
+			return code;
 		}
-
-		function prefix(code, prefix){ return encodeURIComponent(prefix + "/" + code); }
 
 		var codes = {
 
-			save : function(code, filters, _callback){
+			save : function(code, filters){
 				code = sanitize(code, filters);
 
 				var url = postURL(code, filters);
-				loading.start();
-				$http.post(url, code)
-				.success(function(data){
-					_callback(true);
-				})
-				.error(function(data, status){
-					_callback(false, status);
-				})
-				.finally(function(){
-					loading.stop();
-				});
-			},
 
-			load : function(filters, _callback){
+				return $http.post(url, code);
+			},
+				
+
+			load : function(filters){
 				var url = getURL(filters);
-				loading.start();
-				$http.get( url )
-				.success(function(data){
-					_callback(true, data);
-				})
-				.error(function(data, status){
-					_callback(false, status);
-				})
-				.finally(function(){
-					loading.stop();
-				});
+				
+				return $http.get( url );
 			},
 
-			remove : function( code, filters, _callback){
-				var url = postURL(code)
-				loading.start();
-				$http.delete( url )
-				.success(function(data){
-					_callback(true, data);
-				})
-				.error(function(data, status){
-					_callback(false, status);
-				})
-				.finally(function(){
-					loading.stop();
-				});
+			remove : function( code, filters){
+				code = sanitize(code, filters);
+				var url = postURL(code, filters);
+				
+				return $http.delete( url );
 			}
 		};
 
