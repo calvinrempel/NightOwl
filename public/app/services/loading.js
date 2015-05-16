@@ -12,8 +12,16 @@
 				});
 			},
 
+			success: function(){
+				$(id).html("Success!");
+			},
+
 			stop: function(){
-				$(id).fadeOut(400);
+				setTimeout(function(){
+					$(id).fadeOut(400, function(){
+						$(id).html("Loading...");
+					});
+				}, 1200);
 				$(".data").css({
 					"opacity": '1',
 					"pointer-events": 'all'
