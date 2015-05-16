@@ -4,6 +4,7 @@ app.controller('LoginController', function($scope, $http, auth) {
 
     $scope.loginHandler = function(success){
       if(success){
+        $scope.loadCodes();
         $scope.selectTab("list")
       }
       else {

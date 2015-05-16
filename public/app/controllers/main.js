@@ -57,14 +57,14 @@
                 var newElem = $("#" + val);
                 oldElem.slideUp(400, function(){
                     newElem.slideDown(400, function() {
-                        $scope.selected = val;
                         if(val != "login"){
                             $("#wrapper").removeClass("toggled");
                         }if( val == "audit" ){
                             $scope.loadAudits();
-                        }if( val == "list" ){
+                        }if( val == "list" && $scope.selected != "login" ){
                             $scope.loadCodes();
                         }
+                        $scope.selected = val;
                         $scope.$apply();
                     });
                 });
@@ -135,6 +135,7 @@
             }else{
                 $scope.launchCodes = [];
             }
+            console.log($scope.launchCodes);
             $scope.selectTab("list");
         }
 
