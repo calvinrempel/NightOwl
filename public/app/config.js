@@ -4,6 +4,11 @@ var  app = angular.module('NightOwl', []).constant( 'API_CONFIG',{
 
 	"loadingID" : "#loading",
 
+	"installation": {
+		"name" : "production",
+		"colour" : "red"
+	},
+
 	"restrictions" : [
 		"boolean",
 		"member_list",
