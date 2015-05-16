@@ -22,6 +22,9 @@ class LaunchCodesModel extends BaseModel
     /* The number of seconds in an hour. */
     const SECONDS_PER_HOUR = 3600;
 
+    /* REGEX pattern to match for JIRA tickets */
+    const JIRA_REGEX = "/^[a-zA-Z]+[-_]\d+/";
+
     /**
     * Create a new instance of LaunchCodesModel and connect to the MongoDB.
     */
@@ -238,10 +241,18 @@ class LaunchCodesModel extends BaseModel
         $codeMap = array();
         foreach ($codes as &$code)
         {
+            $key = $code['key'];
+            $idxLastSeparator = strrpos($key, "/", -1);
+
+            if ($idxLastSeparator !== false)
+            {
+                $key = substr($key, $idxLastSeparator + 1);
+            }
+
             $code['description'] = '';
             $code['owner'] = '';
             $code['hoursSinceChanged'] = '-1';
-            $code['jiraTicket'] = (preg_match("/^[a-zA-Z]+[-_]\d+/", $code['key']) ? 'true' : 'false');
+            $code['jiraTicket'] = (preg_match(self::JIRA_REGEX, $key) ? 'true' : 'false');
             $codeMap[$code['key']] = &$code;
         }
 
