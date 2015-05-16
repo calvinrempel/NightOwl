@@ -64,7 +64,7 @@ app.controller('ListController', function($scope, loading, codes) {
 		}
 
 		$scope.toggleJS = function(code){
-			if(code.availableToJS == "false"){
+			if(code.availableToJS == "false" || code.availableToJS === undefined){
 				code.availableToJS = "true";
 			}else{
 				code.availableToJS = "false";

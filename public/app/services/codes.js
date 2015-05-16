@@ -31,7 +31,7 @@
 
 			code.description = code.description || "";
 
-			if(code.availableToJS && code.availableToJS != "false"){
+			if(code.availableToJS !== undefined && code.availableToJS !== "false"){
 				code.availableToJS = 'true';
 			}else{
 				code.availableToJS = 'false';

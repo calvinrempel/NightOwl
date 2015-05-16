@@ -117,7 +117,7 @@
 				</div>
 			</div>
 
-			<div class="row" ng-repeat="code in launchCodes | orderBy : sort.type : sort.descending == 'true'" ng-class="{ jira : code.jiraTicket == 'true', stale : hoursSinceChanged > 730, pristine : hoursSinceChanged == -1}">
+			<div class="row" ng-repeat="code in launchCodes | orderBy : sort.type : sort.descending == 'true'" ng-class="{ jira : code.jiraTicket == 'true', stale : code.hoursSinceChanged > 730, pristine : code.hoursSinceChanged == -1}">
 
 				<div class="row" ng-hide="inEditMode($index)">
 					<div class="col-md-4 datalink" ng-click="showAudits(code)" >
