@@ -63,3 +63,8 @@ div.wrap{
 .pristine {
     background: #99FFCC;
 }
+
+a.active{
+  background-color: #00aeef;
+  color:white !important ;
+}
