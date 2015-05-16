@@ -2,6 +2,7 @@
 /* Loading indicator */
 #loading{
   position: fixed;
+  z-index: 999;
   margin-left: 45%;
   margin-top: 10%;
   padding: 3px 5px 3px 7px;
