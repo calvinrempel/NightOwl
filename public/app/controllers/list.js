@@ -21,7 +21,7 @@ app.controller('ListController', function($scope, loading, codes) {
             	loading.start();
 				codes.save(code, $scope.filters)
 	            .success(function(data){
-	                alert("Code Saved!");
+	                loading.success();
 	                $scope.loadCodes();
 	            })
 	            .error(function(data, status){
@@ -41,7 +41,7 @@ app.controller('ListController', function($scope, loading, codes) {
 				loading.start();
                 codes.remove(code, $scope.filters)
                 .success(function(){
-                    alert("Code Deleted!");
+                    loading.success();
                     $scope.loadCodes();
                 })
                 .error(function(data, status){
@@ -70,8 +70,6 @@ app.controller('ListController', function($scope, loading, codes) {
 				code.availableToJS = "false";
 			}
 		}
-
-
 
 	});
 
