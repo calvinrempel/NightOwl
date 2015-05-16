@@ -30,7 +30,7 @@ div.wrap{
 }
 
 .data>div:not(:first-child):hover{
-  background-color: #7fd6f7;
+  background-color: #7fd6f7 !important;
 }
 
 .row{
@@ -52,14 +52,20 @@ div.wrap{
   color: white;
 }
 
+a.active {
+    background-color: #00aeef;
+    color: white !important;
+}
+
 .jira {
-    border: 2px solid #FFCC66;
+    background: #FFCC66 !important;
+    border: 5px solid #FFCC66;
 }
 
 .stale {
-    background: #FFCCCC;
+    background: #FFCCCC !important;
 }
 
 .pristine {
-    background: #99FFCC;
+    background: #99FFCC !important;
 }
